@@ -1,4 +1,4 @@
-# `@magi/showroom`
+# `@tokyo3rdhq/showroom`
 
 Local visual showcase for `@tokyo3rdhq/magi-design-system`. Used during package development to confirm every token, primitive, and component renders correctly. **Not published.**
 

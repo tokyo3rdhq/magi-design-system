@@ -7,7 +7,7 @@ Shared visual foundation for the [MAGI](https://magi.website) product family —
 This monorepo contains the package that every MAGI website consumes:
 
 - [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, and a product theme mechanism
-- [`@magi/showroom`](./apps/showroom) — the Vite + React + TypeScript visual showcase used during development
+- [`@tokyo3rdhq/showroom`](./apps/showroom) — the Vite + React + TypeScript visual showcase used during development
 
 ## What is MAGI?
 
@@ -39,7 +39,7 @@ magi-design-system/
 ├── packages/
 │   └── design-system/        # @tokyo3rdhq/magi-design-system — published to npm
 ├── apps/
-│   └── showroom/             # @magi/showroom — local visual showcase
+│   └── showroom/             # @tokyo3rdhq/showroom — local visual showcase
 ├── docs/
 │   ├── magi_design_system.md # original design spec (lives in magi-portal too)
 │   ├── architecture.md       # implementation decisions
