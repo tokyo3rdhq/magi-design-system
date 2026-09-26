@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@magi/design-system';
+import { Button } from '@tokyo3rdhq/magi-design-system';
 import { PageHeader } from './index';
 import styles from './pages.module.css';
 

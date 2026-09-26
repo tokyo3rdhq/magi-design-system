@@ -1,4 +1,4 @@
-import { Badge } from '@magi/design-system';
+import { Badge } from '@tokyo3rdhq/magi-design-system';
 import { PageHeader } from './index';
 import styles from './pages.module.css';
 

@@ -6,7 +6,7 @@ Shared visual foundation for the [MAGI](https://magi.website) product family —
 
 This monorepo contains the package that every MAGI website consumes:
 
-- [`@magi/design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, and a product theme mechanism
+- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, and a product theme mechanism
 - [`@magi/showroom`](./apps/showroom) — the Vite + React + TypeScript visual showcase used during development
 
 ## What is MAGI?
@@ -26,8 +26,8 @@ The full rationale is in [`docs/magi_design_system.md`](./docs/magi_design_syste
 **Phase 1 — Foundation.** Tokens, foundation, layout primitives, UI primitives (Button / Card / Badge), and product theme.
 
 - [x] Phase 1 — tokens + foundation + layout + Button / Card / Badge + ProductTheme
-- [ ] Phase 2 — migrate [`magi.website`](https://github.com/tokyo3rdhq/magi-portal) to consume `@magi/design-system`
-- [ ] Phase 3 — migrate [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr) to consume `@magi/design-system`
+- [ ] Phase 2 — migrate [`magi.website`](https://github.com/tokyo3rdhq/magi-portal) to consume `@tokyo3rdhq/magi-design-system`
+- [ ] Phase 3 — migrate [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr) to consume `@tokyo3rdhq/magi-design-system`
 - [ ] Phase 4 — extract Navbar / Footer / Tabs / CodeBlock / Input only when duplication is observed
 
 See [`docs/magi_design_system.md` §30](https://github.com/tokyo3rdhq/magi-portal/blob/main/docs/magi_design_system.md) for the original phase plan.
@@ -37,7 +37,7 @@ See [`docs/magi_design_system.md` §30](https://github.com/tokyo3rdhq/magi-porta
 ```
 magi-design-system/
 ├── packages/
-│   └── design-system/        # @magi/design-system — published to npm
+│   └── design-system/        # @tokyo3rdhq/magi-design-system — published to npm
 ├── apps/
 │   └── showroom/             # @magi/showroom — local visual showcase
 ├── docs/
@@ -54,14 +54,14 @@ magi-design-system/
 Install the package in any React app:
 
 ```bash
-npm install @magi/design-system
+npm install @tokyo3rdhq/magi-design-system
 ```
 
 ```tsx
 // app entry
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 
-import { Container, Section, Button, Card, Badge, ProductTheme } from '@magi/design-system';
+import { Container, Section, Button, Card, Badge, ProductTheme } from '@tokyo3rdhq/magi-design-system';
 
 function App() {
   return (

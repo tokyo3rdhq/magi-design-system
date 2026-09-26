@@ -9,7 +9,7 @@
     "preview": "vite preview --host 127.0.0.1 --port 4173"
   },
   "dependencies": {
-    "@magi/design-system": "file:../../packages/design-system",
+    "@tokyo3rdhq/magi-design-system": "file:../../packages/design-system",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

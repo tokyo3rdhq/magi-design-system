@@ -1,6 +1,6 @@
 # `@magi/showroom`
 
-Local visual showcase for `@magi/design-system`. Used during package development to confirm every token, primitive, and component renders correctly. **Not published.**
+Local visual showcase for `@tokyo3rdhq/magi-design-system`. Used during package development to confirm every token, primitive, and component renders correctly. **Not published.**
 
 ## What it is
 

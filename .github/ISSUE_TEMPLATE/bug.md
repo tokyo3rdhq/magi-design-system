@@ -12,7 +12,7 @@ A clear and concise description of what is wrong.
 
 Steps to reproduce:
 
-1. Install `@magi/design-system@<version>`
+1. Install `@tokyo3rdhq/magi-design-system@<version>`
 2. …
 3. …
 
@@ -26,7 +26,7 @@ What actually happened. Include screenshots / recordings if relevant.
 
 ## Environment
 
-- `@magi/design-system` version:
+- `@tokyo3rdhq/magi-design-system` version:
 - React version:
 - Vite / Next / Astro / other bundler + version:
 - Browser + version:

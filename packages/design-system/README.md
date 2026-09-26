@@ -1,4 +1,4 @@
-# `@magi/design-system`
+# `@tokyo3rdhq/magi-design-system`
 
 Shared visual foundation for the [MAGI](https://magi.website) product family — dark-first, near-monochrome, restrained.
 
@@ -10,14 +10,14 @@ Shared visual foundation for the [MAGI](https://magi.website) product family —
 ## Install
 
 ```bash
-npm install @magi/design-system
+npm install @tokyo3rdhq/magi-design-system
 ```
 
 ## Usage
 
 ```tsx
 // 1. Styles — import once at the application root.
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 
 // 2. <body> needs data-magi-app so foundation styles can scope themselves.
 <body data-magi-app>
@@ -25,7 +25,7 @@ import '@magi/design-system/styles.css';
 </body>
 
 // 3. Wrap your app in <ProductTheme> to optionally override the accent.
-import { ProductTheme } from '@magi/design-system';
+import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
 
 <ProductTheme accent="green">
   <App />
@@ -37,7 +37,7 @@ import { ProductTheme } from '@magi/design-system';
 ### `<Container>` — centers and constrains max-width
 
 ```tsx
-import { Container } from '@magi/design-system';
+import { Container } from '@tokyo3rdhq/magi-design-system';
 
 <Container size="xl">…</Container>
 // size: 'sm' | 'md' | 'lg' | 'xl' | 'wide' | 'full'  (default: 'xl')
@@ -56,7 +56,7 @@ import { Container } from '@magi/design-system';
 ### `<Section>` — page-level vertical rhythm
 
 ```tsx
-import { Section } from '@magi/design-system';
+import { Section } from '@tokyo3rdhq/magi-design-system';
 
 <Section spacing="lg" surface="default">…</Section>
 // spacing: 'sm' | 'md' | 'lg' | 'xl'              (default: 'lg')
@@ -70,7 +70,7 @@ import { Section } from '@magi/design-system';
 ### `<Stack>` — flex primitive with semantic gap tokens
 
 ```tsx
-import { Stack } from '@magi/design-system';
+import { Stack } from '@tokyo3rdhq/magi-design-system';
 
 <Stack direction="column" gap="4" align="stretch">
   <div>Item 1</div>
@@ -85,7 +85,7 @@ import { Stack } from '@magi/design-system';
 ### `<Button>` — pill action element
 
 ```tsx
-import { Button } from '@magi/design-system';
+import { Button } from '@tokyo3rdhq/magi-design-system';
 
 <Button variant="primary" size="md" loading={false}>Save</Button>
 // variant: 'primary' | 'secondary' | 'ghost' | 'danger'  (default: 'primary')
@@ -98,7 +98,7 @@ All buttons include hover, active, focus-visible, disabled, and loading states. 
 ### `<Card>` — dark surface
 
 ```tsx
-import { Card } from '@magi/design-system';
+import { Card } from '@tokyo3rdhq/magi-design-system';
 
 <Card variant="elevated" padding="md">…</Card>
 // variant: 'default' | 'elevated' | 'interactive'  (default: 'default')
@@ -110,7 +110,7 @@ import { Card } from '@magi/design-system';
 ### `<Badge>` — compact status / metadata label
 
 ```tsx
-import { Badge } from '@magi/design-system';
+import { Badge } from '@tokyo3rdhq/magi-design-system';
 
 <Badge variant="accent" dot>128K context</Badge>
 // variant: 'neutral' | 'accent' | 'success' | 'warning' | 'error'  (default: 'neutral')
@@ -120,7 +120,7 @@ import { Badge } from '@magi/design-system';
 ### `<ProductTheme>` — accent override
 
 ```tsx
-import { ProductTheme } from '@magi/design-system';
+import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
 
 <ProductTheme accent="cyan" name="token-factory">
   <App />

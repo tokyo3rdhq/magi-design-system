@@ -1,6 +1,6 @@
 # Architecture
 
-This document explains the implementation decisions behind `@magi/design-system` v0.1.0. It complements (not replaces) the original design spec at [`magi_design_system.md`](./magi_design_system.md).
+This document explains the implementation decisions behind `@tokyo3rdhq/magi-design-system` v0.1.0. It complements (not replaces) the original design spec at [`magi_design_system.md`](./magi_design_system.md).
 
 ## Layered model
 
@@ -98,8 +98,8 @@ Browser support: `color-mix()` requires Chrome 111+, Safari 16.2+, Firefox 113+ 
 Consumers do **exactly two things**:
 
 ```ts
-import '@magi/design-system/styles.css';
-import { Button, Card } from '@magi/design-system';
+import '@tokyo3rdhq/magi-design-system/styles.css';
+import { Button, Card } from '@tokyo3rdhq/magi-design-system';
 ```
 
 Per-component CSS exports (`./components/Button.css`) were considered and rejected: Vite would need `cssCodeSplit: true` (forbidden in lib mode with `input` containing CSS), or per-component entry points (5x build cost, unused by consumers).
@@ -115,7 +115,7 @@ Why two tools? Vite produces a fast JS bundle but does not emit clean `.d.ts` fi
 
 ### 10. File: link, not workspace protocol
 
-The showroom uses `"@magi/design-system": "file:../../packages/design-system"`. npm symlinks this, so live edits in the package are picked up after `vite build --watch` rebuilds. We did not use npm workspaces (`workspaces: ["packages/*"]`) because:
+The showroom uses `"@tokyo3rdhq/magi-design-system": "file:../../packages/design-system"`. npm symlinks this, so live edits in the package are picked up after `vite build --watch` rebuilds. We did not use npm workspaces (`workspaces: ["packages/*"]`) because:
 
 - The package will be published to npm and consumed by other repos (magi-portal, token-factory-initializr). Workspaces add complexity that those consumers don't benefit from.
 - Symlink behaves identically for our dev use case.

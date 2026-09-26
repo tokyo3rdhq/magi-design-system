@@ -37,7 +37,7 @@ cd ../../apps/showroom
 npm run dev
 ```
 
-Live edits in `packages/design-system/src/` rebuild via `vite --watch`; the showroom picks up changes after rebuild (Vite watches `node_modules/@magi/design-system` through the symlink).
+Live edits in `packages/design-system/src/` rebuild via `vite --watch`; the showroom picks up changes after rebuild (Vite watches `node_modules/@tokyo3rdhq/magi-design-system` through the symlink).
 
 ## Workflow
 

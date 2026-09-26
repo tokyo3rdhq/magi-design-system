@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, ProductTheme, type ProductAccent } from '@magi/design-system';
+import { Container, ProductTheme, type ProductAccent } from '@tokyo3rdhq/magi-design-system';
 import { Tokens } from './pages/Tokens';
 import { Typography } from './pages/Typography';
 import { Buttons } from './pages/Buttons';

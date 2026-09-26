@@ -27,7 +27,7 @@ You should receive an acknowledgement within **72 hours**. We aim to ship a fix 
 
 ## Scope
 
-In scope for `@magi/design-system`:
+In scope for `@tokyo3rdhq/magi-design-system`:
 
 - Build-pipeline vulnerabilities (postcss, vite plugins, etc.) — report via Dependabot-style channels
 - Anything in `dist/` shipped to consumers

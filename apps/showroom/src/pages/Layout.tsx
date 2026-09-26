@@ -1,4 +1,4 @@
-import { Container, Section, Stack } from '@magi/design-system';
+import { Container, Section, Stack } from '@tokyo3rdhq/magi-design-system';
 import { PageHeader } from './index';
 import styles from './pages.module.css';
 

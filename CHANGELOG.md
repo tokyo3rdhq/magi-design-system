@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **`@magi/design-system` package** — first published release
+- **`@tokyo3rdhq/magi-design-system` package** — first published release
 - **Tokens** (`src/tokens/`)
   - `colors.css` — background, surface, text, border, accent, semantic tokens on `:root`
   - `typography.css` — Inter + mono stack, semantic scale (`display`, `h1`–`h4`, `body`, `label`, `caption`, `eyebrow`, `code`), tracking, leading

@@ -1,6 +1,6 @@
 # Migration guide
 
-How to migrate a MAGI website to consume `@magi/design-system`. Covers both known consumers:
+How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers both known consumers:
 
 - **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site)
 - **Phase 3 — [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr)** (Cloudflare Pages + React + Vite)
@@ -10,13 +10,13 @@ The two consumers have different starting stacks, so the migration paths diverge
 ## Shared: install + import styles
 
 ```bash
-npm install @magi/design-system
+npm install @tokyo3rdhq/magi-design-system
 ```
 
 In the application entry file:
 
 ```ts
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 ```
 
 Set `data-magi-app` on `<body>`. How you do this depends on the framework:
@@ -26,7 +26,7 @@ Set `data-magi-app` on `<body>`. How you do this depends on the framework:
 ```astro
 ---
 // src/layouts/Layout.astro
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 ---
 <html lang="en">
   <body data-magi-app>
@@ -41,7 +41,7 @@ import '@magi/design-system/styles.css';
 
 ```tsx
 // src/main.tsx (or wherever you mount React)
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
@@ -73,7 +73,7 @@ If you later add React islands via `@astrojs/react`, mount them under `<ProductT
 
 ```astro
 ---
-import { ProductTheme } from '@magi/design-system';
+import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
 import MyReactComponent from './MyReactComponent';
 ---
 <ProductTheme accent="green" client:load>
@@ -91,7 +91,7 @@ magi.website is currently an Astro 4 + Tailwind CSS 3 static site. Its `tailwind
 
 ```bash
 cd /home/yw/Projects/code/magi-portal
-npm install @magi/design-system
+npm install @tokyo3rdhq/magi-design-system
 ```
 
 ### Step 2 — Import styles
@@ -100,7 +100,7 @@ In `src/layouts/Layout.astro`:
 
 ```astro
 ---
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 import '../styles/global.css';  // your existing Tailwind imports
 ---
 ```
@@ -189,7 +189,7 @@ Then:
 
 ```astro
 ---
-import { Button, Badge } from '@magi/design-system';
+import { Button, Badge } from '@tokyo3rdhq/magi-design-system';
 ---
 <Button variant="primary" client:visible>Click me</Button>
 <Badge variant="accent" client:load>v0.1</Badge>
@@ -213,7 +213,7 @@ This consumer is already React + Vite, so the migration is straightforward.
 
 ```bash
 cd /home/yw/Projects/code/token-factory-initializr/web
-npm install @magi/design-system
+npm install @tokyo3rdhq/magi-design-system
 ```
 
 ### Step 2 — Import styles
@@ -221,7 +221,7 @@ npm install @magi/design-system
 In the Vite entry file (e.g. `src/main.tsx`):
 
 ```ts
-import '@magi/design-system/styles.css';
+import '@tokyo3rdhq/magi-design-system/styles.css';
 import './styles/your-existing.css';  // keep until you migrate per-component
 ```
 
@@ -240,7 +240,7 @@ In `index.html`:
 The Initializr is a product of MAGI — it should default to the **cyan** accent (per spec §5 example):
 
 ```tsx
-import { ProductTheme } from '@magi/design-system';
+import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
 
 function App() {
   return (

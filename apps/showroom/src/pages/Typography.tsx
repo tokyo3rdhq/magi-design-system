@@ -48,7 +48,7 @@ export function Typography() {
         <div className={styles.typeRow}>
           <code className="magi-code">.magi-code</code>
           <p>
-            Inline code: <code className="magi-code">npm install @magi/design-system</code>
+            Inline code: <code className="magi-code">npm install @tokyo3rdhq/magi-design-system</code>
           </p>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { Card, Badge } from '@magi/design-system';
+import { Card, Badge } from '@tokyo3rdhq/magi-design-system';
 import { PageHeader } from './index';
 import styles from './pages.module.css';
 

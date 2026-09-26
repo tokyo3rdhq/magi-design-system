@@ -1,8 +1,8 @@
 /**
- * @magi/design-system — public API.
+ * @tokyo3rdhq/magi-design-system — public API.
  *
- *   import '@magi/design-system/styles.css';
- *   import { Container, Section, Stack, Button, Card, Badge, ProductTheme } from '@magi/design-system';
+ *   import '@tokyo3rdhq/magi-design-system/styles.css';
+ *   import { Container, Section, Stack, Button, Card, Badge, ProductTheme } from '@tokyo3rdhq/magi-design-system';
  */
 
 // Side-effect import: bundles tokens + foundation + all component CSS into
