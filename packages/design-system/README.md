@@ -1,14 +1,11 @@
-# @magi/design-system
+# `@magi/design-system`
 
-Shared visual foundation for the MAGI product family — dark-first, near-monochrome, restrained.
+Shared visual foundation for the [MAGI](https://magi.website) product family — dark-first, near-monochrome, restrained.
 
-> **Visual consistency without forcing product-level sameness.**
-
-## Stack
-
-- React 18 + TypeScript (strict)
-- CSS Modules + CSS custom properties for tokens
-- No Tailwind, no Next, no Vite, no Cloudflare coupling — works in any React app
+- **React 18** + **TypeScript** (strict)
+- **Plain CSS** with `magi-` prefixed classes — works in any React app, no Tailwind, no Next, no Vite, no Cloudflare coupling
+- **CSS custom properties** for every token — readable from any stylesheet
+- **~16 kB** stylesheet (gzip ~3 kB), **~4 kB** JS (gzip ~1 kB)
 
 ## Install
 
@@ -19,42 +16,156 @@ npm install @magi/design-system
 ## Usage
 
 ```tsx
-// 1. Load styles once at the application root.
+// 1. Styles — import once at the application root.
 import '@magi/design-system/styles.css';
 
-// 2. Mark the host container to scope the foundation styles.
-function App() {
-  return (
-    <div data-magi-app>
-      <Container size="xl">
-        <Section spacing="lg">
-          <Stack gap="4">
-            <h1 className="magi-display">Hello, MAGI</h1>
-            <Button variant="primary">Get started</Button>
-            <Card variant="elevated">
-              <Badge variant="accent">v0.1</Badge>
-            </Card>
-          </Stack>
-        </Section>
-      </Container>
-    </div>
-  );
-}
-```
+// 2. <body> needs data-magi-app so foundation styles can scope themselves.
+<body data-magi-app>
+  <div id="root"></div>
+</body>
 
-## Product themes
+// 3. Wrap your app in <ProductTheme> to optionally override the accent.
+import { ProductTheme } from '@magi/design-system';
 
-Override the accent without touching typography, spacing, or surfaces:
-
-```tsx
-<ProductTheme accent="cyan" name="token-factory">
+<ProductTheme accent="green">
   <App />
 </ProductTheme>
 ```
 
+## API
+
+### `<Container>` — centers and constrains max-width
+
+```tsx
+import { Container } from '@magi/design-system';
+
+<Container size="xl">…</Container>
+// size: 'sm' | 'md' | 'lg' | 'xl' | 'wide' | 'full'  (default: 'xl')
+// as: 'div' | 'section' | …                            (default: 'div')
+```
+
+| Size | Max-width |
+| --- | --- |
+| `sm` | 640 px |
+| `md` | 768 px |
+| `lg` | 1024 px |
+| `xl` (default) | 1200 px |
+| `wide` | 1400 px |
+| `full` | 100 % |
+
+### `<Section>` — page-level vertical rhythm
+
+```tsx
+import { Section } from '@magi/design-system';
+
+<Section spacing="lg" surface="default">…</Section>
+// spacing: 'sm' | 'md' | 'lg' | 'xl'              (default: 'lg')
+// surface: 'default' | 'raised' | 'elevated'      (default: 'default')
+// fullWidth: boolean                              (default: false)
+// as: 'section' | 'div' | …
+```
+
+`spacing` maps to `--magi-space-12` / `20` / `32` / `40` (xl jumps to `40` on ≥ 768 px viewports).
+
+### `<Stack>` — flex primitive with semantic gap tokens
+
+```tsx
+import { Stack } from '@magi/design-system';
+
+<Stack direction="column" gap="4" align="stretch">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</Stack>
+// direction: 'column' | 'row'                      (default: 'column')
+// gap:        '0' | '1' | '2' | '3' | '4' | '5' | '6' | '8' | '10' | '12' | '16'  (default: '4')
+// align:      'start' | 'center' | 'end' | 'stretch'                              (default: 'stretch')
+// wrap:       boolean  (default: true)
+```
+
+### `<Button>` — pill action element
+
+```tsx
+import { Button } from '@magi/design-system';
+
+<Button variant="primary" size="md" loading={false}>Save</Button>
+// variant: 'primary' | 'secondary' | 'ghost' | 'danger'  (default: 'primary')
+// size:    'sm' | 'md' | 'lg'                              (default: 'md')
+// loading: boolean                                          (default: false)
+```
+
+All buttons include hover, active, focus-visible, disabled, and loading states. Focus ring uses `--magi-focus-ring`.
+
+### `<Card>` — dark surface
+
+```tsx
+import { Card } from '@magi/design-system';
+
+<Card variant="elevated" padding="md">…</Card>
+// variant: 'default' | 'elevated' | 'interactive'  (default: 'default')
+// padding: 'none' | 'sm' | 'md' | 'lg'             (default: 'md')
+```
+
+`interactive` adds hover (border lift + surface darken) and active (1 px lift) states.
+
+### `<Badge>` — compact status / metadata label
+
+```tsx
+import { Badge } from '@magi/design-system';
+
+<Badge variant="accent" dot>128K context</Badge>
+// variant: 'neutral' | 'accent' | 'success' | 'warning' | 'error'  (default: 'neutral')
+// dot:     boolean                                                  (default: false)
+```
+
+### `<ProductTheme>` — accent override
+
+```tsx
+import { ProductTheme } from '@magi/design-system';
+
+<ProductTheme accent="cyan" name="token-factory">
+  <App />
+</ProductTheme>
+// accent: 'green' | 'cyan' | 'violet' | 'amber' | 'white'  (default: 'green')
+// name:   string                                            (optional product identifier)
+// tokens: Partial<CSSProperties>                            (optional additional overrides)
+```
+
+`<ProductTheme>` renders a `<div data-magi-product="…">` and sets the four accent tokens as inline custom properties on the wrapper. Children inherit the override automatically via CSS variable resolution.
+
+**Allowed in `tokens`**: only overrideable tokens (accent family). Refrain from setting `--magi-space-*`, `--magi-text-primary`, or base surfaces — see spec §10.
+
+#### Preset accent palettes
+
+| Preset | `--magi-accent` | Use |
+| --- | --- | --- |
+| `green` (default) | `#00c853` | MAGI core |
+| `cyan` | `#38bdf8` | Token Factory Initializr |
+| `violet` | `#8b5cf6` | API product |
+| `amber` | `#f59e0b` | Agent product |
+| `white` | `#ffffff` | Monochrome MAGI |
+
+## Typography utility classes
+
+Apply with `className="…"` on any element. They consume the same tokens as the React components.
+
+| Class | What |
+| --- | --- |
+| `.magi-display` | 72 px / semibold / -0.045em / 1.05 leading |
+| `.magi-h1` | 48 px / semibold / -0.03em / 1.15 |
+| `.magi-h2` | 36 px / semibold / -0.03em / 1.15 |
+| `.magi-h3` | 24 px / semibold / -0.01em / 1.3 |
+| `.magi-h4` | 20 px / medium / -0.01em / 1.3 |
+| `.magi-body-lg` | 18 px / normal / 1.625 |
+| `.magi-body` | 16 px / normal / 1.5 |
+| `.magi-body-sm` | 14 px / normal / 1.5 |
+| `.magi-label` | 13 px / medium / 1.3 |
+| `.magi-caption` | 12 px / normal / 1.3 |
+| `.magi-eyebrow` | 14 px / medium / 0.18em tracking / uppercase / accent |
+| `.magi-code` | 14 px mono / surface bg / 1px border |
+
 ## Tokens
 
-All tokens are CSS custom properties on `:root` — read them directly in your styles:
+Every token is a CSS custom property on `:root`. See [`docs/tokens.md`](../../docs/tokens.md) for the complete reference.
 
 ```css
 .my-thing {
@@ -65,35 +176,33 @@ All tokens are CSS custom properties on `:root` — read them directly in your s
 }
 ```
 
-| Group | Examples |
-|---|---|
-| Colors | `--magi-bg-base`, `--magi-text-primary`, `--magi-accent`, `--magi-border` |
-| Typography | `--magi-font-sans`, `--magi-font-size-display`, `--magi-tracking-tightest` |
-| Spacing | `--magi-space-1` … `--magi-space-40` |
-| Radius | `--magi-radius-sm` / `md` / `lg` / `xl` / `2xl` / `full` |
-| Motion | `--magi-duration-fast/normal/slow`, `--magi-ease-standard` |
-| Layout | `--magi-container-xl` (1200px), `--magi-bp-md` (768px) |
+## Accessibility
 
-## Components (Phase 1)
-
-- **Layout**: `Container`, `Section`, `Stack`
-- **UI**: `Button`, `Card`, `Badge`
-- **Theme**: `ProductTheme`
+- All interactive elements have visible `:focus-visible` rings via `--magi-focus-ring`
+- `@media (prefers-reduced-motion: reduce)` collapses all motion durations to `0.01ms`
+- Buttons: `aria-busy` toggles with `loading`; `disabled` + `aria-disabled` covered
+- Color tokens chosen to meet WCAG AA contrast on the dark background
 
 ## Build
 
 ```bash
 npm run build         # vite build (ESM) + tsc declarations
 npm run typecheck     # tsc --noEmit
-npm run dev           # vite watch mode
+npm run dev           # vite build --watch (for showroom live reload)
 ```
 
-## Roadmap
+Output: `dist/index.js` (ESM), `dist/index.d.ts`, `dist/styles.css` (tokens + foundation + components).
 
-- Phase 2: migrate `magi.website` to consume the package
-- Phase 3: migrate `token-factory-initializr/web`
-- Phase 4: extract shared components only when duplication is observed (Nav, Footer, CodeBlock, Tabs, Input)
+## What's NOT included
+
+Per spec §36 / §4:
+
+- Tailwind / Next / Vite / Cloudflare coupling
+- Animation library
+- i18n (consumers handle it themselves)
+- Light theme (package is dark-first per spec §9)
+- Navbar, Footer, Tabs, Input, CodeBlock, ProductHeader — Phase 4, only after duplication is observed in 2+ products
 
 ## License
 
-MIT
+[MIT](../../LICENSE) © 2026 [tokyo3rdhq](https://github.com/tokyo3rdhq)

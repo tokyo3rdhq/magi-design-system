@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  package:
+    name: Build & typecheck @magi/design-system
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install
+        working-directory: packages/design-system
+        run: npm ci
+      - name: Typecheck
+        working-directory: packages/design-system
+        run: npm run typecheck
+      - name: Build
+        working-directory: packages/design-system
+        run: npm run build
+      - name: Verify dist contents
+        working-directory: packages/design-system
+        run: |
+            test -f dist/index.js
+            test -f dist/index.d.ts
+            test -f dist/styles.css
+            echo "dist size:"
+            du -sh dist
+
+  showroom:
+    name: Build @magi/showroom
+    runs-on: ubuntu-latest
+    needs: package
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install package
+        working-directory: packages/design-system
+        run: npm ci
+      - name: Build package
+        working-directory: packages/design-system
+        run: npm run build
+      - name: Install showroom
+        working-directory: apps/showroom
+        run: npm ci
+      - name: Build showroom
+        working-directory: apps/showroom
+        run: npm run build
