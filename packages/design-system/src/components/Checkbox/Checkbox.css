@@ -1,0 +1,75 @@
+/* MAGI Design System — Checkbox
+ *
+ * Native <input type="checkbox"> restyled for the dark theme. Keeps full
+ * form integration + a11y. Scoped under body[data-magi-app] for
+ * specificity parity with foundation reset.
+ */
+
+body[data-magi-app] .magi-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--magi-border);
+  border-radius: var(--magi-radius-sm);
+  background: var(--magi-bg-card);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition:
+    background-color var(--magi-duration-fast) var(--magi-ease-standard),
+    border-color var(--magi-duration-fast) var(--magi-ease-standard);
+  margin: 0;
+  vertical-align: middle;
+}
+
+body[data-magi-app] .magi-checkbox:hover {
+  border-color: var(--magi-border-strong);
+}
+
+body[data-magi-app] .magi-checkbox:checked {
+  background-color: var(--magi-accent);
+  border-color: var(--magi-accent);
+}
+
+body[data-magi-app] .magi-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 5px;
+  height: 9px;
+  border: solid var(--magi-text-inverse);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+body[data-magi-app] .magi-checkbox:focus-visible {
+  outline: none;
+  box-shadow: var(--magi-focus-ring);
+}
+
+body[data-magi-app] .magi-checkbox:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Inline label wrapper used by Checkbox when children are provided. */
+body[data-magi-app] .magi-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--magi-space-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+body[data-magi-app] .magi-checkbox-label--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-magi-app] .magi-checkbox {
+    transition: none;
+  }
+}

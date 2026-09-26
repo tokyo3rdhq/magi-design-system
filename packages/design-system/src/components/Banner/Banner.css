@@ -1,0 +1,40 @@
+/* MAGI Design System — Banner
+ *
+ * Inline notice with left-border accent. Four variants: warning, error,
+ * success, info. Use info for hints, warning for actionable risks, error
+ * for blockers, success for confirmations.
+ */
+
+body[data-magi-app] .magi-banner {
+  background-color: var(--magi-surface);
+  border: 1px solid var(--magi-border);
+  border-left: 2px solid var(--magi-warning);
+  border-radius: var(--magi-radius-md);
+  color: var(--magi-text-primary);
+  padding: var(--magi-space-3) var(--magi-space-4);
+  font-size: 13px;
+  line-height: var(--magi-leading-snug);
+}
+
+body[data-magi-app] .magi-banner--warning {
+  border-left-color: var(--magi-warning);
+}
+
+body[data-magi-app] .magi-banner--error {
+  border-left-color: var(--magi-error);
+}
+
+body[data-magi-app] .magi-banner--success {
+  border-left-color: var(--magi-success);
+}
+
+body[data-magi-app] .magi-banner--info {
+  border-left-color: var(--magi-accent);
+}
+
+/* Inline elements inside a banner (links, code) get the accent color. */
+body[data-magi-app] .magi-banner a {
+  color: var(--magi-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

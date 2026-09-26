@@ -1,6 +1,6 @@
 {
   "name": "@tokyo3rdhq/magi-design-system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Shared visual foundation for the MAGI product family — dark-first, near-monochrome, restrained.",
   "type": "module",
   "main": "./dist/index.js",

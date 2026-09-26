@@ -1,0 +1,73 @@
+/* MAGI Design System — Segmented
+ *
+ * Single-select only. For multi-select, use a Checkbox group instead.
+ */
+
+body[data-magi-app] .magi-segmented {
+  display: inline-flex;
+  border: 1px solid var(--magi-border);
+  border-radius: var(--magi-radius-md);
+  background-color: var(--magi-surface);
+  padding: 2px;
+  gap: 2px;
+}
+
+body[data-magi-app] .magi-segmented-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--magi-text-secondary);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition:
+    background-color var(--magi-duration-fast) var(--magi-ease-standard),
+    color var(--magi-duration-fast) var(--magi-ease-standard);
+}
+
+body[data-magi-app] .magi-segmented-item:hover {
+  color: var(--magi-text-primary);
+}
+
+body[data-magi-app] .magi-segmented-item--active {
+  background-color: var(--magi-surface-elevated);
+  color: var(--magi-text-primary);
+  box-shadow: inset 0 0 0 1px var(--magi-border);
+}
+
+body[data-magi-app] .magi-segmented-item--accent.magi-segmented-item--active {
+  background-color: var(--magi-accent-soft);
+  color: var(--magi-accent);
+  box-shadow: inset 0 0 0 1px var(--magi-accent);
+}
+
+body[data-magi-app] .magi-segmented-item:focus-visible {
+  outline: none;
+  box-shadow: var(--magi-focus-ring);
+}
+
+body[data-magi-app] .magi-segmented-item:disabled,
+body[data-magi-app] .magi-segmented--disabled .magi-segmented-item {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Size variants */
+body[data-magi-app] .magi-segmented--sm .magi-segmented-item {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+body[data-magi-app] .magi-segmented--lg .magi-segmented-item {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-magi-app] .magi-segmented-item {
+    transition: none;
+  }
+}

@@ -1,0 +1,61 @@
+/* MAGI Design System — Input */
+
+body[data-magi-app] .magi-input {
+  width: 100%;
+  appearance: none;
+  background-color: var(--magi-surface);
+  border: 1px solid var(--magi-border);
+  border-radius: var(--magi-radius-md);
+  color: var(--magi-text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color var(--magi-duration-fast) var(--magi-ease-standard);
+}
+
+body[data-magi-app] .magi-input:focus {
+  border-color: var(--magi-accent);
+}
+
+body[data-magi-app] .magi-input::placeholder {
+  color: var(--magi-text-tertiary);
+}
+
+body[data-magi-app] .magi-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+body[data-magi-app] .magi-input:focus-visible {
+  outline: none;
+  box-shadow: var(--magi-focus-ring);
+}
+
+/* Size variants — CSS-only, no JS state. */
+body[data-magi-app] .magi-input--sm {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+body[data-magi-app] .magi-input--md {
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+body[data-magi-app] .magi-input--lg {
+  padding: 14px 16px;
+  font-size: 16px;
+}
+
+/* Invalid state — adds error border + aria-invalid. */
+body[data-magi-app] .magi-input--invalid,
+body[data-magi-app] .magi-input--invalid:focus {
+  border-color: var(--magi-error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-magi-app] .magi-input {
+    transition: none;
+  }
+}

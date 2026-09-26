@@ -6,9 +6,10 @@ import { Buttons } from './pages/Buttons';
 import { Cards } from './pages/Cards';
 import { Badges } from './pages/Badges';
 import { Layout } from './pages/Layout';
+import { Phase4 } from './pages/Phase4';
 import styles from './App.module.css';
 
-type Page = 'tokens' | 'typography' | 'buttons' | 'cards' | 'badges' | 'layout';
+type Page = 'tokens' | 'typography' | 'buttons' | 'cards' | 'badges' | 'layout' | 'phase4';
 
 const PAGES: { id: Page; label: string }[] = [
   { id: 'tokens', label: 'Tokens' },
@@ -17,6 +18,7 @@ const PAGES: { id: Page; label: string }[] = [
   { id: 'cards', label: 'Cards' },
   { id: 'badges', label: 'Badges' },
   { id: 'layout', label: 'Layout' },
+  { id: 'phase4', label: 'Phase 4' },
 ];
 
 const ACCENTS: { id: ProductAccent; label: string }[] = [
@@ -73,6 +75,7 @@ export function App() {
             {page === 'cards' && <Cards />}
             {page === 'badges' && <Badges />}
             {page === 'layout' && <Layout />}
+            {page === 'phase4' && <Phase4 />}
           </Container>
         </main>
 
