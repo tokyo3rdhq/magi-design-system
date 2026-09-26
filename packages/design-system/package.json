@@ -40,6 +40,27 @@
     "typescript": "^5.7.2",
     "vite": "^5.4.11"
   },
-  "keywords": ["magi", "design-system", "ui", "react", "dark-theme"],
-  "license": "MIT"
+  "keywords": [
+    "magi",
+    "design-system",
+    "ui",
+    "react",
+    "dark-theme",
+    "tokens",
+    "components"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/tokyo3rdhq/magi-design-system#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tokyo3rdhq/magi-design-system.git",
+    "directory": "packages/design-system"
+  },
+  "bugs": {
+    "url": "https://github.com/tokyo3rdhq/magi-design-system/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }
