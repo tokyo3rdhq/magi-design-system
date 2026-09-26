@@ -1,0 +1,136 @@
+/* MAGI Design System — Button
+ *
+ * Class names are prefixed with `magi-` to avoid collision with host app
+ * styles. Combinations:
+ *   .magi-button                      base
+ *   .magi-button--primary / secondary / ghost / danger
+ *   .magi-button--sm / md / lg
+ *   .magi-button--loading
+ *   .magi-button--disabled
+ */
+
+body[data-magi-app] .magi-button  {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--magi-space-2);
+  font-family: inherit;
+  font-weight: var(--magi-font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: var(--magi-radius-full);
+  border: 1px solid transparent;
+  transition:
+    background-color var(--magi-duration-normal) var(--magi-ease-standard),
+    color var(--magi-duration-normal) var(--magi-ease-standard),
+    border-color var(--magi-duration-normal) var(--magi-ease-standard),
+    transform var(--magi-duration-fast) var(--magi-ease-standard);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.magi-button:disabled,
+body[data-magi-app] .magi-button[aria-disabled='true']  {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+body[data-magi-app] .magi-button:active:not(:disabled)  {
+  transform: scale(0.98);
+}
+
+body[data-magi-app] .magi-button--primary  {
+  background-color: var(--magi-accent);
+  color: var(--magi-accent-contrast);
+  border-color: var(--magi-accent);
+}
+body[data-magi-app] .magi-button--primary:hover:not(:disabled)  {
+  background-color: var(--magi-accent-hover);
+  border-color: var(--magi-accent-hover);
+}
+
+body[data-magi-app] .magi-button--secondary  {
+  background-color: transparent;
+  color: var(--magi-text-primary);
+  border-color: var(--magi-border-strong);
+}
+body[data-magi-app] .magi-button--secondary:hover:not(:disabled)  {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+body[data-magi-app] .magi-button--ghost  {
+  background-color: transparent;
+  color: var(--magi-text-primary);
+  border-color: transparent;
+}
+body[data-magi-app] .magi-button--ghost:hover:not(:disabled)  {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+body[data-magi-app] .magi-button--danger  {
+  background-color: var(--magi-error);
+  color: var(--magi-text-primary);
+  border-color: var(--magi-error);
+}
+body[data-magi-app] .magi-button--danger:hover:not(:disabled)  {
+  filter: brightness(1.1);
+}
+
+body[data-magi-app] .magi-button--sm  {
+  font-size: var(--magi-font-size-body-sm);
+  padding: var(--magi-space-2) var(--magi-space-4);
+  min-height: 32px;
+}
+
+body[data-magi-app] .magi-button--md  {
+  font-size: var(--magi-font-size-body-sm);
+  padding: var(--magi-space-3) var(--magi-space-6);
+  min-height: 40px;
+}
+
+body[data-magi-app] .magi-button--lg  {
+  font-size: var(--magi-font-size-body);
+  padding: var(--magi-space-4) var(--magi-space-8);
+  min-height: 48px;
+}
+
+body[data-magi-app] .magi-button--loading  {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+body[data-magi-app] .magi-button--loading::after  {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--magi-radius-full);
+  animation: magiButtonSpin 0.8s linear infinite;
+  color: var(--magi-accent-contrast);
+}
+
+.magi-button--primary.magi-button--loading::after,
+body[data-magi-app] .magi-button--danger.magi-button--loading::after  {
+  color: var(--magi-text-primary);
+}
+
+@keyframes magiButtonSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magi-button--loading::after {
+    animation-duration: 1.6s;
+  }
+}

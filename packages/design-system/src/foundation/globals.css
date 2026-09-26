@@ -1,0 +1,88 @@
+/* MAGI Design System — Globals
+ *
+ * Applies body baseline + the dark gradient backdrop + selection + scrollbar.
+ * Mirrors magi.website's exact visual rhythm.
+ */
+
+[data-magi-app] {
+  font-family: var(--magi-font-sans);
+  font-size: var(--magi-font-size-body);
+  font-weight: var(--magi-font-weight-normal);
+  line-height: var(--magi-leading-normal);
+  color: var(--magi-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body[data-magi-app] {
+  background-color: var(--magi-bg-base);
+  background-image:
+    radial-gradient(
+      ellipse 80% 50% at 50% -10%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--magi-bg-raised) 0%, var(--magi-bg-base) 35%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+[data-magi-app] ::selection {
+  background: var(--magi-selection-bg);
+  color: var(--magi-selection-fg);
+}
+
+html:has(body[data-magi-app]) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--magi-scrollbar-thumb) transparent;
+}
+
+body[data-magi-app] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+body[data-magi-app] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body[data-magi-app] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0);
+  border-radius: var(--magi-radius-full);
+  transition: background var(--magi-duration-slow) var(--magi-ease-out);
+}
+
+body[data-magi-app]:hover ::-webkit-scrollbar-thumb,
+body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb {
+  background: var(--magi-scrollbar-thumb);
+}
+
+body[data-magi-app]:hover ::-webkit-scrollbar-thumb:hover,
+body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
+  background: var(--magi-scrollbar-thumb-hover);
+}
+
+[data-magi-app] a {
+  transition: color var(--magi-duration-normal) var(--magi-ease-standard);
+}
+
+[data-magi-app] :focus-visible {
+  outline: none;
+  box-shadow: var(--magi-focus-ring);
+  border-radius: var(--magi-radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-magi-app] *,
+  [data-magi-app] *::before,
+  [data-magi-app] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html:has(body[data-magi-app]) {
+    scroll-behavior: auto;
+  }
+}

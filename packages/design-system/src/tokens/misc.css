@@ -1,0 +1,27 @@
+/* MAGI Design System — Z-index, Container widths, Shadows */
+
+:root {
+  /* Z-index */
+  --magi-z-base: 0;
+  --magi-z-raised: 10;
+  --magi-z-dropdown: 100;
+  --magi-z-sticky: 200;
+  --magi-z-overlay: 300;
+  --magi-z-modal: 400;
+  --magi-z-toast: 500;
+
+  /* Container widths */
+  --magi-container-sm: 640px;
+  --magi-container-md: 768px;
+  --magi-container-lg: 1024px;
+  --magi-container-xl: 1200px;
+  --magi-container-wide: 1400px;
+
+  /* Shadows — restrained, no glow. */
+  --magi-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --magi-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --magi-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  /* Focus ring */
+  --magi-focus-ring: 0 0 0 2px var(--magi-bg-base), 0 0 0 4px var(--magi-accent);
+}

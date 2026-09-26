@@ -1,0 +1,27 @@
+/* MAGI Design System — Section */
+
+body[data-magi-app] .magi-section  {
+  width: 100%;
+  position: relative;
+}
+
+body[data-magi-app] .magi-section--sm  { padding-block: var(--magi-space-12); }
+body[data-magi-app] .magi-section--md  { padding-block: var(--magi-space-20); }
+body[data-magi-app] .magi-section--lg  { padding-block: var(--magi-space-32); }
+body[data-magi-app] .magi-section--xl  { padding-block: var(--magi-space-32); }
+@media (min-width: 768px) {
+  .magi-section--xl { padding-block: var(--magi-space-40); }
+}
+
+body[data-magi-app] .magi-section--default  { background: transparent; }
+body[data-magi-app] .magi-section--raised  {
+  background-color: var(--magi-surface);
+  border-block: 1px solid var(--magi-border);
+}
+body[data-magi-app] .magi-section--elevated  {
+  background-color: var(--magi-surface-elevated);
+}
+
+body[data-magi-app] .magi-section--fullWidth  {
+  padding-inline: 0;
+}

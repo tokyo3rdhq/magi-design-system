@@ -1,0 +1,23 @@
+/* MAGI Design System — Spacing
+ *
+ * Coherent scale. Section spacing (--magi-space-32) drives the 8/12-unit
+ * rhythm seen across magi.website. Do not add arbitrary values.
+ */
+
+:root {
+  --magi-space-0: 0;
+  --magi-space-1: 0.25rem;   /* 4px   */
+  --magi-space-2: 0.5rem;    /* 8px   */
+  --magi-space-3: 0.75rem;   /* 12px  */
+  --magi-space-4: 1rem;      /* 16px  */
+  --magi-space-5: 1.25rem;   /* 20px  */
+  --magi-space-6: 1.5rem;    /* 24px  */
+  --magi-space-8: 2rem;      /* 32px  */
+  --magi-space-10: 2.5rem;   /* 40px  */
+  --magi-space-12: 3rem;     /* 48px  */
+  --magi-space-16: 4rem;     /* 64px  */
+  --magi-space-20: 5rem;     /* 80px  */
+  --magi-space-24: 6rem;     /* 96px  */
+  --magi-space-32: 8rem;     /* 128px — default section padding-y */
+  --magi-space-40: 10rem;    /* 160px — wide section padding-y */
+}

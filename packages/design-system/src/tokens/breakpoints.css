@@ -1,0 +1,14 @@
+/* MAGI Design System — Breakpoints
+ *
+ * Mobile-first. Use min-width queries. Exposed as CSS variables for
+ * documentation purposes; use them in @media queries via the @magi/breakpoints
+ * Sass-style helpers in JS, or just write @media (min-width: 768px) directly.
+ */
+
+:root {
+  --magi-bp-sm: 640px;
+  --magi-bp-md: 768px;
+  --magi-bp-lg: 1024px;
+  --magi-bp-xl: 1280px;
+  --magi-bp-2xl: 1536px;
+}

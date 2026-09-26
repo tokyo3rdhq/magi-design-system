@@ -1,0 +1,10 @@
+/* MAGI Design System — Foundation bundle
+ *
+ * Apply reset, globals, and typography classes. Tokens must be imported
+ * first via tokens.css. All selectors are scoped under [data-magi-app] —
+ * place this attribute on the host's root container to opt-in.
+ */
+
+@import "./reset.css";
+@import "./globals.css";
+@import "./typography.css";

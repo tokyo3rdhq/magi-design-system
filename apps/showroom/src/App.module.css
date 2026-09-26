@@ -1,0 +1,99 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--magi-z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--magi-space-8);
+  padding: var(--magi-space-4) var(--magi-space-8);
+  border-bottom: 1px solid var(--magi-border);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--magi-space-3);
+}
+
+.brandKicker {
+  font-size: var(--magi-font-size-caption);
+  font-weight: var(--magi-font-weight-medium);
+  letter-spacing: var(--magi-tracking-widest);
+  text-transform: uppercase;
+  color: var(--magi-accent);
+}
+
+.brandTitle {
+  font-size: var(--magi-font-size-body);
+  font-weight: var(--magi-font-weight-medium);
+  color: var(--magi-text-primary);
+}
+
+.nav {
+  display: flex;
+  gap: var(--magi-space-2);
+  flex: 1;
+}
+
+.navItem,
+.navActive {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--magi-text-secondary);
+  font-size: var(--magi-font-size-body-sm);
+  font-weight: var(--magi-font-weight-medium);
+  padding: var(--magi-space-2) var(--magi-space-4);
+  border-radius: var(--magi-radius-full);
+  cursor: pointer;
+  transition:
+    color var(--magi-duration-normal) var(--magi-ease-standard),
+    background-color var(--magi-duration-normal) var(--magi-ease-standard),
+    border-color var(--magi-duration-normal) var(--magi-ease-standard);
+}
+
+.navItem:hover {
+  color: var(--magi-text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.navActive {
+  color: var(--magi-text-primary);
+  background: var(--magi-accent-soft);
+  border-color: color-mix(in srgb, var(--magi-accent) 25%, transparent);
+}
+
+.accentPicker {
+  display: flex;
+  align-items: center;
+  gap: var(--magi-space-3);
+  color: var(--magi-text-secondary);
+  font-size: var(--magi-font-size-body-sm);
+}
+
+.accentPicker select {
+  background: var(--magi-surface);
+  color: var(--magi-text-primary);
+  border: 1px solid var(--magi-border);
+  border-radius: var(--magi-radius-md);
+  padding: var(--magi-space-2) var(--magi-space-3);
+  font-family: inherit;
+  font-size: var(--magi-font-size-body-sm);
+}
+
+main {
+  flex: 1;
+  padding-block: var(--magi-space-16);
+}
+
+.footer {
+  border-top: 1px solid var(--magi-border);
+  padding-block: var(--magi-space-8);
+}

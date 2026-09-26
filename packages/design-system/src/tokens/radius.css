@@ -1,0 +1,14 @@
+/* MAGI Design System — Radius
+ *
+ * Minimal scale. Buttons are full pills (999px); cards use 20px; large
+ * surfaces use 28px. Do not introduce other radii without thought.
+ */
+
+:root {
+  --magi-radius-sm: 6px;
+  --magi-radius-md: 10px;
+  --magi-radius-lg: 14px;
+  --magi-radius-xl: 20px;
+  --magi-radius-2xl: 28px;
+  --magi-radius-full: 999px;
+}

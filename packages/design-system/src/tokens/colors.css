@@ -1,0 +1,51 @@
+/* MAGI Design System — Colors
+ *
+ * Dark-first, near-monochrome. The default MAGI accent is green (#00C853),
+ * matching the live magi.website visual language. Products can override the
+ * accent (and accent-muted / accent-soft) via the product theme mechanism —
+ * see ProductTheme.tsx.
+ *
+ * Rule of thumb (§5 spec): product accents must remain subordinate to the
+ * MAGI visual system. Override accent only — never text/border/surface.
+ */
+
+:root {
+  /* Background — fixed gradient stops on body, these are the raw values */
+  --magi-bg-base: #000000;
+  --magi-bg-raised: #1d1d1f;
+  --magi-bg-card: rgba(255, 255, 255, 0.04);
+  --magi-bg-card-hover: rgba(255, 255, 255, 0.06);
+
+  /* Surface (for elevated panels, modals, CodeBlock) */
+  --magi-surface: #0a0a0a;
+  --magi-surface-elevated: #171717;
+
+  /* Text */
+  --magi-text-primary: #f5f5f7;
+  --magi-text-secondary: #86868b;
+  --magi-text-tertiary: #6e6e73;
+  --magi-text-inverse: #050505;
+
+  /* Border */
+  --magi-border: rgba(255, 255, 255, 0.08);
+  --magi-border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Accent — green per MAGI visual identity. Override in product themes. */
+  --magi-accent: #00c853;
+  --magi-accent-hover: #00e676;
+  --magi-accent-soft: rgba(0, 200, 83, 0.08);
+  --magi-accent-contrast: #050505;
+
+  /* Selection */
+  --magi-selection-bg: rgba(0, 200, 83, 0.3);
+  --magi-selection-fg: #f5f5f7;
+
+  /* Semantic — for badges, status, errors. Restrained. */
+  --magi-success: #30d158;
+  --magi-warning: #ff9f0a;
+  --magi-error: #ff453a;
+
+  /* Scrollbar — Apple-style, hidden by default */
+  --magi-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --magi-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+}

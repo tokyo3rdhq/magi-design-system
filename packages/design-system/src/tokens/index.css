@@ -1,0 +1,14 @@
+/* MAGI Design System — Token bundle
+ *
+ * Import this file once at the application root. All design tokens are
+ * exposed as CSS custom properties on :root. Override per-product via
+ * [data-magi-product="<name>"] selectors — see ProductTheme.tsx.
+ */
+
+@import "./colors.css";
+@import "./typography.css";
+@import "./spacing.css";
+@import "./radius.css";
+@import "./motion.css";
+@import "./breakpoints.css";
+@import "./misc.css";

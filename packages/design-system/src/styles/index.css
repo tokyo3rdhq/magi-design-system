@@ -1,0 +1,17 @@
+/* MAGI Design System — Single entry point for consumers
+ *
+ *   import '@magi/design-system/styles.css';
+ *
+ * Imports tokens + foundation + all component styles. Place on the application
+ * root. Components reference CSS variables only — they do not introduce new
+ * global class names.
+ */
+
+@import "../tokens/index.css";
+@import "../foundation/index.css";
+@import "../layout/Container.css";
+@import "../layout/Section.css";
+@import "../layout/Stack.css";
+@import "../components/Button/Button.css";
+@import "../components/Card/Card.css";
+@import "../components/Badge/Badge.css";

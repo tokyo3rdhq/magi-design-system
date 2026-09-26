@@ -1,0 +1,55 @@
+/* MAGI Design System — Badge */
+
+body[data-magi-app] .magi-badge  {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--magi-space-2);
+  font-family: inherit;
+  font-size: var(--magi-font-size-caption);
+  font-weight: var(--magi-font-weight-medium);
+  line-height: 1;
+  padding: var(--magi-space-2) var(--magi-space-3);
+  border-radius: var(--magi-radius-full);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  user-select: none;
+}
+
+body[data-magi-app] .magi-badge__dot  {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--magi-radius-full);
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+body[data-magi-app] .magi-badge--neutral  {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--magi-text-secondary);
+  border-color: var(--magi-border);
+}
+
+body[data-magi-app] .magi-badge--accent  {
+  background: var(--magi-accent-soft);
+  color: var(--magi-accent);
+  border-color: color-mix(in srgb, var(--magi-accent) 25%, transparent);
+}
+
+body[data-magi-app] .magi-badge--success  {
+  background: rgba(48, 209, 88, 0.12);
+  color: var(--magi-success);
+  border-color: rgba(48, 209, 88, 0.3);
+}
+
+body[data-magi-app] .magi-badge--warning  {
+  background: rgba(255, 159, 10, 0.12);
+  color: var(--magi-warning);
+  border-color: rgba(255, 159, 10, 0.3);
+}
+
+body[data-magi-app] .magi-badge--error  {
+  background: rgba(255, 69, 58, 0.12);
+  color: var(--magi-error);
+  border-color: rgba(255, 69, 58, 0.3);
+}

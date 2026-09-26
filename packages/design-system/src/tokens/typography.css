@@ -1,0 +1,57 @@
+/* MAGI Design System — Typography */
+
+:root {
+  --magi-font-sans:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Helvetica Neue",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    Arial,
+    system-ui,
+    sans-serif;
+
+  --magi-font-mono:
+    "SFMono-Regular",
+    "Cascadia Code",
+    "Roboto Mono",
+    Menlo,
+    Consolas,
+    monospace;
+
+  /* Type scale — semantic, not component-specific. */
+  --magi-font-size-display: 4.5rem;   /* 72px  — hero headline */
+  --magi-font-size-h1: 3rem;         /* 48px  — page title */
+  --magi-font-size-h2: 2.25rem;      /* 36px  — section */
+  --magi-font-size-h3: 1.5rem;       /* 24px  */
+  --magi-font-size-h4: 1.25rem;      /* 20px  */
+  --magi-font-size-body-lg: 1.125rem;/* 18px  */
+  --magi-font-size-body: 1rem;       /* 16px  */
+  --magi-font-size-body-sm: 0.875rem;/* 14px  */
+  --magi-font-size-label: 0.8125rem; /* 13px  */
+  --magi-font-size-caption: 0.75rem; /* 12px  */
+  --magi-font-size-code: 0.875rem;   /* 14px  */
+
+  --magi-font-weight-light: 300;
+  --magi-font-weight-normal: 400;
+  --magi-font-weight-medium: 500;
+  --magi-font-weight-semibold: 600;
+  --magi-font-weight-bold: 700;
+
+  /* Tracking — display headlines use tightest; eyebrows use widest. */
+  --magi-tracking-tightest: -0.045em;
+  --magi-tracking-tighter: -0.03em;
+  --magi-tracking-tight: -0.01em;
+  --magi-tracking-normal: 0;
+  --magi-tracking-wide: 0.05em;
+  --magi-tracking-widest: 0.18em;
+
+  /* Line height */
+  --magi-leading-display: 1.05;
+  --magi-leading-tight: 1.15;
+  --magi-leading-snug: 1.3;
+  --magi-leading-normal: 1.5;
+  --magi-leading-relaxed: 1.625;
+}

@@ -1,0 +1,97 @@
+/* MAGI Design System — Typography utilities
+ *
+ * Use these class names directly when not rendering a component, or apply
+ * the same CSS variables inside CSS Modules. Class names are prefixed with
+ * `magi-` to avoid collision with host app styles.
+ */
+
+[data-magi-app] .magi-display {
+  font-size: var(--magi-font-size-display);
+  font-weight: var(--magi-font-weight-semibold);
+  letter-spacing: var(--magi-tracking-tightest);
+  line-height: var(--magi-leading-display);
+  color: var(--magi-text-primary);
+  text-wrap: balance;
+}
+
+[data-magi-app] .magi-h1 {
+  font-size: var(--magi-font-size-h1);
+  font-weight: var(--magi-font-weight-semibold);
+  letter-spacing: var(--magi-tracking-tighter);
+  line-height: var(--magi-leading-tight);
+  color: var(--magi-text-primary);
+}
+
+[data-magi-app] .magi-h2 {
+  font-size: var(--magi-font-size-h2);
+  font-weight: var(--magi-font-weight-semibold);
+  letter-spacing: var(--magi-tracking-tighter);
+  line-height: var(--magi-leading-tight);
+  color: var(--magi-text-primary);
+}
+
+[data-magi-app] .magi-h3 {
+  font-size: var(--magi-font-size-h3);
+  font-weight: var(--magi-font-weight-semibold);
+  letter-spacing: var(--magi-tracking-tight);
+  line-height: var(--magi-leading-snug);
+  color: var(--magi-text-primary);
+}
+
+[data-magi-app] .magi-h4 {
+  font-size: var(--magi-font-size-h4);
+  font-weight: var(--magi-font-weight-medium);
+  letter-spacing: var(--magi-tracking-tight);
+  line-height: var(--magi-leading-snug);
+  color: var(--magi-text-primary);
+}
+
+[data-magi-app] .magi-body-lg {
+  font-size: var(--magi-font-size-body-lg);
+  line-height: var(--magi-leading-relaxed);
+  color: var(--magi-text-secondary);
+}
+
+[data-magi-app] .magi-body {
+  font-size: var(--magi-font-size-body);
+  line-height: var(--magi-leading-normal);
+  color: var(--magi-text-secondary);
+}
+
+[data-magi-app] .magi-body-sm {
+  font-size: var(--magi-font-size-body-sm);
+  line-height: var(--magi-leading-normal);
+  color: var(--magi-text-secondary);
+}
+
+[data-magi-app] .magi-label {
+  font-size: var(--magi-font-size-label);
+  font-weight: var(--magi-font-weight-medium);
+  line-height: var(--magi-leading-snug);
+  color: var(--magi-text-primary);
+}
+
+[data-magi-app] .magi-caption {
+  font-size: var(--magi-font-size-caption);
+  line-height: var(--magi-leading-snug);
+  color: var(--magi-text-tertiary);
+}
+
+[data-magi-app] .magi-eyebrow {
+  font-size: var(--magi-font-size-body-sm);
+  font-weight: var(--magi-font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--magi-tracking-widest);
+  color: var(--magi-accent);
+}
+
+[data-magi-app] .magi-code {
+  font-family: var(--magi-font-mono);
+  font-size: var(--magi-font-size-code);
+  line-height: var(--magi-leading-snug);
+  color: var(--magi-text-primary);
+  background: var(--magi-surface);
+  padding: 0 var(--magi-space-1);
+  border-radius: var(--magi-radius-sm);
+  border: 1px solid var(--magi-border);
+}

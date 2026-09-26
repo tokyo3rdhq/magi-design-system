@@ -1,0 +1,50 @@
+/* MAGI Design System — Reset
+ *
+ * Minimal, modern. Resets only what is unsafe to leave alone — keeps browser
+ * defaults where they are sensible (lists, headings). Scoped under
+ * [data-magi-app] to prevent leakage into host apps.
+ */
+
+[data-magi-app] {
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-magi-app],
+[data-magi-app] *,
+[data-magi-app] *::before,
+[data-magi-app] *::after {
+  box-sizing: inherit;
+}
+
+body[data-magi-app] {
+  margin: 0;
+}
+
+[data-magi-app] img,
+[data-magi-app] svg,
+[data-magi-app] video {
+  max-width: 100%;
+  display: block;
+}
+
+[data-magi-app] button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+[data-magi-app] a {
+  color: inherit;
+  text-decoration: none;
+}
+
+[data-magi-app] input,
+[data-magi-app] textarea,
+[data-magi-app] select {
+  font: inherit;
+  color: inherit;
+}
