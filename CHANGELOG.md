@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] — 2026-09-27
+
+### Added
+
+- **`scripts/check-accent-tokens.mjs`** — CI check that cross-validates
+  `ACCENT_PRESETS` in `theme.tsx` against the `data-magi-accent="<name>"`
+  rules in `foundation/globals.css`. If a contributor adds or changes an
+  accent preset in one file but forgets the other, the check fails
+  with the exact hex mismatch.
+
+### Changed
+
+- **`scripts/check-tokens.mjs`** now also scans `.tsx` and `.ts` files
+  for hex / rgb / rgba literals (was `.css` only). Catches the case
+  where a contributor adds `style={{ color: '#fff' }}` inline instead
+  of using a token. `theme.tsx` (the accent preset source of truth)
+  and `foundation/globals.css` (the accent preset CSS rules) are
+  allowlisted — their hex values are legitimate.
+
+### Fixed
+
+- **Bug in the version 0.4.0 release**: `scripts/check-accent-tokens.mjs`
+  was wired to the CI workflow but had a bug that made it always pass —
+  the comparison loop iterated over `['--magi-accent', ...]` while the
+  parsed entries stored keys without the `--` prefix. The script now
+  compares `magi-accent` / `magi-accent-hover` directly. Verified by
+  injecting a deliberate mismatch (`#7dd3fc` → `#7dd3ff`) — script now
+  fails as expected.
+
 ## [0.4.0] — 2026-09-27
 
 ### Changed (breaking)

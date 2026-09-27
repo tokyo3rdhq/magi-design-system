@@ -24,6 +24,8 @@ jobs:
         run: npm ci
       - name: Token literal check
         run: node scripts/check-tokens.mjs
+      - name: Accent source-of-truth check
+        run: node scripts/check-accent-tokens.mjs
       - name: Typecheck
         working-directory: packages/design-system
         run: npm run typecheck

@@ -2,13 +2,15 @@
 /**
  * Token literal CI check.
  *
- * Enforces that component CSS only references design-system tokens (var(--magi-*)),
- * not raw color/spacing literals. Tokens are the source of truth — design
- * language drift is caught here before consumers see it.
+ * Enforces that component CSS / TSX / TS only references design-system
+ * tokens (var(--magi-*)), not raw color/spacing literals. Tokens are the
+ * source of truth — design language drift is caught here before consumers
+ * see it.
  *
  * MUST NOT violations fail the build:
- *   - Hex colors (#abc, #abcdef, #abcdef00) outside tokens/
- *   - rgb() / rgba() outside tokens/
+ *   - Hex colors (#abc, #abcdef, #abcdef00) outside tokens/ or allowlist
+ *   - rgb() / rgba() outside tokens/ or allowlist
+ *   - Hex / rgb / rgba literals in TSX / TS files outside the allowlist
  *
  * SHOULD violations print a warning (do not fail):
  *   - Hardcoded font sizes (14px, 1rem) outside tokens/
@@ -18,7 +20,7 @@
  *   - 1px borders
  *   - 2px outline offsets
  *   - translate() transforms
- *   - Line-height ratios (1.4, 1.5, etc. — used in component-level overrides)
+ *   - Line-height ratios (1.4, 1.5, etc.)
  *
  * Usage: node scripts/check-tokens.mjs
  */
@@ -30,16 +32,20 @@ const ROOT = 'packages/design-system/src';
 const TOKENS_DIR = 'tokens';
 
 /**
- * Files / selectors exempt from literal checks. The exemption is narrow
- * and explicit; do not extend without justification.
+ * Files where literals are allowed without justification. Paths are relative
+ * to ROOT (so `foundation/globals.css`, not the full path). The exemption is
+ * narrow and explicit; do not extend without justification.
  *
- *   - Foundation globals' data-magi-accent preset block: defines accent
- *     presets as raw hex values (since the tokens themselves can't
- *     reference tokens).
+ *   - foundation/globals.css: contains the data-magi-accent preset block
+ *     (raw hex values for accent presets).
+ *   - theme.tsx: ACCENT_PRESETS is the *source of truth* for accent values.
+ *     The corresponding CSS rules in globals.css are derived from this
+ *     object — the cross-check is enforced by scripts/check-accent-tokens.mjs.
  */
-const SELECTOR_ALLOWLIST = [
-  { file: 'foundation/globals.css', pattern: /data-magi-accent="/ },
-];
+const FILE_ALLOWLIST = new Set([
+  'foundation/globals.css',
+  'theme.tsx',
+]);
 
 const HEX_PATTERN = /(?<![\w-])#[0-9a-fA-F]{3,8}(?![0-9a-fA-F])/g;
 const RGB_PATTERN = /\brgba?\s*\(/g;
@@ -48,7 +54,7 @@ const PX_FONT_PATTERN = /font-size\s*:\s*(\d+)\s*px/g;
 const URL_PATTERN = /url\s*\(\s*['"]?[^'"\)]+['"]?\s*\)/g;
 
 /**
- * Recursively walk a directory and yield .css files.
+ * Recursively walk a directory and yield source files (.css, .ts, .tsx).
  */
 function* walk(dir) {
   let entries;
@@ -67,7 +73,11 @@ function* walk(dir) {
     }
     if (stat.isDirectory()) {
       yield* walk(full);
-    } else if (entry.endsWith('.css')) {
+    } else if (
+      entry.endsWith('.css') ||
+      entry.endsWith('.ts') ||
+      entry.endsWith('.tsx')
+    ) {
       yield full;
     }
   }
@@ -76,8 +86,18 @@ function* walk(dir) {
 /**
  * Strip CSS comments so we don't false-positive on commented-out literals.
  */
-function stripComments(src) {
-  return src.replace(/\/\*[\s\S]*?\*\//g, (match) => match.replace(/[^\n]/g, ' '));
+function stripCssComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '));
+}
+
+/**
+ * Strip JS/TS block + line comments. String literals are preserved (hex
+ * inside strings is still a literal we want to flag).
+ */
+function stripJsComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+    .replace(/(^|[^:])\/\/[^\n]*/g, (m, p1) => p1 + m.slice(p1.length).replace(/[^\n]/g, ' '));
 }
 
 /**
@@ -93,6 +113,10 @@ const warnings = [];
 for (const file of walk(ROOT)) {
   const rel = file;
   const isTokenFile = rel.includes(`/${TOKENS_DIR}/`);
+  const relFromRoot = rel.startsWith(`${ROOT}/`) ? rel.slice(ROOT.length + 1) : rel;
+  const isAllowedFile = FILE_ALLOWLIST.has(relFromRoot);
+
+  if (isTokenFile || isAllowedFile) continue;
 
   let raw;
   try {
@@ -101,32 +125,13 @@ for (const file of walk(ROOT)) {
     continue;
   }
 
-  const lines = stripUrls(stripComments(raw)).split('\n');
-  const fileAllowlist = SELECTOR_ALLOWLIST.filter((a) => rel.includes(a.file));
-
-  // Track "are we inside an allowlisted block?" — open on the selector line,
-  // close on the matching `}` (using a simple brace counter).
-  let inAllowBlock = false;
-  let allowBlockDepth = 0;
+  const isCss = rel.endsWith('.css');
+  const stripped = stripUrls(
+    isCss ? stripCssComments(raw) : stripJsComments(raw),
+  );
+  const lines = stripped.split('\n');
 
   lines.forEach((line, i) => {
-    if (isTokenFile) return; // tokens/* is the allowlist
-
-    // Detect opening of an allowlisted selector block.
-    if (!inAllowBlock && fileAllowlist.some((a) => a.pattern.test(line))) {
-      inAllowBlock = true;
-      allowBlockDepth = (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
-      if (allowBlockDepth <= 0) inAllowBlock = false;
-      return;
-    }
-
-    if (inAllowBlock) {
-      allowBlockDepth += (line.match(/\{/g) || []).length;
-      allowBlockDepth -= (line.match(/\}/g) || []).length;
-      if (allowBlockDepth <= 0) inAllowBlock = false;
-      return;
-    }
-
     let m;
 
     HEX_PATTERN.lastIndex = 0;
@@ -153,7 +158,6 @@ for (const file of walk(ROOT)) {
 
     DURATION_PATTERN.lastIndex = 0;
     while ((m = DURATION_PATTERN.exec(line)) !== null) {
-      // Allow short delays under 10ms (used for things like 1ms / 0.01ms reduced-motion).
       const ms = Number(m[1]);
       if (ms < 10) continue;
       warnings.push({
