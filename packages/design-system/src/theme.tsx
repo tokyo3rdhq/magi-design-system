@@ -1,7 +1,7 @@
 import {
   createContext,
   useContext,
-  useEffect,
+  useInsertionEffect,
   useMemo,
   type ReactNode,
 } from 'react';
@@ -87,15 +87,17 @@ export interface ProductThemeProps {
  *     <Button variant="primary">Delete</Button>
  *   </div>
  *
- * The shorthand `data-magi-accent="<name>"` maps to the matching accent
- * preset (green / cyan / violet / amber / white) or semantic variant
- * (danger / warning / success) — see foundation/globals.css.
+ * SSR: useInsertionEffect does not run on the server, so on SSR pages
+ * the default theme applies during the initial render. For SSR theming
+ * without FOUC, set `data-magi-accent="<name>"` on `<html>` in your
+ * server-side layout — the CSS rule in globals.css picks it up.
  *
- * Note: the initial render uses the default accent (green). The accent
- * variables are applied on the next effect tick. There is no FOUC if the
- * default matches the consumer's `<ProductTheme accent>`. On accent
- * transitions the variables are overwritten directly (no temporary unset
- * to default), so there is no accent flash on change.
+ * Nested <ProductTheme>: each instance snapshots the previous accent
+ * values on mount and restores them on unmount, so a child mounting
+ * and unmounting leaves the outer theme intact. Note that CSS variables
+ * are global (set on `<html>`), so siblings outside a child subtree
+ * still see the child's accent — use `<div data-magi-accent="...">`
+ * for true CSS subtree scope.
  *
  * @example
  *   function App() {
@@ -113,10 +115,21 @@ export function ProductTheme({
 }: ProductThemeProps) {
   const value = useMemo(() => ({ accent }), [accent]);
 
-  useEffect(() => {
+  useInsertionEffect(() => {
     if (typeof document === 'undefined') return;
     const tokens = ACCENT_PRESETS[accent];
     const root = document.documentElement;
+
+    // Snapshot previous values so the cleanup can restore them on unmount
+    // or accent change. This makes nested themes work correctly: the inner
+    // theme restores the outer theme's values when it unmounts.
+    const prev = {
+      accent: root.style.getPropertyValue('--magi-accent'),
+      accentHover: root.style.getPropertyValue('--magi-accent-hover'),
+      accentSoft: root.style.getPropertyValue('--magi-accent-soft'),
+      accentContrast: root.style.getPropertyValue('--magi-accent-contrast'),
+      product: root.dataset.magiProduct,
+    };
 
     root.style.setProperty('--magi-accent', tokens['--magi-accent']);
     root.style.setProperty('--magi-accent-hover', tokens['--magi-accent-hover']);
@@ -128,6 +141,23 @@ export function ProductTheme({
     } else {
       delete root.dataset.magiProduct;
     }
+
+    return () => {
+      const restoreOrRemove = (prop: string, prevValue: string) => {
+        if (prevValue) root.style.setProperty(prop, prevValue);
+        else root.style.removeProperty(prop);
+      };
+      restoreOrRemove('--magi-accent', prev.accent);
+      restoreOrRemove('--magi-accent-hover', prev.accentHover);
+      restoreOrRemove('--magi-accent-soft', prev.accentSoft);
+      restoreOrRemove('--magi-accent-contrast', prev.accentContrast);
+
+      if (prev.product !== undefined) {
+        root.dataset.magiProduct = prev.product;
+      } else if (root.dataset.magiProduct !== undefined) {
+        delete root.dataset.magiProduct;
+      }
+    };
   }, [accent, name]);
 
   return (

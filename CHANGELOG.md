@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] — 2026-09-27
+
+### Fixed
+
+- **`<ProductTheme>` useEffect had no cleanup** — accent CSS variables
+  set on `<html>` were never restored on unmount or accent change.
+  This caused accent leaks: a nested `<ProductTheme>` unmounting left
+  its parent's accent set, and a route transition from a themed page
+  to an unthemed one kept the previous theme. **Now snapshots the
+  previous values on mount and restores them on cleanup.** Nested
+  themes work correctly: outer mounts (snapshots default), inner mounts
+  (snapshots outer, sets its own), inner unmounts (restores outer),
+  outer unmounts (restores default).
+
+- **`<ProductTheme>` used `useEffect`** — ran **after** first paint,
+  causing a 1-frame flash of the default accent on every accent
+  transition. **Switched to `useInsertionEffect`** — runs synchronously
+  after DOM mutations, before paint. The accent is applied to the first
+  paint, not the second. (Note: for SSR pages, the initial paint is
+  still default until hydration. Consumers wanting zero FOUC on SSR
+  should set `data-magi-accent="<name>"` on `<html>` in their
+  server-side layout — the CSS rule in `foundation/globals.css` picks
+  it up before paint.)
+
+- **`<FormField>` `cloneElement` overwrote consumer's
+  `aria-describedby` and `aria-labelledby`.** If a consumer passed
+  `aria-describedby="external-help"` to the child control, FormField
+  silently replaced it with its own helper ID — the external help text
+  became unreachable for screen readers. **Now merges IDs space-separated**
+  per WAI-ARIA spec. Consumer-supplied IDs come first; FormField's
+  helper/error IDs are appended. Consumer's `aria-invalid` is preserved
+  unless FormField has an `error` (in which case `aria-invalid="true"`
+  wins).
+
+[0.3.1]: https://github.com/tokyo3rdhq/magi-design-system/releases/tag/v0.3.1
+
 ## [0.3.0] — 2026-09-27
 
 ### Added

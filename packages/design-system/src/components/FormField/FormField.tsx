@@ -33,12 +33,30 @@ export interface FormFieldProps {
 }
 
 /**
+ * Merge ARIA id-list attributes (space-separated per WAI-ARIA spec).
+ * Empty / null / undefined entries are dropped.
+ */
+function mergeIds(
+  ...ids: Array<string | undefined | null>
+): string | undefined {
+  const filtered = ids.filter(
+    (id): id is string => typeof id === 'string' && id.length > 0,
+  );
+  return filtered.length > 0 ? filtered.join(' ') : undefined;
+}
+
+/**
  * FormField — label + control + optional helper/error wrapper.
  *
  * Wires `aria-describedby` to the helper/error span and `aria-labelledby`
  * to the label, by cloning the single child element with the appropriate
  * ARIA attributes. Sets `aria-invalid="true"` on the child when `error` is
  * present.
+ *
+ * **Consumer-supplied ARIA attributes are preserved (merged, not overwritten).**
+ * For example, if the consumer passes `aria-describedby="external-help"`,
+ * the resulting attribute is `"external-help <generated-helper-id>"`.
+ * This matches the WAI-ARIA spec for multi-value id lists.
  *
  * The child MUST be a single focusable element (Input, Select, native
  * `<input>`, Segmented, etc.). If `children` is not a valid React element,
@@ -73,9 +91,20 @@ export function FormField({
     const existing = children.props;
     enhanced = cloneElement(children, {
       id: existing.id ?? fieldId,
-      'aria-describedby': hasMessage ? describedById : undefined,
-      'aria-invalid': error ? true : undefined,
-      'aria-labelledby': labelId,
+      // MERGE with consumer-supplied IDs. The order is: consumer's first,
+      // then FormField's. This matches ARIA's "consumer-supplied IDs win
+      // for ordering" intuition — FormField's helpers are appended.
+      'aria-describedby': mergeIds(
+        existing['aria-describedby'],
+        hasMessage ? describedById : undefined,
+      ),
+      'aria-labelledby': mergeIds(
+        existing['aria-labelledby'],
+        labelId,
+      ),
+      // aria-invalid: when FormField has an error, force true (overriding
+      // consumer). When no error, preserve consumer's setting.
+      'aria-invalid': error ? true : (existing['aria-invalid'] ?? undefined),
     });
   }
 
