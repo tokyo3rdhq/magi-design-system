@@ -9,6 +9,7 @@
  * MAGI visual system. Override accent only — never text/border/surface.
  */
 
+@layer magi.tokens {
 :root {
   /* Background — fixed gradient stops on body, these are the raw values */
   --magi-bg-base: #000000;
@@ -48,4 +49,5 @@
   /* Scrollbar — Apple-style, hidden by default */
   --magi-scrollbar-thumb: rgba(255, 255, 255, 0.18);
   --magi-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+}
 }

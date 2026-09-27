@@ -1,8 +1,8 @@
-/* MAGI Design System — Token bundle
+/* MAGI Design System — Tokens bundle.
  *
- * Import this file once at the application root. All design tokens are
- * exposed as CSS custom properties on :root. Override per-product via
- * [data-magi-product="<name>"] selectors — see ProductTheme.tsx.
+ * Each token file wraps its rules in `@layer magi.tokens { ... }` so
+ * consumers' unlayered styles always win on the cascade. This index
+ * file just aggregates the imports.
  */
 
 @import "./colors.css";

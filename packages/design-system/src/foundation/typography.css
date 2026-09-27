@@ -5,6 +5,7 @@
  * `magi-` to avoid collision with host app styles.
  */
 
+@layer magi.foundation {
 [data-magi-app] .magi-display {
   font-size: var(--magi-font-size-display);
   font-weight: var(--magi-font-weight-semibold);
@@ -94,4 +95,5 @@
   padding: 0 var(--magi-space-1);
   border-radius: var(--magi-radius-sm);
   border: 1px solid var(--magi-border);
+}
 }

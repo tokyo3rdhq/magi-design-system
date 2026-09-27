@@ -1,5 +1,6 @@
 /* MAGI Design System — Input */
 
+@layer magi.components {
 body[data-magi-app] .magi-input {
   width: 100%;
   appearance: none;
@@ -8,7 +9,7 @@ body[data-magi-app] .magi-input {
   border-radius: var(--magi-radius-md);
   color: var(--magi-text-primary);
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--magi-font-size-body-sm);
   padding: 10px 12px;
   outline: none;
   transition: border-color var(--magi-duration-fast) var(--magi-ease-standard);
@@ -35,17 +36,17 @@ body[data-magi-app] .magi-input:focus-visible {
 /* Size variants — CSS-only, no JS state. */
 body[data-magi-app] .magi-input--sm {
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: var(--magi-font-size-label);
 }
 
 body[data-magi-app] .magi-input--md {
   padding: 10px 12px;
-  font-size: 14px;
+  font-size: var(--magi-font-size-body-sm);
 }
 
 body[data-magi-app] .magi-input--lg {
   padding: 14px 16px;
-  font-size: 16px;
+  font-size: var(--magi-font-size-body);
 }
 
 /* Invalid state — adds error border + aria-invalid. */
@@ -58,4 +59,5 @@ body[data-magi-app] .magi-input--invalid:focus {
   body[data-magi-app] .magi-input {
     transition: none;
   }
+}
 }

@@ -1,5 +1,6 @@
 /* MAGI Design System — Motion */
 
+@layer magi.tokens {
 :root {
   --magi-duration-fast: 120ms;
   --magi-duration-normal: 200ms;
@@ -8,6 +9,7 @@
   --magi-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --magi-ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
   --magi-ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
 }
 
 @media (prefers-reduced-motion: reduce) {

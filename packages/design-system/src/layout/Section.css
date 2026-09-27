@@ -1,5 +1,6 @@
 /* MAGI Design System — Section */
 
+@layer magi.layout {
 body[data-magi-app] .magi-section  {
   width: 100%;
   position: relative;
@@ -24,4 +25,5 @@ body[data-magi-app] .magi-section--elevated  {
 
 body[data-magi-app] .magi-section--fullWidth  {
   padding-inline: 0;
+}
 }

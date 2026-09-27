@@ -2,8 +2,14 @@
  *
  * Applies body baseline + the dark gradient backdrop + selection + scrollbar.
  * Mirrors magi.website's exact visual rhythm.
+ *
+ * `data-magi-accent="<name>"` is a CSS-only accent override for subtrees
+ * (complement to <ProductTheme> for app-level). Maps to accent presets
+ * (green / cyan / violet / amber / white) or semantic colors (danger /
+ * warning / success).
  */
 
+@layer magi.foundation {
 [data-magi-app] {
   font-family: var(--magi-font-sans);
   font-size: var(--magi-font-size-body);
@@ -20,7 +26,7 @@ body[data-magi-app] {
   background-image:
     radial-gradient(
       ellipse 80% 50% at 50% -10%,
-      rgba(255, 255, 255, 0.06),
+      color-mix(in srgb, var(--magi-text-primary) 6%, transparent),
       transparent 60%
     ),
     linear-gradient(180deg, var(--magi-bg-raised) 0%, var(--magi-bg-base) 35%);
@@ -48,7 +54,7 @@ body[data-magi-app] ::-webkit-scrollbar-track {
 }
 
 body[data-magi-app] ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0);
+  background: color-mix(in srgb, var(--magi-text-primary) 0%, transparent);
   border-radius: var(--magi-radius-full);
   transition: background var(--magi-duration-slow) var(--magi-ease-out);
 }
@@ -73,6 +79,39 @@ body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
   border-radius: var(--magi-radius-sm);
 }
 
+/* Accent override via attribute — for subtrees that need a different
+ * accent from the app-level ProductTheme. Component CSS reads --magi-accent
+ * and --magi-accent-hover, which cascade through normally. */
+[data-magi-app] [data-magi-accent="green"] {
+  --magi-accent: #00c853;
+  --magi-accent-hover: #00e676;
+}
+[data-magi-app] [data-magi-accent="cyan"] {
+  --magi-accent: #38bdf8;
+  --magi-accent-hover: #7dd3fc;
+}
+[data-magi-app] [data-magi-accent="violet"] {
+  --magi-accent: #8b5cf6;
+  --magi-accent-hover: #a78bfa;
+}
+[data-magi-app] [data-magi-accent="amber"] {
+  --magi-accent: #f59e0b;
+  --magi-accent-hover: #fbbf24;
+}
+[data-magi-app] [data-magi-accent="white"] {
+  --magi-accent: #ffffff;
+  --magi-accent-hover: #f5f5f7;
+}
+[data-magi-app] [data-magi-accent="danger"] {
+  --magi-accent: var(--magi-error);
+}
+[data-magi-app] [data-magi-accent="warning"] {
+  --magi-accent: var(--magi-warning);
+}
+[data-magi-app] [data-magi-accent="success"] {
+  --magi-accent: var(--magi-success);
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-magi-app] *,
   [data-magi-app] *::before,
@@ -85,4 +124,5 @@ body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
   html:has(body[data-magi-app]) {
     scroll-behavior: auto;
   }
+}
 }

@@ -1,5 +1,6 @@
 /* MAGI Design System — Typography */
 
+@layer magi.tokens {
 :root {
   --magi-font-sans:
     Inter,
@@ -54,4 +55,5 @@
   --magi-leading-snug: 1.3;
   --magi-leading-normal: 1.5;
   --magi-leading-relaxed: 1.625;
+}
 }

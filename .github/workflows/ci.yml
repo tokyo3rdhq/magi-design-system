@@ -22,6 +22,8 @@ jobs:
       - name: Install
         working-directory: packages/design-system
         run: npm ci
+      - name: Token literal check
+        run: node scripts/check-tokens.mjs
       - name: Typecheck
         working-directory: packages/design-system
         run: npm run typecheck
@@ -57,6 +59,9 @@ jobs:
       - name: Install showroom
         working-directory: apps/showroom
         run: npm ci
+      - name: Typecheck showroom
+        working-directory: apps/showroom
+        run: npx tsc --noEmit
       - name: Build showroom
         working-directory: apps/showroom
         run: npm run build

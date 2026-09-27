@@ -1,23 +1,10 @@
-/**
- * ProductTheme — allows a product to override the accent (and accent-muted
- * / accent-soft / accent-contrast) without touching typography, spacing, or
- * base surfaces. Implemented as CSS custom properties on a scoped selector;
- * components consume the variables and re-render automatically.
- *
- * Usage:
- *   <ProductTheme accent="cyan" name="token-factory">
- *     <App />
- *   </ProductTheme>
- *
- * Or set them manually in CSS:
- *   [data-magi-product='token-factory'] {
- *     --magi-accent: #38bdf8;
- *     --magi-accent-hover: #7dd3fc;
- *     --magi-accent-soft: rgba(56, 189, 248, 0.08);
- *   }
- */
-
-import type { CSSProperties, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  type ReactNode,
+} from 'react';
 
 export type ProductAccent =
   | 'green'   // default — MAGI core
@@ -66,34 +53,86 @@ const ACCENT_PRESETS: Record<ProductAccent, AccentTokens> = {
   },
 };
 
+interface ProductThemeContextValue {
+  accent: ProductAccent;
+}
+
+const ProductThemeContext = createContext<ProductThemeContextValue | null>(null);
+
+/**
+ * Hook for any JS-aware consumer that needs the current accent.
+ * Returns `{ accent: 'green' }` (the default) when used outside a `<ProductTheme>`.
+ */
+export function useProductTheme(): ProductThemeContextValue {
+  const ctx = useContext(ProductThemeContext);
+  return ctx ?? { accent: 'green' };
+}
+
 export interface ProductThemeProps {
   /** Accent preset. Default: `green`. */
   accent?: ProductAccent;
-  /** Optional product identifier. Sets `data-magi-product="<name>"`. */
+  /** Optional product identifier. Sets `data-magi-product="<name>"` on `<html>`. */
   name?: string;
-  /** Override individual token values; merged with the preset. */
-  tokens?: Partial<CSSProperties>;
   children?: ReactNode;
 }
 
 /**
  * ProductTheme — overrides the MAGI accent for a subtree.
  *
- * Renders a `<div>` with `data-magi-product` and the accent tokens applied as
- * inline custom properties. All children consume the new accent automatically.
+ * Renders only a React context provider (no DOM wrapper). On mount, sets
+ * the four accent CSS variables on `<html>` so all descendants inherit via
+ * CSS cascade. For scoped overrides within a subtree, consumers can use:
+ *
+ *   <div data-magi-accent="danger">
+ *     <Button variant="primary">Delete</Button>
+ *   </div>
+ *
+ * The shorthand `data-magi-accent="<name>"` maps to the matching accent
+ * preset (green / cyan / violet / amber / white) or semantic variant
+ * (danger / warning / success) — see foundation/globals.css.
+ *
+ * Note: the initial render uses the default accent (green). The accent
+ * variables are applied on the next effect tick. There is no FOUC if the
+ * default matches the consumer's `<ProductTheme accent>`. On accent
+ * transitions the variables are overwritten directly (no temporary unset
+ * to default), so there is no accent flash on change.
+ *
+ * @example
+ *   function App() {
+ *     return (
+ *       <ProductTheme accent="cyan" name="token-factory">
+ *         <Routes />
+ *       </ProductTheme>
+ *     );
+ *   }
  */
 export function ProductTheme({
   accent = 'green',
   name,
-  tokens,
   children,
 }: ProductThemeProps) {
-  const preset = ACCENT_PRESETS[accent];
-  const style: CSSProperties = { ...preset, ...tokens };
+  const value = useMemo(() => ({ accent }), [accent]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const tokens = ACCENT_PRESETS[accent];
+    const root = document.documentElement;
+
+    root.style.setProperty('--magi-accent', tokens['--magi-accent']);
+    root.style.setProperty('--magi-accent-hover', tokens['--magi-accent-hover']);
+    root.style.setProperty('--magi-accent-soft', tokens['--magi-accent-soft']);
+    root.style.setProperty('--magi-accent-contrast', tokens['--magi-accent-contrast']);
+
+    if (name) {
+      root.dataset.magiProduct = name;
+    } else {
+      delete root.dataset.magiProduct;
+    }
+  }, [accent, name]);
 
   return (
-    <div data-magi-product={name} style={style}>
+    <ProductThemeContext.Provider value={value}>
       {children}
-    </div>
+    </ProductThemeContext.Provider>
   );
 }

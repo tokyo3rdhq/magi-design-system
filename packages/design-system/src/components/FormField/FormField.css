@@ -1,5 +1,6 @@
 /* MAGI Design System — FormField */
 
+@layer magi.components {
 body[data-magi-app] .magi-field {
   display: flex;
   flex-direction: column;
@@ -8,7 +9,7 @@ body[data-magi-app] .magi-field {
 }
 
 body[data-magi-app] .magi-field-label {
-  font-size: 11px;
+  font-size: var(--magi-font-size-label);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--magi-text-tertiary);
@@ -22,4 +23,5 @@ body[data-magi-app] .magi-field-helper {
 
 body[data-magi-app] .magi-field-helper--error {
   color: var(--magi-error);
+}
 }

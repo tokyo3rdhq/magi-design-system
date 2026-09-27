@@ -4,6 +4,7 @@
  * rhythm seen across magi.website. Do not add arbitrary values.
  */
 
+@layer magi.tokens {
 :root {
   --magi-space-0: 0;
   --magi-space-1: 0.25rem;   /* 4px   */
@@ -20,4 +21,5 @@
   --magi-space-24: 6rem;     /* 96px  */
   --magi-space-32: 8rem;     /* 128px — default section padding-y */
   --magi-space-40: 10rem;    /* 160px — wide section padding-y */
+}
 }

@@ -3,6 +3,7 @@
  * Single-select only. For multi-select, use a Checkbox group instead.
  */
 
+@layer magi.components {
 body[data-magi-app] .magi-segmented {
   display: inline-flex;
   border: 1px solid var(--magi-border);
@@ -17,7 +18,7 @@ body[data-magi-app] .magi-segmented-item {
   border: 0;
   background: transparent;
   color: var(--magi-text-secondary);
-  font-size: 13px;
+  font-size: var(--magi-font-size-label);
   font-family: inherit;
   font-weight: 500;
   padding: 6px 12px;
@@ -58,16 +59,17 @@ body[data-magi-app] .magi-segmented--disabled .magi-segmented-item {
 /* Size variants */
 body[data-magi-app] .magi-segmented--sm .magi-segmented-item {
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: var(--magi-font-size-caption);
 }
 
 body[data-magi-app] .magi-segmented--lg .magi-segmented-item {
   padding: 8px 14px;
-  font-size: 14px;
+  font-size: var(--magi-font-size-body-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {
   body[data-magi-app] .magi-segmented-item {
     transition: none;
   }
+}
 }

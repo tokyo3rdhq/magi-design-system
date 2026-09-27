@@ -4,6 +4,7 @@
  * surfaces use 28px. Do not introduce other radii without thought.
  */
 
+@layer magi.tokens {
 :root {
   --magi-radius-sm: 6px;
   --magi-radius-md: 10px;
@@ -11,4 +12,5 @@
   --magi-radius-xl: 20px;
   --magi-radius-2xl: 28px;
   --magi-radius-full: 999px;
+}
 }

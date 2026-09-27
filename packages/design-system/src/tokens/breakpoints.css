@@ -5,10 +5,12 @@
  * Sass-style helpers in JS, or just write @media (min-width: 768px) directly.
  */
 
+@layer magi.tokens {
 :root {
   --magi-bp-sm: 640px;
   --magi-bp-md: 768px;
   --magi-bp-lg: 1024px;
   --magi-bp-xl: 1280px;
   --magi-bp-2xl: 1536px;
+}
 }

@@ -5,6 +5,7 @@
  * [data-magi-app] to prevent leakage into host apps.
  */
 
+@layer magi.reset {
 [data-magi-app] {
   box-sizing: border-box;
   -webkit-text-size-adjust: 100%;
@@ -47,4 +48,5 @@ body[data-magi-app] {
 [data-magi-app] select {
   font: inherit;
   color: inherit;
+}
 }

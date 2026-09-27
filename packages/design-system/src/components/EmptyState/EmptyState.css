@@ -5,6 +5,7 @@
  * - Structured: title + description + optional action
  */
 
+@layer magi.components {
 body[data-magi-app] .magi-empty {
   padding: var(--magi-space-7);
   text-align: center;
@@ -12,7 +13,7 @@ body[data-magi-app] .magi-empty {
   background-color: var(--magi-surface);
   border: 1px dashed var(--magi-border);
   border-radius: var(--magi-radius-lg);
-  font-size: 14px;
+  font-size: var(--magi-font-size-body-sm);
   line-height: var(--magi-leading-snug);
 }
 
@@ -45,4 +46,5 @@ body[data-magi-app] .magi-empty a {
   color: var(--magi-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
 }

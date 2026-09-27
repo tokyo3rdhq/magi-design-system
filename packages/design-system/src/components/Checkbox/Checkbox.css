@@ -5,6 +5,7 @@
  * specificity parity with foundation reset.
  */
 
+@layer magi.components {
 body[data-magi-app] .magi-checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -72,4 +73,5 @@ body[data-magi-app] .magi-checkbox-label--disabled {
   body[data-magi-app] .magi-checkbox {
     transition: none;
   }
+}
 }

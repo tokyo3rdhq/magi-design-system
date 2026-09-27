@@ -2,10 +2,19 @@
  *
  *   import '@tokyo3rdhq/magi-design-system/styles.css';
  *
- * Imports tokens + foundation + all component styles. Place on the application
- * root. Components reference CSS variables only — they do not introduce new
- * global class names.
+ * Layer order (declared by the next line) determines cascade priority:
+ * consumer unlayered styles always win over our layered rules.
+ *
+ *   browser defaults
+ *     ↓ @layer magi.reset
+ *     ↓ @layer magi.tokens
+ *     ↓ @layer magi.foundation
+ *     ↓ @layer magi.layout
+ *     ↓ @layer magi.components
+ *     ↓ consumer unlayered styles (always win)
  */
+
+@layer magi.reset, magi.tokens, magi.foundation, magi.layout, magi.components;
 
 @import "../tokens/index.css";
 @import "../foundation/index.css";

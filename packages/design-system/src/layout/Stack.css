@@ -1,5 +1,6 @@
 /* MAGI Design System — Stack */
 
+@layer magi.layout {
 body[data-magi-app] .magi-stack  {
   display: flex;
   flex-direction: column;
@@ -29,3 +30,4 @@ body[data-magi-app] .magi-stack--align-start    { align-items: flex-start; }
 body[data-magi-app] .magi-stack--align-center   { align-items: center; }
 body[data-magi-app] .magi-stack--align-end      { align-items: flex-end; }
 body[data-magi-app] .magi-stack--align-stretch  { align-items: stretch; }
+}

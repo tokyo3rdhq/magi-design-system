@@ -5,6 +5,7 @@
  * for blockers, success for confirmations.
  */
 
+@layer magi.components {
 body[data-magi-app] .magi-banner {
   background-color: var(--magi-surface);
   border: 1px solid var(--magi-border);
@@ -12,7 +13,7 @@ body[data-magi-app] .magi-banner {
   border-radius: var(--magi-radius-md);
   color: var(--magi-text-primary);
   padding: var(--magi-space-3) var(--magi-space-4);
-  font-size: 13px;
+  font-size: var(--magi-font-size-label);
   line-height: var(--magi-leading-snug);
 }
 
@@ -37,4 +38,5 @@ body[data-magi-app] .magi-banner a {
   color: var(--magi-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
 }

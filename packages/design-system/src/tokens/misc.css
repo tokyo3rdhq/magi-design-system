@@ -1,5 +1,6 @@
 /* MAGI Design System — Z-index, Container widths, Shadows */
 
+@layer magi.tokens {
 :root {
   /* Z-index */
   --magi-z-base: 0;
@@ -24,4 +25,5 @@
 
   /* Focus ring */
   --magi-focus-ring: 0 0 0 2px var(--magi-bg-base), 0 0 0 4px var(--magi-accent);
+}
 }

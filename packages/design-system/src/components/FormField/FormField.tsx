@@ -1,12 +1,26 @@
-import { useId, type ReactNode } from 'react';
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  useId,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import { cx } from '../../utils/classnames';
+
+type ChildProps = {
+  id?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'grammar' | 'spelling' | 'false' | 'true';
+  'aria-labelledby'?: string;
+};
 
 export interface FormFieldProps {
   /** Visible label above the control. Required. */
   label: string;
   /** Optional helper text below the control. */
   helper?: string;
-  /** Error message — overrides helper styling + sets aria-describedby. */
+  /** Error message — overrides helper styling + sets aria-invalid + aria-describedby. */
   error?: string;
   /** The control itself (Input, Select, Segmented, etc.). */
   children: ReactNode;
@@ -14,19 +28,25 @@ export interface FormFieldProps {
   align?: 'start' | 'center' | 'end' | 'stretch';
   /** Extra className for the wrapper. */
   className?: string;
-  /** Optional id for the helper/error element (for aria-describedby). */
+  /** Optional id for the helper/error element (overrides the auto-generated one). */
   helperId?: string;
 }
 
 /**
  * FormField — label + control + optional helper/error wrapper.
  *
- * Wires the helper or error element to the input via `aria-describedby`,
- * so screen readers announce them when the control receives focus.
+ * Wires `aria-describedby` to the helper/error span and `aria-labelledby`
+ * to the label, by cloning the single child element with the appropriate
+ * ARIA attributes. Sets `aria-invalid="true"` on the child when `error` is
+ * present.
+ *
+ * The child MUST be a single focusable element (Input, Select, native
+ * `<input>`, Segmented, etc.). If `children` is not a valid React element,
+ * the ARIA wiring is skipped — the label and helper/error still render.
  *
  * @example
  *   <FormField label="Email" helper="We'll never share this.">
- *     <Input type="email" />
+ *     <Input type="email" placeholder="you@example.com" />
  *   </FormField>
  *
  *   <FormField label="Max models" error="Pick a value between 1 and 10.">
@@ -43,7 +63,21 @@ export function FormField({
   helperId,
 }: FormFieldProps) {
   const reactId = useId();
-  const describedById = helperId ?? `magi-field-${reactId}`;
+  const fieldId = `magi-field-${reactId}`;
+  const labelId = `${fieldId}-label`;
+  const describedById = helperId ?? `${fieldId}-helper`;
+  const hasMessage = Boolean(error || helper);
+
+  let enhanced: ReactNode = children;
+  if (isValidElement<ChildProps>(children)) {
+    const existing = children.props;
+    enhanced = cloneElement(children, {
+      id: existing.id ?? fieldId,
+      'aria-describedby': hasMessage ? describedById : undefined,
+      'aria-invalid': error ? true : undefined,
+      'aria-labelledby': labelId,
+    });
+  }
 
   return (
     <div
@@ -53,11 +87,11 @@ export function FormField({
         className,
       )}
     >
-      <label className="magi-field-label">{label}</label>
-      {/* children are passed through; consumers should pass an input with id
-          matching describedById (or omit and accept the default). */}
-      {children}
-      {(error || helper) && (
+      <label id={labelId} className="magi-field-label">
+        {label}
+      </label>
+      {enhanced}
+      {hasMessage && (
         <span
           id={describedById}
           className={cx(
