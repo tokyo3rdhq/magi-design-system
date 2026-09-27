@@ -2,7 +2,7 @@
 
 > **Purpose**: this is a copy-paste prompt for an AI coding agent that needs to integrate `@tokyo3rdhq/magi-design-system` into a new or existing `xxx.magi.website` product. Replace the `{...}` placeholders, paste the whole document (or the body after "Prompt") into the agent's input, and let it execute.
 >
-> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.1.0`. Re-check if you upgrade.
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.4.2`. Re-check if you upgrade.
 
 ---
 
@@ -14,7 +14,8 @@ You are a senior frontend engineer working on the **MAGI** product family. Your 
 
 - **MAGI** is an independent AI lab. The main portal lives at https://magi.website and links to a family of product sites under `*.magi.website`. Every product site must visually belong to the same family.
 - The visual language is **dark-first, near-monochrome, restrained**. Apple-level restraint + developer-infrastructure aesthetic. **No CRT / terminal / neon styling.** See [`architecture.md`](./architecture.md) and the package's [`README.md`](../packages/design-system/README.md) for details.
-- All products share typography, spacing, surfaces, borders, radius, motion, and accessibility rules via `@tokyo3rdhq/magi-design-system`. Each product may override **only** its accent color via `<AppTheme accent="…" />`.
+- All products share typography, spacing, surfaces, borders, radius, motion, and accessibility rules via `@tokyo3rdhq/magi-design-system`. Each product may override its accent color via **app-level** `<AppTheme accent="…" />` or **subtree-level** `<div data-magi-accent="…">` (added in 0.3.0).
+- See [`usage-guide.md`](./usage-guide.md) for full patterns and recipes.
 
 ### Inputs (fill in before starting)
 
@@ -40,8 +41,8 @@ These are **hard constraints**. Violating any of them breaks the family contract
 2. **Do not introduce another UI library** — no MUI / Chakra / Radix-based full UI framework unless one is already a peer dependency. Spec §4.
 3. **Do not reintroduce CRT / terminal / neon styling.** Spec §36.
 4. **Do not fork the package** — consume via `npm install @tokyo3rdhq/magi-design-system`. Spec §2.
-5. **`<body>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. See [`architecture.md` §3](./architecture.md).
-6. **`<AppTheme>` is the only sanctioned way to change the accent** — set inline custom properties on a subtree, do not write global CSS to override `--magi-accent`. Spec §10.
+5. **`<body>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. Per ADR-0002, this will move to `<html>` at 0.5.0; until then, `<body>` is the contract. See [`architecture-v2.md`](./architecture-v2.md).
+6. **Accent overrides go through `<AppTheme>` (app-level) or `data-magi-accent` (subtree-level)** — never write raw CSS to override `--magi-accent`. Spec §10. Both mechanisms are documented in [`usage-guide.md`](./usage-guide.md) §Theming patterns.
 7. **All user-visible text must be styled through design-system utilities or components** — `.magi-h1`, `<ProductHeader>`, etc. Avoid hand-rolled typographic CSS unless a new pattern is justified.
 
 ### Pre-flight
@@ -51,7 +52,8 @@ Before any code changes:
 1. **Read the existing product's stack** — confirm framework, UI library, package manager, build tooling. The product may already have a peer dependency on a UI library; if it does, prefer to consume that via the design system's primitives rather than fight it.
 2. **Read [`docs/migration-guide.md`](./migration-guide.md)** — it has concrete steps for Astro + Tailwind and for Cloudflare Pages + React + Vite. The product you are integrating may match one of these profiles.
 3. **Read [`docs/tokens.md`](./tokens.md)** — every token you might need is documented with values and recommended usage.
-4. **Skim [`docs/architecture.md`](./architecture.md)** — explains why plain CSS (not CSS Modules), why `body[data-magi-app]`, why `data-magi-app` on `<body>`. Skipping this leads to wasted debugging.
+4. **Skim [`docs/usage-guide.md`](./usage-guide.md)** — patterns for forms, lists, navigation, theming, accessibility, anti-patterns. Skipping this leads to reinventing the wheel (or violating spec rules).
+5. **Skim [`docs/architecture-v2.md`](./architecture-v2.md)** — explains the target architecture: `@layer` cascade, `<AppTheme>` as context provider (no DOM wrapper), subtree accent via attribute. See also [`docs/architecture-review-0.3.md`](./architecture-review-0.3.md) for known issues + roadmap.
 
 ### Required steps
 
@@ -84,7 +86,7 @@ The order matters. Do not skip steps even if they seem trivial.
      <App />
    </AppTheme>
    ```
-   If you are using Astro with server-rendered pages (no React islands), use a custom element wrapper or skip `<AppTheme>` for now and rely on the default `green` accent — `data-magi-product` and the four accent tokens will only be set when React is mounted. Note this gap in the deliverable.
+   If you are using Astro with server-rendered pages (no React islands), `<AppTheme>` doesn't help — it runs only after React hydration, so the very first paint uses the default theme. Instead, set `data-magi-accent="<name>"` on `<html>` in your Astro layout; the CSS rules in `foundation/globals.css` apply the accent before paint.
 5. **Replace existing components** with design-system primitives where applicable:
 
    | Existing pattern | Replacement |
@@ -144,6 +146,7 @@ Run these checks and capture their output:
    - Open the dev server (`npm run dev` or the equivalent)
    - Confirm: dark backdrop, accent on primary CTA, focus ring on Tab, no console errors
    - Confirm: switching `<AppTheme accent>` to a different preset visibly changes the accent everywhere
+   - Confirm: a `<div data-magi-accent="danger">` subtree shows the danger accent on its buttons / banners / focus rings, while the surrounding `<AppTheme accent="cyan">` parent still shows cyan
 
 ### Out of scope
 
@@ -153,13 +156,15 @@ Do **not** attempt any of the following as part of this integration:
 - Refactoring product business logic
 - Replacing the product's framework (Astro → React, etc.)
 - Adding Tailwind / Next / Vite coupling to the design system itself
-- Modifying tokens globally — token overrides happen at the `<AppTheme>` level only
+- Modifying tokens globally — token overrides happen via `<AppTheme>` (app-level) or `data-magi-accent` (subtree-level) only
 
 ### References
 
 - [`@tokyo3rdhq/magi-design-system` package README](../packages/design-system/README.md) — full API reference
 - [`docs/tokens.md`](./tokens.md) — every CSS custom property with values and recommended use
-- [`docs/architecture.md`](./architecture.md) — implementation decisions (plain CSS over CSS Modules, `body[data-magi-app]` scoping, side-effect import pattern)
+- [`docs/architecture-v2.md`](./architecture-v2.md) — target architecture proposal (current)
+- [`docs/architecture.md`](./architecture.md) — OLD (0.1.0 era); superseded by `architecture-v2.md`
+- [`docs/usage-guide.md`](./usage-guide.md) — patterns and recipes for common scenarios
 - [`docs/migration-guide.md`](./migration-guide.md) — concrete step-by-step for Astro + Tailwind (magi-portal profile) and Cloudflare Pages + React + Vite (token-factory-initializr profile)
 - [Original spec](../packages/design-system/README.md) — design rationale, what's in / out of scope per phase
 - [GitHub repo](https://github.com/tokyo3rdhq/magi-design-system) — issues + releases

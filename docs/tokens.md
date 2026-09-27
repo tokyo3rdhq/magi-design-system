@@ -206,12 +206,17 @@ Applied via the `:focus-visible` rule on `[data-magi-app]` descendants. Use this
 --magi-accent-contrast: #050505
 ```
 
-All other tokens remain at the default values. If you need to override a different token (e.g. a brand-specific `--magi-text-primary` for an enterprise product), pass it via the `tokens` prop:
+All other tokens remain at the default values.
+
+For subtree accent overrides, use the `data-magi-accent` attribute on a wrapper element — no React component required. The CSS rules in `foundation/globals.css` map this attribute to accent presets or semantic colors:
 
 ```tsx
-<AppTheme accent="cyan" tokens={{ '--magi-text-primary': '#0a0a0a' }}>
-  <App />
-</AppTheme>
+// Subtree accent override — works without <AppTheme>
+<div data-magi-accent="danger">
+  <Button variant="primary">Delete</Button>
+</div>
 ```
 
-This is an **escape hatch** — overusing it defeats the purpose of the design system. Spec §10 explicitly forbids arbitrary redefinitions of spacing / typography / base surfaces.
+Values: `green` / `cyan` / `violet` / `amber` / `white` (accent presets), or `danger` / `warning` / `success` (semantic). See [`usage-guide.md`](./usage-guide.md) §Theming patterns.
+
+**Removed in 0.4.0**: the `tokens` prop on `<AppTheme>` that previously allowed overriding arbitrary CSS variables. It was removed because it was a public-API leak — consumers could redefine any `--magi-*` token, violating the spec §10 contract that product themes own only the accent. Use `data-magi-accent` for subtree scope; if you genuinely need a new accent preset, open an issue on the design-system repo.

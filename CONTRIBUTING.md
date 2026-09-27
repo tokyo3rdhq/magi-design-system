@@ -62,19 +62,22 @@ These are non-negotiable and enforce the design spec:
 
 - **Tokens are CSS custom properties** (`var(--magi-*)`). Components reference them — never hardcode values.
 - **Component classes are prefixed `magi-`** (`magi-button`, `magi-card`, etc.) and additionally scoped to `body[data-magi-app]` in the CSS file. The latter is required to win specificity against the foundation reset.
-- **No CSS Modules in the package.** We use plain CSS with BEM-style classes; see [`docs/architecture.md`](./docs/architecture.md) for the rationale.
-- **Consumers must put `data-magi-app` on `<body>`**, not a child container. Body-level styles (background gradient, scrollbar, font baseline) require it.
+- **No CSS Modules in the package.** We use plain CSS with BEM-style classes; see [`docs/architecture-v2.md`](./docs/architecture-v2.md) for the rationale.
+- **Consumers must put `data-magi-app` on `<body>`**, not a child container. Body-level styles (background gradient, scrollbar, font baseline) require it. Per ADR-0002, this will move to `<html>` at 0.5.0; until then, `<body>` is the contract.
 - **Don't redefine spacing / typography / base surfaces in product themes.** AppTheme only owns the accent tokens. Spec §10.
 - **Don't reintroduce CRT / terminal styling.** Spec §36 forbids it.
+- **Token literals must be tokens.** `scripts/check-tokens.mjs` enforces this in CI. Color literals (`#hex`, `rgb()`, `rgba()`), hardcoded px font sizes, and hardcoded ms durations are not allowed in component CSS / TSX / TS (with allowlist for `theme.tsx` and `foundation/globals.css`). Use `var(--magi-*)` references or `color-mix(in srgb, var(--magi-*) N%, transparent)`.
+- **Accent values must match across JS and CSS.** `scripts/check-accent-tokens.mjs` cross-validates `ACCENT_PRESETS` in `theme.tsx` against `data-magi-accent` rules in `foundation/globals.css`. If you change one, update the other.
 
 ## Versioning & releases
 
-This package follows [Semantic Versioning](https://semver.org/).
+This package follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Per ADR-0006:
 
-- **0.x** — rapid iteration; breaking changes are allowed but should be called out clearly
-- **1.0+** — breaking changes require a major bump and a migration note in `CHANGELOG.md`
+- **Patch** (0.x.y → 0.x.y+1): bug fixes, internal implementation, token value corrections
+- **Minor** (0.x → 0.x+1): new primitives, new optional props, new tokens (additive), React peer range expansion
+- **Major** (0.x → 1.0 or 1.x → 1.y): removed primitives / props, renamed props / tokens, CSS contract changes, DOM contract changes
 
-Releases are cut by the maintainers when the working tree is clean and the showroom builds. The npm publish step requires a publish token (see `SECURITY.md`).
+Releases are cut by the maintainers when the working tree is clean and the showroom builds. The npm publish step requires a publish token (see `SECURITY.md`). Current latest: see [`CHANGELOG.md`](./CHANGELOG.md) and [`README.md`](./README.md#status).
 
 ## Style
 - ESM, TypeScript strict (`noUncheckedIndexedAccess`, `noImplicitOverride`)
