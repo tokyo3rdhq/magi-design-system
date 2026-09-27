@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] — 2026-09-27
+
+### Added
+
+- **`<Segmented>` keyboard navigation** — full WAI-ARIA radio group
+  pattern (per Authoring Practices Guide):
+  - `ArrowRight` / `ArrowDown`: select + focus next enabled option (wraps)
+  - `ArrowLeft` / `ArrowUp`: select + focus previous enabled option (wraps)
+  - `Home`: select + focus first enabled option
+  - `End`: select + focus last enabled option
+  - Disabled options are skipped during navigation
+- **`<Segmented>` roving tabindex** — only the currently-selected option
+  has `tabIndex={0}`. Other options have `tabIndex={-1}` and are reachable
+  only via the arrow / Home / End keys above. Pressing Tab moves into
+  the selected option; subsequent Tabs leave the group. Pressing arrow
+  keys navigates within the group.
+
+  Per architecture-review-0.3.md §P2 — was the last P2 item. Closes the
+  WAI-ARIA conformance gap flagged in the review.
+
 ## [0.4.1] — 2026-09-27
 
 ### Added

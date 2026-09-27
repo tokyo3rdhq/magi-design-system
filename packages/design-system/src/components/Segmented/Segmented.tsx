@@ -1,4 +1,9 @@
-import type { ReactNode } from 'react';
+import {
+  useCallback,
+  useRef,
+  type ReactNode,
+  type KeyboardEvent,
+} from 'react';
 import { cx } from '../../utils/classnames';
 
 export type SegmentedSize = 'sm' | 'md' | 'lg';
@@ -40,9 +45,20 @@ export interface SegmentedProps<V extends string = string> {
 /**
  * Segmented — pill-shaped single-select chip group.
  *
- * **SINGLE-SELECT ONLY.** For multi-select (e.g. provider toggles, multi-tag
+ * **Single-select only.** For multi-select (e.g. provider toggles, multi-tag
  * pickers), use a `Checkbox` group instead — a multi-item segmented control
  * implies exclusive selection and confuses the interaction model.
+ *
+ * Keyboard navigation (WAI-ARIA Authoring Practices for radio group):
+ *   - `ArrowRight` / `ArrowDown`: select + focus next enabled option (wraps)
+ *   - `ArrowLeft` / `ArrowUp`: select + focus previous enabled option (wraps)
+ *   - `Home`: select + focus first enabled option
+ *   - `End`: select + focus last enabled option
+ *   - `Space`: select the focused option (browser default for `<button>`)
+ *
+ * Roving tabindex: only the currently-selected option is in the tab order
+ * (`tabIndex={0}`). Other options have `tabIndex={-1}` and are reachable only
+ * via the arrow keys above.
  *
  * @example
  *   <Segmented
@@ -56,7 +72,7 @@ export interface SegmentedProps<V extends string = string> {
  *     onChange={(v) => setContextMin(v as ContextMin)}
  *   />
  *
- *   <Segmented value={cost} options={[...] onChange={...} accent />
+ *   <Segmented value={cost} options={...} onChange={...} accent />
  */
 export function Segmented<V extends string = string>({
   value,
@@ -70,11 +86,67 @@ export function Segmented<V extends string = string>({
   'aria-label': ariaLabel,
   children,
 }: SegmentedProps<V>) {
+  const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      const key = e.key;
+      if (
+        key !== 'ArrowRight' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowDown' &&
+        key !== 'ArrowUp' &&
+        key !== 'Home' &&
+        key !== 'End'
+      ) {
+        return;
+      }
+      e.preventDefault();
+
+      // Indices of non-disabled options, in order.
+      const enabledIndices = options
+        .map((opt, i) => (opt.disabled ? -1 : i))
+        .filter((i): i is number => i !== -1);
+      if (enabledIndices.length === 0) return;
+
+      const currentIndex = options.findIndex((opt) => opt.value === value);
+
+      let nextIndex: number;
+      if (key === 'Home') {
+        nextIndex = enabledIndices[0]!;
+      } else if (key === 'End') {
+        nextIndex = enabledIndices[enabledIndices.length - 1]!;
+      } else {
+        const posInEnabled =
+          currentIndex >= 0 ? enabledIndices.indexOf(currentIndex) : -1;
+        const len = enabledIndices.length;
+        const step = key === 'ArrowRight' || key === 'ArrowDown' ? 1 : -1;
+        const nextPosInEnabled = posInEnabled < 0
+          ? (step > 0 ? 0 : len - 1)
+          : (posInEnabled + step + len) % len;
+        nextIndex = enabledIndices[nextPosInEnabled]!;
+      }
+
+      if (nextIndex === currentIndex) return;
+      const next = options[nextIndex];
+      if (!next) return;
+
+      onChange(next.value);
+      // Focus the newly selected button after React commits the state change.
+      // requestAnimationFrame is reliable across React 18+ concurrent rendering.
+      requestAnimationFrame(() => {
+        buttonRefs.current[nextIndex]?.focus();
+      });
+    },
+    [options, value, onChange],
+  );
+
   return (
     <div
       role="radiogroup"
       id={id}
       aria-label={ariaLabel}
+      onKeyDown={disabled ? undefined : handleKeyDown}
       className={cx(
         'magi-segmented',
         `magi-segmented--${size}`,
@@ -82,9 +154,9 @@ export function Segmented<V extends string = string>({
         className,
       )}
     >
-      {options.map((opt) => {
+      {options.map((opt, index) => {
         const active = opt.value === value;
-        const isDisabled = !!(disabled || opt.disabled);
+        const isDisabled = disabled || opt.disabled;
         const onSelect = () => {
           if (isDisabled || active) return;
           onChange(opt.value);
@@ -93,7 +165,7 @@ export function Segmented<V extends string = string>({
         if (children) {
           return (
             <div key={opt.value}>
-              {children(opt, { active, disabled: isDisabled, onSelect })}
+              {children(opt, { active, disabled: !!isDisabled, onSelect })}
             </div>
           );
         }
@@ -104,8 +176,12 @@ export function Segmented<V extends string = string>({
             type="button"
             role="radio"
             aria-checked={active}
-            disabled={isDisabled}
+            disabled={!!isDisabled}
+            tabIndex={active ? 0 : -1}
             onClick={onSelect}
+            ref={(el) => {
+              buttonRefs.current[index] = el;
+            }}
             className={cx(
               'magi-segmented-item',
               active && 'magi-segmented-item--active',
