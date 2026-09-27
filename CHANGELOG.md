@@ -5,6 +5,155 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-09-27
+
+### Added
+
+- **CSS `@layer` cascade model.** `styles/index.css` declares layer order:
+  `@layer magi.reset, magi.tokens, magi.foundation, magi.layout, magi.components;`.
+  Each CSS file wraps its content in the appropriate layer. Consumer unlayered
+  styles always win on the cascade, regardless of import order — declared
+  architecture replaces accidental source-order. See `docs/adr/0005-css-bundling.md`.
+
+- **`data-magi-accent="<name>"` subtree accent override.** Maps to:
+  - Accent presets: `green` / `cyan` / `violet` / `amber` / `white`
+  - Semantic: `danger` / `warning` / `success`
+
+  Opt-in, additive. Allows scoped accent changes without writing raw CSS:
+
+  ```tsx
+  <div data-magi-accent="danger">
+    <Button variant="primary">Delete</Button>
+  </div>
+  ```
+
+- **`useProductTheme()` hook.** Returns `{ accent: ProductAccent }` for JS-aware
+  consumers. Default `{ accent: 'green' }` outside `<ProductTheme>`.
+
+- **`scripts/check-tokens.mjs`.** CI token literal enforcement. Fails the build
+  on `hex` / `rgb()` / `rgba()` literals in component CSS. Warns on hardcoded
+  `px` font sizes and `ms` durations outside `tokens/`.
+
+- **CI updates.** Token literal check runs in the `package` job before
+  typecheck. Showroom gets an explicit `tsc --noEmit` job.
+
+- **8 ADRs in `docs/adr/`.** Architecture decisions recorded:
+  - 0001 — token architecture (flat, implicit hierarchy)
+  - 0002 — CSS scope (`body[data-magi-app]` now, `html[data-magi-app]` at 0.5.0)
+  - 0003 — theme architecture (context + `<html>`-level CSS var setter)
+  - 0004 — package boundary (single package; extraction criteria documented)
+  - 0005 — CSS bundling (single `dist/styles.css`)
+  - 0006 — React peer range (18 for 0.x; expand as minor when 19 needed)
+  - 0007 — accessibility (axe / Playwright deferred to 0.4.0)
+  - 0008 — visual regression (Playwright screenshots deferred to 0.4.0)
+
+- **Documentation.**
+  - `docs/architecture-v2.md` — target architecture proposal.
+  - `docs/architecture-review-v2.md` — Architecture challenge of the v2 proposal.
+  - `docs/arch_evo.md` — original brief.
+  - `docs/integration-prompt.md` — updated to reference `tokyo3rdhq/magi-design-system`.
+
+### Changed (breaking)
+
+- **`<ProductTheme>` no longer wraps in a `<div>`.** Now a React context
+  provider + `useEffect` that sets the four accent CSS variables
+  (`--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`,
+  `--magi-accent-contrast`) on `document.documentElement`. The wrapper
+  `<div data-magi-product>` is gone.
+
+  **Why**: the wrapper broke `display: grid` parents (extra node),
+  `:first-child` / `:nth-child(1)` selectors, and absolute-positioned children.
+  See `docs/adr/0003-theme-architecture.md`.
+
+  **Migration**: consumers that depended on the wrapper div for layout must
+  verify their layout. `data-magi-product="<name>"` is now on `<html>`, not on
+  the wrapper div.
+
+- **`<FormField>` aria wiring is now real.** 0.2.0 generated IDs but never
+  attached them. 0.3.0 uses `Children.only + cloneElement` to inject
+  `aria-describedby` / `aria-labelledby` / `aria-invalid` on the child control.
+
+  **Behavior**: `aria-describedby` matches the helper/error span's `id`;
+  `aria-invalid="true"` is set on the child when `error` is present.
+  The label's `<label>` element gets the matching `id` so screen readers
+  announce the label on focus.
+
+### Removed (breaking)
+
+- **`tokens?: Partial<CSSProperties>` prop on `<ProductTheme>`.** Closed the
+  public API leak that let consumers redefine arbitrary `--magi-*` variables.
+  For subtree accent overrides, use `<div data-magi-accent="<name>">` instead.
+
+### Token cleanup (alongside the breaking changes)
+
+All `rgba()` literals in component CSS replaced with
+`color-mix(in srgb, var(--magi-*) N%, transparent)`. All `font-size: Npx`
+replaced with `var(--magi-font-size-*)` tokens. The `body[data-magi-app]`
+gradient and scrollbar now reference tokens via `color-mix`.
+
+| File | Change |
+|---|---|
+| `Badge/Badge.css` | neutral/success/warning/error → `color-mix()` |
+| `Button/Button.css` | secondary/ghost hover → `color-mix()` |
+| `Input/Input.css` | size variants → `--magi-font-size-*` |
+| `Segmented/Segmented.css` | item + size variants → `--magi-font-size-*` |
+| `Banner/Banner.css` | `font-size: 13px` → `--magi-font-size-label` |
+| `EmptyState/EmptyState.css` | `font-size: 14px` → `--magi-font-size-body-sm` |
+| `foundation/globals.css` | body bg gradient + scrollbar → `color-mix()` |
+
+### Verified
+
+- `npm run build` → `dist/styles.css` 24.17 kB / `dist/index.js` 8.52 kB (gzip 4.34 / 2.53)
+- `npm run typecheck` → clean
+- `node scripts/check-tokens.mjs` → 0 errors, 0 warnings
+- Manual preview at `127.0.0.1:4174` → Phase 4 page renders; accent switching flows correctly to descendants
+- `<FormField>` aria wiring verified via browser probe: `aria-describedby` matches helper span ID; `aria-invalid` set on error fields
+
+### Deferred to 0.4.0
+
+Per `docs/adr/0007-accessibility.md`:
+
+- Playwright a11y (`@axe-core/playwright`) — semantic ARIA verification on the showroom
+- Playwright focus + reduced-motion verification
+- Playwright visual regression (~70 baseline snapshots via `toMatchSnapshot`)
+
+These need significant new infrastructure (~150 MB chromium binary, baseline
+commits, CI job). 0.3.0 is **architecture** changes; 0.4.0 will be
+**testing infrastructure** changes.
+
+[0.3.0]: https://github.com/tokyo3rdhq/magi-design-system/releases/tag/v0.3.0
+
+## [0.2.0] — 2026-09-26
+
+### Added
+
+Six new primitives extracted from `token-factory-initializr`'s production usage:
+
+- `<Checkbox>` — restyled native checkbox with focus ring + dot label support
+- `<Input>` — `<input>` wrapper with `sm` / `md` / `lg` sizes + `invalid` state
+- `<FormField>` — label + control + optional `helper` / `error`
+- `<Segmented>` — single-select chip group (**single-select only**; multi-select via `<Checkbox>` group)
+- `<Banner>` — inline notice with 4 variants: `warning` / `error` / `success` / `info`
+- `<EmptyState>` — centered placeholder, simple or structured (`title` + `description` + `action`)
+
+Showroom: new **Phase 4** page demonstrating all 6 primitives with live state.
+
+### Changed
+
+- `<Input>` props: `size` → `inputSize` (avoid collision with native `<input size>` HTML attribute).
+- `<Segmented>` JSDoc explicitly forbids `multi` prop — multi-select must use a `<Checkbox>` group.
+
+### Notes
+
+- Per spec §33, primitives extracted only after a real consumer
+  (`token-factory-initializr`) shipped hand-rolled implementations. Not
+  speculative.
+- Out of scope: Spinner, Select, CodeBlock (no consumer in tfi).
+- Out of scope: Navbar, Footer, ProductHeader (deferred per spec §18 / §19).
+- Verified: `npm run build` → 22.13 kB styles / 7.68 kB JS.
+
+[0.2.0]: https://github.com/tokyo3rdhq/magi-design-system/releases/tag/v0.2.0
+
 ## [0.1.0] — 2026-09-26
 
 ### Added

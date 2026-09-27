@@ -6,31 +6,28 @@ Shared visual foundation for the [MAGI](https://magi.website) product family —
 
 This monorepo contains the package that every MAGI website consumes:
 
-- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, and a product theme mechanism
+- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, and a product theme mechanism. **Latest: 0.3.0**
 - [`@tokyo3rdhq/showroom`](./apps/showroom) — the Vite + React + TypeScript visual showcase used during development
 
 ## What is MAGI?
 
-[MAGI](https://magi.website) is an independent AI lab operating a family of products (`magi.website`, `api.magi.website`, `chat.magi.website`, `agent.magi.website`). Every product inherits the same visual language — typography, spacing, surfaces, motion, accessibility rules — but each can override its accent color through `<ProductTheme accent="…" />`.
-
-## Why a design system?
-
-The full rationale is in [`docs/magi_design_system.md`](./docs/magi_design_system.md). The short version:
-
-- One source of truth for typography, color, spacing, radius, motion — no per-product copies
-- Per-product accents that respect MAGI's visual hierarchy
-- Framework-friendly: tokens are CSS custom properties, components are plain React + CSS
+[MAGI](https://magi.website) is an independent AI lab operating a family of products (`magi.website`, `api.magi.website`, `chat.magi.website`, `agent.magi.website`). Every product inherits the same visual language — typography, spacing, surfaces, motion, accessibility rules — but each can override its accent color through `<ProductTheme accent="…" />` or subtree-level `<div data-magi-accent="…">`.
 
 ## Status
 
-**Phase 1 — Foundation.** Tokens, foundation, layout primitives, UI primitives (Button / Card / Badge), and product theme.
+**0.3.0 published.** 13 primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / ProductTheme) + CSS `@layer` cascade + token literal CI enforcement + 8 ADRs.
 
-- [x] Phase 1 — tokens + foundation + layout + Button / Card / Badge + ProductTheme
-- [ ] Phase 2 — migrate [`magi.website`](https://github.com/tokyo3rdhq/magi-portal) to consume `@tokyo3rdhq/magi-design-system`
-- [ ] Phase 3 — migrate [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr) to consume `@tokyo3rdhq/magi-design-system`
-- [ ] Phase 4 — extract Navbar / Footer / Tabs / CodeBlock / Input only when duplication is observed
+- [x] Phase 1 — `0.1.0` — tokens + foundation + layout + Button / Card / Badge + ProductTheme
+- [x] Phase 2 — `0.2.0` — Checkbox / FormField / Input / Segmented / Banner / EmptyState (extracted from `token-factory-initializr`)
+- [x] Phase 3 — `0.3.0` — `@layer` cascade + `<ProductTheme>` context (no DOM wrapper) + `<FormField>` aria wiring + `data-magi-accent` subtree accent + token literal CI + 8 ADRs
+- [x] **Phase 4** — `magidesign-system` repo migrated to use `@tokyo3rdhq/magi-design-system` itself (this repo's showroom consumes the local package)
+- [x] **Phase 5** — `magidesign-system` repo `magi-portal` migrated to use `@tokyo3rdhq/magi-design-system` 0.2.0 (commit `ae63ef7`)
+- [ ] **Phase 6** — `token-factory-initializr/web` migration to use `@tokyo3rdhq/magi-design-system` 0.3.0 (in progress)
+- [ ] **Phase 7** — extract Navbar / Footer / Tabs / Spinner / Select / CodeBlock only when duplication is observed in 2+ products
+- [ ] **Phase 8** — Playwright a11y / focus / reduced-motion / visual regression (deferred from 0.3.0 per ADR-0007)
+- [ ] **Phase 9** — 1.0 — public API freeze, scope rename `body` → `html[data-magi-app]` (per ADR-0002), React 19 peer range (per ADR-0006)
 
-See [`docs/magi_design_system.md` §30](https://github.com/tokyo3rdhq/magi-portal/blob/main/docs/magi_design_system.md) for the original phase plan.
+See [`docs/architecture-v2.md`](./docs/architecture-v2.md) and [`docs/architecture-review-v2.md`](./docs/architecture-review-v2.md) for the architecture roadmap.
 
 ## Repo layout
 
@@ -42,9 +39,16 @@ magi-design-system/
 │   └── showroom/             # @tokyo3rdhq/showroom — local visual showcase
 ├── docs/
 │   ├── magi_design_system.md # original design spec (lives in magi-portal too)
-│   ├── architecture.md       # implementation decisions
-│   ├── tokens.md             # token reference
-│   └── migration-guide.md    # Phase 2 / Phase 3 consumer guide
+│   ├── architecture.md       # OLD — superseded by architecture-v2.md; kept for history
+│   ├── architecture-v2.md    # target architecture proposal
+│   ├── architecture-review-v2.md # challenge of the v2 proposal
+│   ├── arch_evo.md           # original refactor brief
+│   ├── tokens.md             # every CSS custom property
+│   ├── migration-guide.md    # Phase 2 / Phase 3 / Phase 5 consumer guide
+│   ├── integration-prompt.md # AI agent prompt for new consumers
+│   └── adr/                  # Architecture Decision Records (0001–0008)
+├── scripts/
+│   └── check-tokens.mjs      # CI token literal enforcement
 ├── LICENSE
 └── README.md
 ```
@@ -61,20 +65,26 @@ npm install @tokyo3rdhq/magi-design-system
 // app entry
 import '@tokyo3rdhq/magi-design-system/styles.css';
 
-import { Container, Section, Button, Card, Badge, ProductTheme } from '@tokyo3rdhq/magi-design-system';
+import {
+  Container, Section, Stack,
+  Button, Card, Badge,
+  Checkbox, FormField, Input, Segmented, Banner, EmptyState,
+  ProductTheme,
+} from '@tokyo3rdhq/magi-design-system';
 
 function App() {
   return (
-    <ProductTheme accent="green">
+    <ProductTheme accent="green" name="magi-portal">
       <Container size="xl">
         <Section spacing="lg">
-          <Card variant="elevated" padding="lg">
-            <Badge variant="accent">v0.1</Badge>
-            <h1 className="magi-h1" style={{ marginTop: 'var(--magi-space-4)' }}>
-              Hello, MAGI
-            </h1>
-            <Button variant="primary">Get started</Button>
-          </Card>
+          <Stack gap="6">
+            <FormField label="Project" helper="What you're building.">
+              <Input placeholder="e.g. Coding assistant" />
+            </FormField>
+            <Banner variant="info">
+              No requirements set yet. <a href="/start">Go back</a>.
+            </Banner>
+          </Stack>
         </Section>
       </Container>
     </ProductTheme>
@@ -102,20 +112,26 @@ npm run dev          # vite build --watch
 
 # 3. Start the showroom
 cd ../../apps/showroom
+npm install          # only first time
 npm run dev          # vite dev server on http://127.0.0.1:5173
 ```
 
-The showroom uses `file:` linking to the local package, so live edits in `packages/design-system/src/` are reflected immediately after a rebuild.
+The showroom uses `file:` linking to the local package, so live edits in
+`packages/design-system/src/` are reflected immediately after a rebuild.
 
 ## Documentation
 
-- [Package README](./packages/design-system/README.md) — installation, exports, API reference
+- [Package README](./packages/design-system/README.md) — installation, exports, full API reference (13 primitives)
 - [Tokens reference](./docs/tokens.md) — every CSS custom property
-- [Architecture decisions](./docs/architecture.md) — why plain CSS, why `body[data-magi-app]`, why a side-effect import
-- [Migration guide](./docs/migration-guide.md) — moving `magi.website` and `token-factory-initializr/web` to this package
-- [Changelog](./CHANGELOG.md)
-- [Contributing](./CONTRIBUTING.md)
-- [Security](./SECURITY.md)
+- [Architecture v2](./docs/architecture-v2.md) — target architecture proposal
+- [Architecture review v2](./docs/architecture-review-v2.md) — challenge of v2
+- [Architecture decisions (ADRs)](./docs/adr/) — 8 ADRs covering token, CSS scope, theme, package boundary, bundling, peer range, accessibility, visual regression
+- [Migration guide](./docs/migration-guide.md) — moving consumers (magi-portal / token-factory-initializr) to this package
+- [Integration prompt](./docs/integration-prompt.md) — AI agent prompt for new `xxx.magi.website` consumers
+- [Original spec (magi-portal)](./docs/magi_design_system.md) — the brief that started the design system
+- [Changelog](./CHANGELOG.md) — release history (0.1.0 / 0.2.0 / 0.3.0)
+- [Contributing](./CONTRIBUTING.md) — workflow + architectural rules
+- [Security](./SECURITY.md) — vulnerability disclosure
 
 ## License
 

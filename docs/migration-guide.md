@@ -1,11 +1,12 @@
 # Migration guide
 
-How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers both known consumers:
+How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers three consumer profiles:
 
-- **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site)
-- **Phase 3 — [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr)** (Cloudflare Pages + React + Vite)
+- **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site) — landed on `@tokyo3rdhq/magi-design-system@0.2.0`
+- **Phase 3 — [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr)** (Cloudflare Pages + React + Vite) — landed on `@tokyo3rdhq/magi-design-system@0.2.0`; uses 6 primitives
+- **Phase 5 — upgrade from 0.2.0 to 0.3.0** — see "Phase 5 — Upgrade to 0.3.0" section below
 
-The two consumers have different starting stacks, so the migration paths diverge after the shared installation step.
+The three paths diverge after the shared installation step.
 
 ## Shared: install + import styles
 
@@ -281,12 +282,155 @@ Per spec §33:
 
 > If the same visual or interaction pattern appears in **2+ MAGI products**, consider extracting it.
 
-Once both Phase 2 and Phase 3 are landed, audit for duplication:
+Current state at 0.3.0:
 
-- Top navigation (MAGI brand + product name + links + accent CTA) — likely a shared `<MagiNavbar>`
-- Footer (links + copyright) — likely a shared `<MagiFooter>`
-- Product header (MAGI / Product Name hierarchy) — `<ProductHeader>`
-- Code snippets with copy button — `<CodeBlock>`
-- Tabs (used in many product UIs) — `<Tabs>`
+- 13 primitives shipped (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / ProductTheme)
+- All have at least one consumer in `magi.website` or `token-factory-initializr`
+
+Still deferred per ADR-0004 (`docs/adr/0004-package-boundary.md`) and §34 non-goals:
+
+- **Navbar / Footer / ProductHeader**: tfi and magi-portal both have hand-rolled topbar / footer / brand patterns. Spec §18 / §19 calls these out as candidates, but they're product-specific enough that we're waiting for the second consumer to actually need them before extracting. If/when `api.magi.website` starts building and needs the same, extract at that point.
+- **Tabs / Switch / Tooltip / Modal / Toast / CommandBar**: not yet seen in any product. Wait for a real consumer.
+- **Spinner / Select / CodeBlock**: tfi 0.x draft used hand-rolled spinner but only for inline loading state; no Select; CodeBlock was an empty state in 0.2.0. None reached the threshold for extraction in 0.3.0.
 
 Open an issue before building any of these. We do not want a 50-component library; we want the smallest set that eliminates real duplication.
+
+## Phase 5 — Upgrade from 0.2.0 to 0.3.0
+
+`@tokyo3rdhq/magi-design-system@0.3.0` ships three breaking changes from 0.2.0. All consumers must migrate.
+
+### Breaking change 1: `<ProductTheme>` no longer wraps in `<div>`
+
+**Before (0.2.0)**: `<ProductTheme accent="cyan">` returned `<div data-magi-product="..." style={accentVars}>`. Children inherited via the wrapper.
+
+**After (0.3.0)**: `<ProductTheme>` is a React context provider + `useEffect` setter on `<html>`. No DOM wrapper. The four accent CSS variables are set on `document.documentElement` directly.
+
+```tsx
+// 0.2.0 (old): wrapper renders <div data-magi-product="...">
+<ProductTheme accent="cyan" name="token-factory">
+  <App />
+</ProductTheme>
+
+// 0.3.0 (new): no DOM mutation; <html> gets the accent variables
+<ProductTheme accent="cyan" name="token-factory">
+  <App />
+</ProductTheme>
+// Inspect: document.documentElement.style.getPropertyValue('--magi-accent')
+//          → '#38bdf8' (cyan)
+// Inspect: document.documentElement.dataset.magiProduct
+//          → 'token-factory'
+```
+
+**What breaks for consumers**:
+
+- **Layout**: any CSS that depended on the wrapper `<div>` (e.g. `:first-child`, `:nth-child(1)`, `display: grid` direct children) needs to be reviewed. The wrapper is gone — children are direct.
+- **DOM queries**: code that did `document.querySelector('[data-magi-product]')` to find the wrapper div now finds `<html>` instead. Update selectors if you read the attribute from a specific element.
+- **Portals**: portals rendered inside `<ProductTheme>` no longer have the wrapper as their layout parent — they go directly to the body. This is the desired behavior.
+
+**What does NOT break**:
+
+- `data-magi-product="<name>"` is now on `<html>` (was on wrapper div). Consumers reading this attribute just need to query `<html>` instead of a child div.
+- The four accent variables (`--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`, `--magi-accent-contrast`) are now inherited via cascade through the root document, not via the wrapper.
+
+### Breaking change 2: `tokens?: Partial<CSSProperties>` prop removed
+
+**Before (0.2.0)**: `<ProductTheme tokens={{ '--magi-text-primary': 'red' }}>` let consumers redefine any CSS variable through the theme component.
+
+**After (0.3.0)**: this prop is removed. Only `accent` (preset) and `name` remain.
+
+**Migration**: if a consumer was using `tokens` for subtree accent overrides, switch to `<div data-magi-accent="<name>">`:
+
+```tsx
+// 0.2.0 (old): arbitrary variable override
+<ProductTheme tokens={{ '--magi-accent': 'var(--magi-error)' }}>
+  <DangerCard />
+</ProductTheme>
+
+// 0.3.0 (new): use the shipped data-magi-accent attribute
+<div data-magi-accent="danger">
+  <DangerCard />
+</div>
+```
+
+The `data-magi-accent="<name>"` attribute maps to:
+- Accent presets: `green` / `cyan` / `violet` / `amber` / `white`
+- Semantic colors: `danger` / `warning` / `success`
+
+If a consumer was using `tokens` for non-accent variables (e.g. typography, spacing), they should stop — the design system explicitly forbids that (spec §10). Move the override to consumer-local CSS, not via the design system.
+
+### Breaking change 3: `<FormField>` aria wiring is now real
+
+**Before (0.2.0)**: `<FormField>` generated IDs for the helper span and label, but never attached `aria-describedby` / `aria-labelledby` / `aria-invalid` to the child control. The JSDoc claimed automatic wiring; the code didn't deliver it.
+
+**After (0.3.0)**: `<FormField>` uses `Children.only + cloneElement` to inject the ARIA attributes on the child control automatically.
+
+```tsx
+// Both before and after: same JSX usage
+<FormField label="Email" helper="We'll never share this.">
+  <Input type="email" placeholder="you@example.com" />
+</FormField>
+
+// After 0.3.0, the rendered DOM has:
+// <div class="magi-field">
+//   <label id=":r0:-label" class="magi-field-label">Email</label>
+//   <input
+//     id=":r0:"
+//     aria-describedby=":r0:-helper"
+//     aria-labelledby=":r0:-label"
+//     aria-invalid="true"        ← only when error is present
+//     ...
+//   />
+//   <span id=":r0:-helper" class="magi-field-helper">We'll never share this.</span>
+// </div>
+```
+
+**What changes for consumers**:
+
+- **Bug fix**: screen readers now announce the helper/error text when the child control receives focus. Before, they didn't (because `aria-describedby` was missing).
+- **Newly validated attribute**: `aria-invalid="true"` is set on the child when `error` is present.
+- **`label` association**: the `<label>` element gets an `id`, so click-to-focus and screen reader label work.
+
+**What does NOT change**:
+
+- The JSX usage is identical.
+- `FormField` still requires a single child (`Children.only`). Complex multi-element children silently skip the wiring (no error), but the label and helper/error still render.
+
+### Non-breaking: token cleanup + `@layer` + `data-magi-accent`
+
+These are additive and don't require consumer changes:
+
+- All `rgba()` literals in component CSS replaced with `color-mix(in srgb, var(--magi-*) N%, transparent)`. Visual output is identical.
+- All `font-size: Npx` replaced with `var(--magi-font-size-*)` tokens. Visual output is identical.
+- CSS `@layer` cascade adopted. Consumer unlayered styles always win — no consumer action needed.
+
+### Verification checklist (0.2.0 → 0.3.0)
+
+```bash
+# 1. Bump the dependency
+npm install @tokyo3rdhq/magi-design-system@^0.3.0
+
+# 2. Build
+npm run build           # should succeed; CSS is now ~24 kB (was ~22 kB)
+npm run typecheck       # should succeed
+
+# 3. Test in dev
+npm run dev             # open the consumer app
+#   - Verify accent still flows everywhere (eyebrow, primary button, focus ring)
+#   - Verify the wrapper <div> is GONE (inspect body, no extra node)
+#   - Verify a FormField with helper/error now announces correctly via screen reader
+#   - Verify <div data-magi-accent="danger"> overrides accent for that subtree only
+
+# 4. If using tokens?: Partial<CSSProperties> anywhere — must remove.
+#    grep -r 'tokens={' src/
+#    Replace with data-magi-accent="<name>" for accent overrides.
+```
+
+### What 0.3.0 does NOT include
+
+Per ADR-0007 (`docs/adr/0007-accessibility.md`):
+
+- Playwright a11y checks (axe-core)
+- Playwright focus + reduced-motion verification
+- Playwright visual regression (~70 baseline snapshots)
+
+These are deferred to 0.4.0. Until then, manual visual verification is the regression strategy for visual changes.
