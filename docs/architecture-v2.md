@@ -10,7 +10,7 @@
 
 The next architectural cycle has four concrete goals:
 
-1. **Fix two real bugs** — `<ProductTheme>` adds an extra `<div>` that breaks flex/grid parents; `tokens?: Partial<CSSProperties>` is a public API leak that violates §7.
+1. **Fix two real bugs** — `<AppTheme>` adds an extra `<div>` that breaks flex/grid parents; `tokens?: Partial<CSSProperties>` is a public API leak that violates §7.
 2. **Establish automated enforcement** — token literals (`#fff`, `rgba(...)`, raw `px`) cannot survive in component CSS. Today nothing stops a contributor from typing `#fff`.
 3. **Make accessibility non-decorative** — every primitive must ship with keyboard / focus / ARIA wiring verified, not just "looks fine in Chrome".
 4. **Document decisions as ADRs** — every non-obvious choice (token scope, CSS layer strategy, theme DOM strategy, React peer range) becomes an ADR the next maintainer can read.
@@ -60,7 +60,7 @@ If a future maintainer wants any of these, they should write a new proposal docu
 │   ├── Segmented        # 0.2.0
 │   ├── Banner           # 0.2.0
 │   └── EmptyState       # 0.2.0
-├── theme.tsx            # ProductTheme component
+├── theme.tsx            # AppTheme component
 ├── utils/classnames.ts  # cx() helper
 └── styles/index.css     # aggregator @imports everything
 ```
@@ -84,7 +84,7 @@ Every component CSS rule is prefixed with `body[data-magi-app]`. This is documen
 
 ### Theme
 
-`<ProductTheme accent="green">` renders a `<div data-magi-product="...">` wrapper that sets 4 inline custom properties (`--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`, `--magi-accent-contrast`). Optional `tokens?: Partial<CSSProperties>` exposes arbitrary CSS variables to consumers.
+`<AppTheme accent="green">` renders a `<div data-magi-product="...">` wrapper that sets 4 inline custom properties (`--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`, `--magi-accent-contrast`). Optional `tokens?: Partial<CSSProperties>` exposes arbitrary CSS variables to consumers.
 
 ### CI
 
@@ -106,7 +106,7 @@ These are concrete, not abstract. Each is reproducible today.
 
 | # | Problem | Where | Evidence |
 |---|---|---|---|
-| 1 | `<ProductTheme>` wraps children in a `<div>` | `src/theme.tsx` | Adds an extra DOM node that breaks `display: grid` parents and breaks inside `display: flex` containers that expect direct children |
+| 1 | `<AppTheme>` wraps children in a `<div>` | `src/theme.tsx` | Adds an extra DOM node that breaks `display: grid` parents and breaks inside `display: flex` containers that expect direct children |
 | 2 | `tokens?: Partial<CSSProperties>` exposed as public API | `src/theme.tsx` | A consumer can pass `tokens={{ '--magi-text-primary': 'red' }}` and break the design system contract (arch_evo.md §7) |
 | 3 | No token literal enforcement | CI | A new contributor can write `#fff` in component CSS; nothing catches it until design review |
 | 4 | No accessibility verification | CI | The 0.2.0 FormField aria-describedby wiring was added without any test confirming it's actually announced by a screen reader |
@@ -175,27 +175,27 @@ None of these are true today.
 
 This is the most important section. Three concrete changes:
 
-### 7.1 `<ProductTheme>` should NOT render a wrapping `<div>`
+### 7.1 `<AppTheme>` should NOT render a wrapping `<div>`
 
-**Problem**: Currently `<ProductTheme>` returns `<div data-magi-product="...">{children}</div>`. This extra `<div>` breaks:
+**Problem**: Currently `<AppTheme>` returns `<div data-magi-product="...">{children}</div>`. This extra `<div>` breaks:
 - `display: grid` parents that expect direct grid-item children
 - `display: flex` parents with `gap` that now has an extra node to layout
 - Any layout using `:first-child`, `:only-child`, `:nth-child(1)` selectors
 - Portals and absolute-positioned children (the wrapper changes layout tree depth)
 
-**Fix**: Use React Context instead. `<ProductTheme>` becomes a pure context provider. The accent tokens become available via `useProductTheme()` hook, applied by individual primitives or by a CSS class on a user-supplied wrapper.
+**Fix**: Use React Context instead. `<AppTheme>` becomes a pure context provider. The accent tokens become available via `useAppTheme()` hook, applied by individual primitives or by a CSS class on a user-supplied wrapper.
 
 ```tsx
 // before:
-<ProductTheme accent="cyan">
+<AppTheme accent="cyan">
   <App />
-</ProductTheme>
+</AppTheme>
 
 // after — no wrapper:
-<ProductTheme accent="cyan">
+<AppTheme accent="cyan">
   <App />
-</ProductTheme>
-// renders <ProductThemeContext.Provider> + children directly. No DOM mutation.
+</AppTheme>
+// renders <AppThemeContext.Provider> + children directly. No DOM mutation.
 ```
 
 For consumers that want to scope tokens to a subtree (e.g. a card with a different accent than the page), they wrap manually:
@@ -220,7 +220,7 @@ If a consumer genuinely needs a new accent not in the 5 presets, they can extend
 
 **Effort**: 5 lines removed + 5 lines of JSDoc updated.
 
-### 7.3 Restrict `ProductAccent` to a smaller set or open it up?
+### 7.3 Restrict `AppAccent` to a smaller set or open it up?
 
 Keep the 5 presets (`green / cyan / violet / amber / white`). They cover current MAGI products and remain readable. Adding more is a non-trivial decision (each needs a contrast-checked `--magi-accent-contrast` value).
 
@@ -350,7 +350,7 @@ This refactor introduces 8 ADRs (per brief §28). Each is a short file in `docs/
 |---|---|---|
 | ADR-001 | Token architecture stays flat, no `@magi/design-tokens` package | Decided in this proposal |
 | ADR-002 | CSS scope is `body[data-magi-app]`, not `data-magi` | Decided in this proposal |
-| ADR-003 | Theme `<ProductTheme>` is a context provider, not a DOM wrapper | Decided in this proposal |
+| ADR-003 | Theme `<AppTheme>` is a context provider, not a DOM wrapper | Decided in this proposal |
 | ADR-004 | Package boundary: single package, no per-component CSS exports | Decided in this proposal |
 | ADR-005 | CSS bundling: single `dist/styles.css` | Decided in this proposal |
 | ADR-006 | React peer range: 18.x for 0.x, 19.x for 1.0 | Decided in this proposal |
@@ -383,7 +383,7 @@ Current:
 "./styles.css" → single bundled CSS
 ```
 
-**Proposed 0.3.0 addition**: `"./theme"` → re-exports `ProductTheme` only, allowing `import { ProductTheme } from '@tokyo3rdhq/magi-design-system/theme'`. Tiny convenience, zero risk.
+**Proposed 0.3.0 addition**: `"./theme"` → re-exports `AppTheme` only, allowing `import { AppTheme } from '@tokyo3rdhq/magi-design-system/theme'`. Tiny convenience, zero risk.
 
 Deferred: `"./tokens.css"` etc. — not needed unless consumers explicitly want to load tokens without components (none yet).
 
@@ -418,10 +418,10 @@ CI runs `typecheck` + `build` only. Zero tests. The 0.2.0 FormField aria wiring 
 Today: 2 consumers (magi-portal, tfi). Both integrated 0.1.0. tfi is mid-migration to 0.2.0.
 
 After 0.3.0 lands:
-- Update `docs/migration-guide.md` to document the `<ProductTheme>` breaking change (no more wrapping `<div>`)
+- Update `docs/migration-guide.md` to document the `<AppTheme>` breaking change (no more wrapping `<div>`)
 - Update the showroom to demonstrate the new pattern
-- Magi-portal needs no change (it doesn't use `<ProductTheme>`)
-- tfi may use `<ProductTheme accent="cyan">` — they should verify layout doesn't break
+- Magi-portal needs no change (it doesn't use `<AppTheme>`)
+- tfi may use `<AppTheme accent="cyan">` — they should verify layout doesn't break
 
 ---
 
@@ -446,7 +446,7 @@ Per brief §32:
 - Renamed props
 - Renamed tokens
 - CSS contract change (selectors / class names)
-- `<ProductTheme>` DOM removal (this lands in 1.0, NOT 0.3.0 — see §16)
+- `<AppTheme>` DOM removal (this lands in 1.0, NOT 0.3.0 — see §16)
 
 ---
 
@@ -460,7 +460,7 @@ Concrete scope, low risk:
 2. **CI: typecheck + build cache via per-package lockfiles** — already done in commit `7433dbf`.
 3. **CI: `axe-playwright` job** on showroom's Phase 4 page.
 4. **Theme fix: drop `tokens` prop** (breaking for anyone using it; no current consumer does).
-5. **Theme fix: drop DOM wrapper** — `<ProductTheme>` becomes a context provider. **Breaking**: any consumer relying on the wrapper div for layout (magi-portal doesn't use `<ProductTheme>`, tfi's draft uses it; this would be the 0.3.0 → tfi migration trigger).
+5. **Theme fix: drop DOM wrapper** — `<AppTheme>` becomes a context provider. **Breaking**: any consumer relying on the wrapper div for layout (magi-portal doesn't use `<AppTheme>`, tfi's draft uses it; this would be the 0.3.0 → tfi migration trigger).
 6. **ADRs 001–008**.
 7. **Bump to 0.3.0**.
 
@@ -501,7 +501,7 @@ Concrete scope, low risk:
 
 | Choice | Cost | Benefit |
 |---|---|---|
-| Theme becomes context provider | Breaks `<ProductTheme>` API; needs 1.0 (or 0.3.0 with deprecation) | No DOM pollution; layout-safe |
+| Theme becomes context provider | Breaks `<AppTheme>` API; needs 1.0 (or 0.3.0 with deprecation) | No DOM pollution; layout-safe |
 | Drop `tokens` prop | Anyone passing `tokens={{ '--magi-...' }}` breaks | Enforces §7 — product can't casually redefine MAGI core tokens |
 | Token literal enforcement | Slight CI overhead; new contributor friction | Catches accidents at PR time, not design review time |
 | `axe-playwright` in CI | +30 lines GH Actions; playwright setup | Validates 0.2.0's aria wiring is actually working |
@@ -515,7 +515,7 @@ Concrete scope, low risk:
 
 Things I'd want feedback on before 0.3.0 ships:
 
-1. Is the `<ProductTheme>` DOM removal in 0.3.0 acceptable, or should it be 1.0?
+1. Is the `<AppTheme>` DOM removal in 0.3.0 acceptable, or should it be 1.0?
 2. Do we want `axe-playwright` in CI from day 1 of 0.3.0, or only after the second product lands?
 3. Should we add `tsc --noEmit` for the showroom as part of CI? (currently it runs but the CI yaml doesn't show it as a separate job)
 

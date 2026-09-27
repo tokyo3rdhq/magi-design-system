@@ -5,13 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] — 2026-09-27
+
+### Changed (breaking)
+
+- **`<ProductTheme>` → `<AppTheme>` rename.** The component name claimed
+  "subtree scope" but the implementation sets accent CSS variables on
+  `<html>` (global). The new name reflects the actual behavior:
+  application-level accent configuration. CSS subtree scope is the job of
+  `<div data-magi-accent="...">`, not this component.
+
+  Migration:
+  - `<ProductTheme>` → `<AppTheme>` (component name)
+  - `useProductTheme()` → `useAppTheme()` (hook name)
+  - `ProductThemeProps` → `AppThemeProps` (props type)
+  - `ProductThemeContext` / `ProductThemeContextValue` → `AppThemeContext` / `AppThemeContextValue` (internal types, not exported)
+  - `ProductAccent` → `AppAccent` (the accent type)
+
+  No behavioral change. Same accent presets, same `accent` / `name`
+  props, same Context behavior, same CSS variable targets.
+
+### Removed
+
+- **`<ProductTheme>` is no longer exported.** TypeScript consumers will
+  get a clear "is not exported" error. The JSDoc on `<AppTheme>` calls
+  out the rename explicitly.
+
 ## [0.3.1] — 2026-09-27
 
 ### Fixed
 
-- **`<ProductTheme>` useEffect had no cleanup** — accent CSS variables
+- **`<AppTheme>` useEffect had no cleanup** — accent CSS variables
   set on `<html>` were never restored on unmount or accent change.
-  This caused accent leaks: a nested `<ProductTheme>` unmounting left
+  This caused accent leaks: a nested `<AppTheme>` unmounting left
   its parent's accent set, and a route transition from a themed page
   to an unthemed one kept the previous theme. **Now snapshots the
   previous values on mount and restores them on cleanup.** Nested
@@ -19,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (snapshots outer, sets its own), inner unmounts (restores outer),
   outer unmounts (restores default).
 
-- **`<ProductTheme>` used `useEffect`** — ran **after** first paint,
+- **`<AppTheme>` used `useEffect`** — ran **after** first paint,
   causing a 1-frame flash of the default accent on every accent
   transition. **Switched to `useInsertionEffect`** — runs synchronously
   after DOM mutations, before paint. The accent is applied to the first
@@ -63,8 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   </div>
   ```
 
-- **`useProductTheme()` hook.** Returns `{ accent: ProductAccent }` for JS-aware
-  consumers. Default `{ accent: 'green' }` outside `<ProductTheme>`.
+- **`useAppTheme()` hook.** Returns `{ accent: AppAccent }` for JS-aware
+  consumers. Default `{ accent: 'green' }` outside `<AppTheme>`.
 
 - **`scripts/check-tokens.mjs`.** CI token literal enforcement. Fails the build
   on `hex` / `rgb()` / `rgba()` literals in component CSS. Warns on hardcoded
@@ -91,7 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed (breaking)
 
-- **`<ProductTheme>` no longer wraps in a `<div>`.** Now a React context
+- **`<AppTheme>` no longer wraps in a `<div>`.** Now a React context
   provider + `useEffect` that sets the four accent CSS variables
   (`--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`,
   `--magi-accent-contrast`) on `document.documentElement`. The wrapper
@@ -116,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed (breaking)
 
-- **`tokens?: Partial<CSSProperties>` prop on `<ProductTheme>`.** Closed the
+- **`tokens?: Partial<CSSProperties>` prop on `<AppTheme>`.** Closed the
   public API leak that let consumers redefine arbitrary `--magi-*` variables.
   For subtree accent overrides, use `<div data-magi-accent="<name>">` instead.
 
@@ -216,7 +242,7 @@ Showroom: new **Phase 4** page demonstrating all 6 primitives with live state.
   - `<Card variant="default | elevated | interactive" padding="none | sm | md | lg" />`
   - `<Badge variant="neutral | accent | success | warning | error" dot />`
 - **Product theme** (`src/theme.tsx`)
-  - `<ProductTheme accent="green | cyan | violet | amber | white" name="…" tokens={{…}}>` — overrides the MAGI accent for a subtree
+  - `<AppTheme accent="green | cyan | violet | amber | white" name="…" tokens={{…}}>` — overrides the MAGI accent for a subtree
 - **Build**
   - Vite library mode emits `dist/index.js` (ESM) + `dist/styles.css` (tokens + foundation + all components)
   - `tsc -p tsconfig.build.json` emits `.d.ts` declarations

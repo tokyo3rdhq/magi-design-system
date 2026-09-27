@@ -25,14 +25,14 @@ import '@tokyo3rdhq/magi-design-system/styles.css';
   <div id="root"></div>
 </body>
 
-// 3. Wrap your app in <ProductTheme> to optionally override the accent.
-//    0.3.0+: ProductTheme is a context provider + sets accent CSS
+// 3. Wrap your app in <AppTheme> to optionally override the accent.
+//    0.3.0+: AppTheme is a context provider + sets accent CSS
 //    variables on <html>. No DOM wrapper.
-import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
+import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 
-<ProductTheme accent="green" name="magi-portal">
+<AppTheme accent="green" name="magi-portal">
   <App />
-</ProductTheme>
+</AppTheme>
 ```
 
 ## API
@@ -244,14 +244,14 @@ import { EmptyState } from '@tokyo3rdhq/magi-design-system';
 
 ### Theme
 
-#### `<ProductTheme>` — accent override (0.3.0+: no DOM wrapper)
+#### `<AppTheme>` — accent override (0.3.0+: no DOM wrapper)
 
 ```tsx
-import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
+import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 
-<ProductTheme accent="cyan" name="token-factory">
+<AppTheme accent="cyan" name="token-factory">
   <App />
-</ProductTheme>
+</AppTheme>
 // accent: 'green' | 'cyan' | 'violet' | 'amber' | 'white'   (default: 'green')
 // name:   string                                              (optional product identifier)
 ```
@@ -284,15 +284,15 @@ The button / banner / etc. inside reads `--magi-accent` via CSS and picks up
 the override automatically. The mapping is shipped as static CSS in
 `foundation/globals.css`.
 
-#### `useProductTheme()` hook
+#### `useAppTheme()` hook
 
 ```tsx
-import { useProductTheme } from '@tokyo3rdhq/magi-design-system';
+import { useAppTheme } from '@tokyo3rdhq/magi-design-system';
 
 function MyComponent() {
-  const { accent } = useProductTheme();
-  // Returns { accent: ProductAccent } or { accent: 'green' } outside
-  // a <ProductTheme>.
+  const { accent } = useAppTheme();
+  // Returns { accent: AppAccent } or { accent: 'green' } outside
+  // a <AppTheme>.
 }
 ```
 

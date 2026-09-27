@@ -11,7 +11,7 @@ This document explains the implementation decisions behind `@tokyo3rdhq/magi-des
 ├── Foundation              Reset + globals + typography utilities
 ├── Layout primitives       Container / Section / Stack
 ├── UI components           Button / Card / Badge
-└── Theme                   ProductTheme (accent override)
+└── Theme                   AppTheme (accent override)
 ```
 
 All tokens are CSS custom properties; everything else consumes them via `var(--magi-*)`. This keeps tokens usable in any technology (React, plain CSS, Tailwind, Astro, Vite, Next, Cloudflare Pages) — see spec §27.
@@ -74,7 +74,7 @@ This is the only side-effect import. Components themselves do **not** import the
 
 ### 6. `color-mix()` for accent-tinted variants
 
-`border-color: color-mix(in srgb, var(--magi-accent) 25%, transparent)` lets the package render accent-tinted borders without hardcoding the accent RGB. When `ProductTheme accent="cyan"` flips `--magi-accent` to `#38bdf8`, every border that uses `color-mix(..., var(--magi-accent), ...)` automatically follows. No `rgba(0, 200, 83, 0.25)` literals scattered in CSS.
+`border-color: color-mix(in srgb, var(--magi-accent) 25%, transparent)` lets the package render accent-tinted borders without hardcoding the accent RGB. When `AppTheme accent="cyan"` flips `--magi-accent` to `#38bdf8`, every border that uses `color-mix(..., var(--magi-accent), ...)` automatically follows. No `rgba(0, 200, 83, 0.25)` literals scattered in CSS.
 
 Browser support: `color-mix()` requires Chrome 111+, Safari 16.2+, Firefox 113+ (mid-2023). Acceptable for 2026.
 
@@ -142,7 +142,7 @@ packages/design-system/
 ├── README.md
 └── src/
     ├── index.ts                 barrel; side-effect imports styles/index.css
-    ├── theme.tsx                ProductTheme + ProductAccent presets
+    ├── theme.tsx                AppTheme + AppAccent presets
     ├── env.d.ts                 vite/client + CSS module type shims
     ├── styles/
     │   └── index.css            aggregator: @imports tokens, foundation, layouts, components

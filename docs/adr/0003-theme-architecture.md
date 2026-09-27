@@ -8,10 +8,10 @@
 
 ## Context
 
-We need to decide how `<ProductTheme accent="...">` exposes per-product accent overrides. Two patterns:
+We need to decide how `<AppTheme accent="...">` exposes per-product accent overrides. Two patterns:
 
-- **DOM wrapper** (0.1.0 / 0.2.0): `<ProductTheme>` returns `<div data-magi-product="..." style={accentVars}>`. The wrapper carries the CSS variables; children inherit.
-- **Context + `<html>`-level setter** (0.3.0): `<ProductTheme>` is a React context provider. On mount, sets the four accent CSS variables on `<html>` via `useEffect`.
+- **DOM wrapper** (0.1.0 / 0.2.0): `<AppTheme>` returns `<div data-magi-product="..." style={accentVars}>`. The wrapper carries the CSS variables; children inherit.
+- **Context + `<html>`-level setter** (0.3.0): `<AppTheme>` is a React context provider. On mount, sets the four accent CSS variables on `<html>` via `useEffect`.
 
 The DOM wrapper approach broke:
 - `display: grid` parents that expect direct grid-item children
@@ -21,20 +21,20 @@ The DOM wrapper approach broke:
 
 ## Decision
 
-**`<ProductTheme>` becomes a context provider + `<html>`-level CSS var setter. No DOM wrapper.**
+**`<AppTheme>` becomes a context provider + `<html>`-level CSS var setter. No DOM wrapper.**
 
 ### Behavior
 
 ```tsx
 // before (0.2.0):
-<ProductTheme accent="cyan">
+<AppTheme accent="cyan">
   <App />  // wrapped in <div data-magi-product="...">
-</ProductTheme>
+</AppTheme>
 
 // after (0.3.0):
-<ProductTheme accent="cyan">
+<AppTheme accent="cyan">
   <App />  // renders as direct children, no extra DOM
-</ProductTheme>
+</AppTheme>
 
 // what happens internally:
 // 1. React Context provides { accent: 'cyan' }
@@ -65,14 +65,14 @@ The `data-magi-accent` attribute maps to the matching accent preset (green / cya
 
 ### Hooks added
 
-- `useProductTheme()` — returns `{ accent: ProductAccent }`. Default `{ accent: 'green' }` when used outside `<ProductTheme>`.
+- `useAppTheme()` — returns `{ accent: AppAccent }`. Default `{ accent: 'green' }` when used outside `<AppTheme>`.
 
 ## Alternatives considered
 
 ### `<MagiProvider>` + `<MagiThemeScope>` two-API pattern
 
 - **Pro**: clean separation of app-level config vs subtree-level scope.
-- **Con**: more API surface, more components to maintain. We don't need both — `<ProductTheme>` at app level + manual `<div data-magi-accent="...">` at scope level covers the same need with less surface.
+- **Con**: more API surface, more components to maintain. We don't need both — `<AppTheme>` at app level + manual `<div data-magi-accent="...">` at scope level covers the same need with less surface.
 
 ### Setting accent via inline `<style>` element
 
@@ -87,8 +87,8 @@ The `data-magi-accent` attribute maps to the matching accent preset (green / cya
 ## Consequences
 
 - **Breaking change**: any consumer using the DOM wrapper's CSS layout (e.g., for `gap` on grid) needs to verify layout still works.
-- **magi-portal**: doesn't use `<ProductTheme>`. No change.
-- **tfi**: planned to use `<ProductTheme accent="cyan">`. Migration: just remove any direct DOM assumptions and verify accent still flows. The `<div data-magi-product>` they were getting for free is now on `<html>`.
+- **magi-portal**: doesn't use `<AppTheme>`. No change.
+- **tfi**: planned to use `<AppTheme accent="cyan">`. Migration: just remove any direct DOM assumptions and verify accent still flows. The `<div data-magi-product>` they were getting for free is now on `<html>`.
 - **Focus rings**: `--magi-focus-ring` reads `--magi-accent` (set on `<html>`). Theme switching now affects focus rings automatically. Bonus.
 - **Performance**: `useEffect` runs once per accent change. Negligible cost.
 

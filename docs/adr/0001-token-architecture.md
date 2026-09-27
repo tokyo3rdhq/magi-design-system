@@ -28,7 +28,7 @@ Single CSS file bundle per category (colors / typography / spacing / radius / mo
 - **Semantic tokens** reference raw values inline. Example: `--magi-accent: #00c853` (no aliasing).
 - **Component CSS** references semantic tokens via `var(--magi-*)`. No component reaches into raw values.
 - **State values** (hover / focus / disabled) are expressed inside component CSS using the same semantic tokens (e.g., `color-mix(in srgb, var(--magi-accent) 25%, transparent)`).
-- **Product overrides** happen via `<ProductTheme>` setting inline custom properties on `<html>`.
+- **Product overrides** happen via `<AppTheme>` setting inline custom properties on `<html>`.
 
 This is enforced by `scripts/check-tokens.mjs` in CI.
 

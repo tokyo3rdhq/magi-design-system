@@ -196,10 +196,10 @@ Applied via the `:focus-visible` rule on `[data-magi-app]` descendants. Use this
 
 ## Overriding tokens in product themes
 
-`<ProductTheme accent="cyan">` flips the accent family only:
+`<AppTheme accent="cyan">` flips the accent family only:
 
 ```ts
-// Effective after ProductTheme accent="cyan":
+// Effective after AppTheme accent="cyan":
 --magi-accent: #38bdf8
 --magi-accent-hover: #7dd3fc
 --magi-accent-soft: rgba(56, 189, 248, 0.08)
@@ -209,9 +209,9 @@ Applied via the `:focus-visible` rule on `[data-magi-app]` descendants. Use this
 All other tokens remain at the default values. If you need to override a different token (e.g. a brand-specific `--magi-text-primary` for an enterprise product), pass it via the `tokens` prop:
 
 ```tsx
-<ProductTheme accent="cyan" tokens={{ '--magi-text-primary': '#0a0a0a' }}>
+<AppTheme accent="cyan" tokens={{ '--magi-text-primary': '#0a0a0a' }}>
   <App />
-</ProductTheme>
+</AppTheme>
 ```
 
 This is an **escape hatch** — overusing it defeats the purpose of the design system. Spec §10 explicitly forbids arbitrary redefinitions of spacing / typography / base surfaces.

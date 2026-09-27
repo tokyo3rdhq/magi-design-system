@@ -21,7 +21,7 @@
 
 | v2 commitment | 0.3 status |
 |---|---|
-| `<ProductTheme>` → context provider, no DOM wrapper | ✅ Shipped |
+| `<AppTheme>` → context provider, no DOM wrapper | ✅ Shipped |
 | `tokens?: Partial<CSSProperties>` removed | ✅ Removed |
 | `<FormField>` aria wiring real | ✅ Shipped via `cloneElement` |
 | CSS `@layer` adoption | ✅ Shipped; verified in `dist/styles.css` |
@@ -32,9 +32,9 @@
 
 **Three architectural problems found** that the v2 review did not catch. Two are P0 (real bugs), one is P1 (architectural mismatch).
 
-**Most important finding**: `<ProductTheme>`'s React Context claims to scope accent to a subtree, but the CSS implementation sets accent variables on `document.documentElement` (global). **Nested `<ProductTheme>` instances do not create CSS subtree scope.** This is a real architectural mismatch between the React mental model and the CSS reality.
+**Most important finding**: `<AppTheme>`'s React Context claims to scope accent to a subtree, but the CSS implementation sets accent variables on `document.documentElement` (global). **Nested `<AppTheme>` instances do not create CSS subtree scope.** This is a real architectural mismatch between the React mental model and the CSS reality.
 
-**The other P0**: `<ProductTheme>`'s `useEffect` has **no cleanup function**. When a nested `<ProductTheme>` unmounts, its accent CSS variables remain on `<html>`. The outer theme never restores its own values.
+**The other P0**: `<AppTheme>`'s `useEffect` has **no cleanup function**. When a nested `<AppTheme>` unmounts, its accent CSS variables remain on `<html>`. The outer theme never restores its own values.
 
 ---
 
@@ -52,14 +52,14 @@
 [Observed] But the implementation has **architectural debt** that v2 did not anticipate:
 
 1. Theme Context vs CSS variable scope mismatch (P0)
-2. No `useEffect` cleanup in `<ProductTheme>` (P0)
+2. No `useEffect` cleanup in `<AppTheme>` (P0)
 3. Accent source-of-truth duplicated in two places (P1)
 
 ---
 
 ## P0 — Critical Issues
 
-### P0.1 — `<ProductTheme>` React Context claims subtree scope but CSS variables are global
+### P0.1 — `<AppTheme>` React Context claims subtree scope but CSS variables are global
 
 **Evidence** — `packages/design-system/src/theme.tsx`:
 
@@ -75,43 +75,43 @@ useEffect(() => {
 
 `setProperty` runs against `document.documentElement` (the `<html>` element). CSS variables set on `<html>` cascade through the entire document.
 
-The JSDoc on `<ProductTheme>` says:
+The JSDoc on `<AppTheme>` says:
 
 > **overrides the MAGI accent for a subtree**
 
-This is **false for CSS**. `<ProductTheme>`'s *React* tree scope is real (children can call `useProductTheme()` to get the local accent), but the *CSS* scope is global.
+This is **false for CSS**. `<AppTheme>`'s *React* tree scope is real (children can call `useAppTheme()` to get the local accent), but the *CSS* scope is global.
 
 **Failure scenario** — nested themes:
 
 ```tsx
-<ProductTheme accent="green">           {/* sets --magi-accent: green on <html> */}
+<AppTheme accent="green">           {/* sets --magi-accent: green on <html> */}
   <App>
-    <ProductTheme accent="cyan">        {/* sets --magi-accent: cyan on <html> */}
+    <AppTheme accent="cyan">        {/* sets --magi-accent: cyan on <html> */}
       <SpecialArea />
-    </ProductTheme>
+    </AppTheme>
     <SiblingArea />                      {/* should see green — actually sees cyan */}
   </App>
-</ProductTheme>
+</AppTheme>
 ```
 
-When the inner `<ProductTheme>` mounts, its effect runs **after** the outer's effect. It overwrites `--magi-accent` on `<html>` to cyan. `SpecialArea` correctly sees cyan. But `<SiblingArea>` (a sibling of the inner, child of the outer) ALSO sees cyan — because the CSS variable is global.
+When the inner `<AppTheme>` mounts, its effect runs **after** the outer's effect. It overwrites `--magi-accent` on `<html>` to cyan. `SpecialArea` correctly sees cyan. But `<SiblingArea>` (a sibling of the inner, child of the outer) ALSO sees cyan — because the CSS variable is global.
 
-[Inferred] The outer `<ProductTheme>`'s `useProductTheme()` returns `'green'` (its Context value). But `SiblingArea` uses CSS variables, so it sees cyan. **Context and CSS disagree**.
+[Inferred] The outer `<AppTheme>`'s `useAppTheme()` returns `'green'` (its Context value). But `SiblingArea` uses CSS variables, so it sees cyan. **Context and CSS disagree**.
 
-**Current behavior** — last-mounted `<ProductTheme>` wins for CSS. There is no subtree scope.
+**Current behavior** — last-mounted `<AppTheme>` wins for CSS. There is no subtree scope.
 
 **Recommendation** — three options, ranked:
 
-1. **Document the limitation explicitly** in the JSDoc. "`<ProductTheme>` is application-level; nested `<ProductTheme>` instances will overwrite each other. For subtree accent overrides use `<div data-magi-accent="<name>">`." This is honest but undermines the API.
-2. **Make `<ProductTheme>` render a wrapper** that scopes CSS vars via a custom selector. This contradicts the v2 decision (which was: drop the wrapper to fix grid breakage).
+1. **Document the limitation explicitly** in the JSDoc. "`<AppTheme>` is application-level; nested `<AppTheme>` instances will overwrite each other. For subtree accent overrides use `<div data-magi-accent="<name>">`." This is honest but undermines the API.
+2. **Make `<AppTheme>` render a wrapper** that scopes CSS vars via a custom selector. This contradicts the v2 decision (which was: drop the wrapper to fix grid breakage).
 3. **Use a Stack-of-effects pattern with cleanup** so nested themes can stack properly via the existing global state. This is the right long-term answer — see P0.2.
 
 **Implementation scope**: API rename + JSDoc update, or stack refactor.
-**Migration impact**: consumers who nested `<ProductTheme>` (none observed) would see correct behavior. Most consumers use it at app root.
+**Migration impact**: consumers who nested `<AppTheme>` (none observed) would see correct behavior. Most consumers use it at app root.
 
 ---
 
-### P0.2 — `<ProductTheme>` `useEffect` has no cleanup function
+### P0.2 — `<AppTheme>` `useEffect` has no cleanup function
 
 **Evidence** — same `theme.tsx` snippet:
 
@@ -135,13 +135,13 @@ There is no return value. **No cleanup.**
 **Failure scenario** — nested themes:
 
 ```tsx
-<ProductTheme accent="green">
+<AppTheme accent="green">
   <SubtreeThatEventuallyRendersInner>
-    <ProductTheme accent="cyan">
+    <AppTheme accent="cyan">
       <Stuff />
-    </ProductTheme>
+    </AppTheme>
   </SubtreeThatEventuallyRendersInner>
-</ProductTheme>
+</AppTheme>
 ```
 
 Sequence:
@@ -151,7 +151,7 @@ Sequence:
 3. Inner unmounts (because `SubtreeThatEventuallyRendersInner` re-renders without it). **CSS still says cyan. Green never restored.**
 4. `SubtreeThatEventuallyRendersInner` now renders `<Stuff />` directly under outer. CSS is cyan — wrong.
 
-**Why current code is fragile**: even without nested themes, **route transitions** can cause similar effects. If `<ProductTheme>` is mounted at the page level and the page unmounts during navigation, the cleanup doesn't run (no cleanup was registered). Subsequent pages render with the previous page's accent.
+**Why current code is fragile**: even without nested themes, **route transitions** can cause similar effects. If `<AppTheme>` is mounted at the page level and the page unmounts during navigation, the cleanup doesn't run (no cleanup was registered). Subsequent pages render with the previous page's accent.
 
 [Observed] The current implementation has no cleanup. The brief in v2 review §7 mentioned "FOUC concern on accent transitions" but didn't catch this.
 
@@ -184,7 +184,7 @@ useEffect(() => {
 This makes the effect self-cleaning on unmount. **Does not solve the nested-theme overlap problem** (P0.1) but solves the leak problem. The two are independent fixes.
 
 **Implementation scope**: ~10 lines in `theme.tsx` + tests.
-**Migration impact**: zero — observable behavior on app-root `<ProductTheme>` (the common case) is unchanged.
+**Migration impact**: zero — observable behavior on app-root `<AppTheme>` (the common case) is unchanged.
 
 ---
 
@@ -226,12 +226,12 @@ cyan: {
 
 **Failure scenario** — adding a new accent:
 1. Add to `ACCENT_PRESETS` in `theme.tsx`.
-2. Add to `ProductAccent` union type in `theme.tsx`.
+2. Add to `AppAccent` union type in `theme.tsx`.
 3. Add a `[data-magi-accent="<new>"]` rule to `globals.css`.
 4. Update the token literal check `SELECTOR_ALLOWLIST` if the new accent uses hex.
 5. Add to showroom's Phase 4 page.
 
-**5 places.** A consumer who later wants to customize `<ProductTheme>` will be confused which file to edit.
+**5 places.** A consumer who later wants to customize `<AppTheme>` will be confused which file to edit.
 
 **Recommendation** — single source of truth in 0.4.0:
 
@@ -339,7 +339,7 @@ This would:
 
 ### P1.4 — First-paint flash on accent transition
 
-[Observed] `<ProductTheme>` uses `useEffect`, which runs **after** the first paint. On the first render of any page that uses `<ProductTheme accent="cyan">`, the user sees the default green accent for one frame, then cyan.
+[Observed] `<AppTheme>` uses `useEffect`, which runs **after** the first paint. On the first render of any page that uses `<AppTheme accent="cyan">`, the user sees the default green accent for one frame, then cyan.
 
 [Inferred] For most consumers this is one frame (16ms at 60fps) and imperceptible. For SSR — `useEffect` does not run on the server, so the server-rendered HTML has the default green. After hydration, the effect runs and switches to cyan.
 
@@ -474,7 +474,7 @@ The brief §7.2 asks: can consumers override spacing / typography / tokens / glo
 | What consumers can override | Allowed? | How |
 |---|---|---|
 | Component colors / spacing within their own context | ✅ Allowed | Unlayered CSS |
-| Component token values (e.g. `--magi-accent`) | ❌ Discouraged | Use `<ProductTheme>` or `data-magi-accent="..."` |
+| Component token values (e.g. `--magi-accent`) | ❌ Discouraged | Use `<AppTheme>` or `data-magi-accent="..."` |
 | Foundation body bg / scrollbar | ❌ Discouraged | Override only at the `<html>` level before the design system loads |
 | Token values (`--magi-space-4` etc.) | ❌ Discouraged | These are design language; redesign the system, not the consumer |
 
@@ -505,7 +505,7 @@ Per ADR-0001: defer. No current consumer asks.
 
 Per ADR-0004: defer. Only GitHub SVG in magi-portal, zero icons in tfi.
 
-### P3.5 — `useProductTheme()` Context nesting verification
+### P3.5 — `useAppTheme()` Context nesting verification
 
 [Open Question] The Context implementation is straightforward React Context. Nesting should work — `useContext` walks the tree upward and finds the nearest provider. But I haven't tested this with a real nested scenario. **Worth adding a Playwright test in 0.4.0.**
 
@@ -516,9 +516,9 @@ Per ADR-0004: defer. Only GitHub SVG in magi-portal, zero icons in tfi.
 ### Current state
 
 ```text
-React Context (ProductThemeContext)
+React Context (AppThemeContext)
     ↓
-provides { accent: ProductAccent } to useProductTheme()
+provides { accent: AppAccent } to useAppTheme()
 
 CSS custom properties on <html>
     ↓
@@ -537,17 +537,17 @@ The brief §3 frames this correctly: **React scope ≠ CSS scope**.
 - CSS variables are global (set on `<html>`)
 - `data-magi-accent="..."` provides subtree CSS scope, but via a different attribute, not via Context
 
-A consumer who calls `useProductTheme()` inside a nested `<ProductTheme>` gets the inner accent (correct React behavior). The CSS in that subtree also reads the inner accent (because the inner's effect overwrote `<html>`). **But siblings outside the inner subtree ALSO read the inner accent** (because the CSS variable is global).
+A consumer who calls `useAppTheme()` inside a nested `<AppTheme>` gets the inner accent (correct React behavior). The CSS in that subtree also reads the inner accent (because the inner's effect overwrote `<html>`). **But siblings outside the inner subtree ALSO read the inner accent** (because the CSS variable is global).
 
 This means:
-- `<ProductTheme>` is **effectively an app-level theme**, not a subtree theme
+- `<AppTheme>` is **effectively an app-level theme**, not a subtree theme
 - For real subtree accent overrides, use `<div data-magi-accent="...">` (which doesn't go through React Context at all)
 
 The component name is misleading.
 
 ### Recommendation for 0.4.0
 
-**Rename**: `<ProductTheme>` → `<AppTheme>`. Communicates the actual scope (app-level) and avoids the "subtree" claim.
+**Rename**: `<AppTheme>` → `<AppTheme>`. Communicates the actual scope (app-level) and avoids the "subtree" claim.
 
 **Keep**: `data-magi-accent="..."` for subtree overrides (no React involvement).
 
@@ -778,7 +778,7 @@ This is the visible part of ADR-0007. Implementation is light: ~5-10 new showcas
 
 | Statement | Source | Reality |
 |---|---|---|
-| `<ProductTheme>` overrides accent **for a subtree** | `theme.tsx` JSDoc | ❌ False — sets accent on `<html>`, no subtree CSS scope (P0.1) |
+| `<AppTheme>` overrides accent **for a subtree** | `theme.tsx` JSDoc | ❌ False — sets accent on `<html>`, no subtree CSS scope (P0.1) |
 | `<FormField>` wires `aria-describedby` | `FormField.tsx` JSDoc | ⚠️ Partially — wires via `cloneElement`, but **overwrites** consumer's `aria-describedby` (P1.3) |
 | 13 primitives shipped | CHANGELOG, README | ✅ Verified |
 | `dist/styles.css` is 24.17 kB | README, CHANGELOG | ✅ Verified |
@@ -789,7 +789,7 @@ This is the visible part of ADR-0007. Implementation is light: ~5-10 new showcas
 | Token literal CI runs in CI | README | ✅ Verified |
 | `body[data-magi-app]` is the scope contract | README, ADR-0002 | ⚠️ Should be `html[data-magi-app]` at 0.5.0 (deferred) |
 
-One real divergence found: `<ProductTheme>` JSDoc says "subtree" but behavior is "global via `<html>`". Fix in 0.4.0 (rename or JSDoc update per P0.1).
+One real divergence found: `<AppTheme>` JSDoc says "subtree" but behavior is "global via `<html>`". Fix in 0.4.0 (rename or JSDoc update per P0.1).
 
 ---
 
@@ -797,9 +797,9 @@ One real divergence found: `<ProductTheme>` JSDoc says "subtree" but behavior is
 
 ### MUST FIX
 
-- **P0.2**: Add `useEffect` cleanup to `<ProductTheme>` to avoid accent-leak on unmount.
+- **P0.2**: Add `useEffect` cleanup to `<AppTheme>` to avoid accent-leak on unmount.
 - **P1.3**: Fix `<FormField>` `aria-describedby` / `aria-labelledby` to **merge** instead of overwrite.
-- **P0.1**: Either rename `<ProductTheme>` to `<AppTheme>` (clarify scope) OR add JSDoc warning about nested-theme behavior.
+- **P0.1**: Either rename `<AppTheme>` to `<AppTheme>` (clarify scope) OR add JSDoc warning about nested-theme behavior.
 - **P2 keyboard nav**: Add `onKeyDown` to `<Segmented>` for arrow / Home / End / Space.
 
 ### SHOULD FIX
@@ -846,7 +846,7 @@ One real divergence found: `<ProductTheme>` JSDoc says "subtree" but behavior is
 1. **MAGI owns the visual language; products own the experience.**
 2. **The Design System major version is driven by our contract changes, not upstream React.**
 3. **CSS variables are the styling runtime; React Context is the configuration runtime.** (0.3.0 conflates these — see P0.1.)
-4. **`<AppTheme>` (formerly `<ProductTheme>`) is application-level accent configuration, not subtree.** Subtree overrides use `data-magi-accent="..."`.
+4. **`<AppTheme>` (formerly `<AppTheme>`) is application-level accent configuration, not subtree.** Subtree overrides use `data-magi-accent="..."`.
 5. **Token governance protects the design language from literal drift, not arbitrary numeric values.**
 6. **Package boundaries follow dependency boundaries, not directory structure.**
 7. **Accessibility is part of the component API contract, not a post-hoc testing phase.**
@@ -862,7 +862,7 @@ Principles 3, 4, 9, 10 are new for 0.4.0.
 
 ## Open Questions
 
-1. **Should `<ProductTheme>` keep its name or be renamed to `<AppTheme>`?** (See P0.1.) The rename is honest but breaking. The JSDoc update is honest and non-breaking.
+1. **Should `<AppTheme>` keep its name or be renamed to `<AppTheme>`?** (See P0.1.) The rename is honest but breaking. The JSDoc update is honest and non-breaking.
 2. **Should we add a `Stack` `<AppTheme>` pattern using `<style>` injection** instead of `setProperty`, for SSR cleanliness? Trade-off: more code, simpler reasoning.
 3. **Should `<Segmented>` support `multi` mode despite the H2a feedback?** No — the H2a fix was correct. Multi-segmented is an anti-pattern.
 4. **Should `data-magi-accent` generate `aria-invalid` automatically** when `danger`/`warning`/`success` are used inside `<FormField>`? No — that's mixing concerns. The `data-magi-accent` is a CSS-only affordance.
@@ -872,8 +872,8 @@ Principles 3, 4, 9, 10 are new for 0.4.0.
 
 ## Top 5 issues to fix before 0.4
 
-1. **P0.2** — Add `useEffect` cleanup to `<ProductTheme>`. Real bug, 10-line fix.
-2. **P0.1** — Either rename `<ProductTheme>` to `<AppTheme>` OR add explicit JSDoc warning about nested behavior. Either fixes the architectural mismatch.
+1. **P0.2** — Add `useEffect` cleanup to `<AppTheme>`. Real bug, 10-line fix.
+2. **P0.1** — Either rename `<AppTheme>` to `<AppTheme>` OR add explicit JSDoc warning about nested behavior. Either fixes the architectural mismatch.
 3. **P1.3** — Fix `<FormField>` `aria-describedby` to merge, not overwrite. Real bug for consumers who supply external ARIA references.
 4. **P2 keyboard nav** — `<Segmented>` arrow key handling. Real WAI-ARIA conformance gap.
 5. **P1.1** — Single source of truth test for accent values. Unit test, ~30 lines. Prevents future drift.

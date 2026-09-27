@@ -14,7 +14,7 @@ You are a senior frontend engineer working on the **MAGI** product family. Your 
 
 - **MAGI** is an independent AI lab. The main portal lives at https://magi.website and links to a family of product sites under `*.magi.website`. Every product site must visually belong to the same family.
 - The visual language is **dark-first, near-monochrome, restrained**. Apple-level restraint + developer-infrastructure aesthetic. **No CRT / terminal / neon styling.** See [`architecture.md`](./architecture.md) and the package's [`README.md`](../packages/design-system/README.md) for details.
-- All products share typography, spacing, surfaces, borders, radius, motion, and accessibility rules via `@tokyo3rdhq/magi-design-system`. Each product may override **only** its accent color via `<ProductTheme accent="…" />`.
+- All products share typography, spacing, surfaces, borders, radius, motion, and accessibility rules via `@tokyo3rdhq/magi-design-system`. Each product may override **only** its accent color via `<AppTheme accent="…" />`.
 
 ### Inputs (fill in before starting)
 
@@ -41,7 +41,7 @@ These are **hard constraints**. Violating any of them breaks the family contract
 3. **Do not reintroduce CRT / terminal / neon styling.** Spec §36.
 4. **Do not fork the package** — consume via `npm install @tokyo3rdhq/magi-design-system`. Spec §2.
 5. **`<body>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. See [`architecture.md` §3](./architecture.md).
-6. **`<ProductTheme>` is the only sanctioned way to change the accent** — set inline custom properties on a subtree, do not write global CSS to override `--magi-accent`. Spec §10.
+6. **`<AppTheme>` is the only sanctioned way to change the accent** — set inline custom properties on a subtree, do not write global CSS to override `--magi-accent`. Spec §10.
 7. **All user-visible text must be styled through design-system utilities or components** — `.magi-h1`, `<ProductHeader>`, etc. Avoid hand-rolled typographic CSS unless a new pattern is justified.
 
 ### Pre-flight
@@ -76,15 +76,15 @@ The order matters. Do not skip steps even if they seem trivial.
    ```ts
    document.body.setAttribute('data-magi-app', '');
    ```
-4. **Wrap your app in `<ProductTheme>`** at the highest practical level — usually just inside `<body>`, around the entire routes tree:
+4. **Wrap your app in `<AppTheme>`** at the highest practical level — usually just inside `<body>`, around the entire routes tree:
    ```tsx
-   import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
+   import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 
-   <ProductTheme accent="{ACCENT_PRESET}" name="{PRODUCT_SLUG}">
+   <AppTheme accent="{ACCENT_PRESET}" name="{PRODUCT_SLUG}">
      <App />
-   </ProductTheme>
+   </AppTheme>
    ```
-   If you are using Astro with server-rendered pages (no React islands), use a custom element wrapper or skip `<ProductTheme>` for now and rely on the default `green` accent — `data-magi-product` and the four accent tokens will only be set when React is mounted. Note this gap in the deliverable.
+   If you are using Astro with server-rendered pages (no React islands), use a custom element wrapper or skip `<AppTheme>` for now and rely on the default `green` accent — `data-magi-product` and the four accent tokens will only be set when React is mounted. Note this gap in the deliverable.
 5. **Replace existing components** with design-system primitives where applicable:
 
    | Existing pattern | Replacement |
@@ -143,7 +143,7 @@ Run these checks and capture their output:
 4. **Smoke test the live site**:
    - Open the dev server (`npm run dev` or the equivalent)
    - Confirm: dark backdrop, accent on primary CTA, focus ring on Tab, no console errors
-   - Confirm: switching `<ProductTheme accent>` to a different preset visibly changes the accent everywhere
+   - Confirm: switching `<AppTheme accent>` to a different preset visibly changes the accent everywhere
 
 ### Out of scope
 
@@ -153,7 +153,7 @@ Do **not** attempt any of the following as part of this integration:
 - Refactoring product business logic
 - Replacing the product's framework (Astro → React, etc.)
 - Adding Tailwind / Next / Vite coupling to the design system itself
-- Modifying tokens globally — token overrides happen at the `<ProductTheme>` level only
+- Modifying tokens globally — token overrides happen at the `<AppTheme>` level only
 
 ### References
 
@@ -172,6 +172,6 @@ When you finish, report:
 2. The install command you ran and its output
 3. The build / typecheck results
 4. A short paragraph: "What now looks visually different from before" — call out any genuine visual change (focus ring appearing is one; if everything looks identical aside from that, say so).
-5. Anything you couldn't do and why (e.g. "framework is Svelte, ProductTheme not yet ported").
+5. Anything you couldn't do and why (e.g. "framework is Svelte, AppTheme not yet ported").
 
 If any acceptance criterion fails, **stop** and report; do not paper over it with custom CSS.

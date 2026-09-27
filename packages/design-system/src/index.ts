@@ -6,7 +6,7 @@
  *     Container, Section, Stack,
  *     Button, Card, Badge,
  *     Checkbox, FormField, Input, Segmented, Banner, EmptyState,
- *     ProductTheme,
+ *     AppTheme,
  *   } from '@tokyo3rdhq/magi-design-system';
  */
 
@@ -25,5 +25,5 @@ export * from './components/FormField/index';
 export * from './components/Segmented/index';
 export * from './components/Banner/index';
 export * from './components/EmptyState/index';
-export { ProductTheme } from './theme';
-export type { ProductThemeProps, ProductAccent } from './theme';
+export { AppTheme } from './theme';
+export type { AppThemeProps, AppAccent } from './theme';

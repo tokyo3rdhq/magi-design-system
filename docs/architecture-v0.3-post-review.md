@@ -109,18 +109,18 @@ Actual behavior
 
 ---
 
-# 3. Critical Review — ProductTheme
+# 3. Critical Review — AppTheme
 
 这是本次 review 的最高优先级。
 
-当前 `ProductTheme` 已经从 DOM wrapper 改成 Context provider。
+当前 `AppTheme` 已经从 DOM wrapper 改成 Context provider。
 
 但是请仔细分析：
 
 ```tsx
-<ProductTheme accent="cyan">
+<AppTheme accent="cyan">
     <App />
-</ProductTheme>
+</AppTheme>
 ```
 
 是否真的形成了 subtree theme。
@@ -154,13 +154,13 @@ React scope ≠ CSS scope
 测试/推演：
 
 ```tsx
-<ProductTheme accent="green">
+<AppTheme accent="green">
     <App>
-        <ProductTheme accent="cyan">
+        <AppTheme accent="cyan">
             <SpecialArea />
-        </ProductTheme>
+        </AppTheme>
     </App>
-</ProductTheme>
+</AppTheme>
 ```
 
 分析：
@@ -672,9 +672,9 @@ Implementation Detail
 特别关注：
 
 ```text
-ProductTheme
-useProductTheme
-ProductAccent
+AppTheme
+useAppTheme
+AppAccent
 theme utilities
 token definitions
 classnames utilities
@@ -1033,7 +1033,7 @@ implementation does Y
 特别检查：
 
 ```text
-ProductTheme
+AppTheme
 @layer
 data-magi-app
 token enforcement

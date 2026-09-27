@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, ProductTheme, type ProductAccent } from '@tokyo3rdhq/magi-design-system';
+import { Container, AppTheme, type AppAccent } from '@tokyo3rdhq/magi-design-system';
 import { Tokens } from './pages/Tokens';
 import { Typography } from './pages/Typography';
 import { Buttons } from './pages/Buttons';
@@ -21,7 +21,7 @@ const PAGES: { id: Page; label: string }[] = [
   { id: 'phase4', label: 'Phase 4' },
 ];
 
-const ACCENTS: { id: ProductAccent; label: string }[] = [
+const ACCENTS: { id: AppAccent; label: string }[] = [
   { id: 'green', label: 'Green (default)' },
   { id: 'cyan', label: 'Cyan' },
   { id: 'violet', label: 'Violet' },
@@ -31,10 +31,10 @@ const ACCENTS: { id: ProductAccent; label: string }[] = [
 
 export function App() {
   const [page, setPage] = useState<Page>('tokens');
-  const [accent, setAccent] = useState<ProductAccent>('green');
+  const [accent, setAccent] = useState<AppAccent>('green');
 
   return (
-    <ProductTheme accent={accent} name="showroom">
+    <AppTheme accent={accent} name="showroom">
       <div className={styles.shell}>
         <header className={styles.topbar}>
           <div className={styles.brand}>
@@ -56,7 +56,7 @@ export function App() {
             <span className={styles.accentLabel}>Accent</span>
             <select
               value={accent}
-              onChange={(e) => setAccent(e.target.value as ProductAccent)}
+              onChange={(e) => setAccent(e.target.value as AppAccent)}
             >
               {ACCENTS.map((a) => (
                 <option key={a.id} value={a.id}>
@@ -87,6 +87,6 @@ export function App() {
           </Container>
         </footer>
       </div>
-    </ProductTheme>
+    </AppTheme>
   );
 }

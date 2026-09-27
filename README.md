@@ -11,15 +11,15 @@ This monorepo contains the package that every MAGI website consumes:
 
 ## What is MAGI?
 
-[MAGI](https://magi.website) is an independent AI lab operating a family of products (`magi.website`, `api.magi.website`, `chat.magi.website`, `agent.magi.website`). Every product inherits the same visual language — typography, spacing, surfaces, motion, accessibility rules — but each can override its accent color through `<ProductTheme accent="…" />` or subtree-level `<div data-magi-accent="…">`.
+[MAGI](https://magi.website) is an independent AI lab operating a family of products (`magi.website`, `api.magi.website`, `chat.magi.website`, `agent.magi.website`). Every product inherits the same visual language — typography, spacing, surfaces, motion, accessibility rules — but each can override its accent color through `<AppTheme accent="…" />` or subtree-level `<div data-magi-accent="…">`.
 
 ## Status
 
-**0.3.0 published.** 13 primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / ProductTheme) + CSS `@layer` cascade + token literal CI enforcement + 8 ADRs.
+**0.3.0 published.** 13 primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme) + CSS `@layer` cascade + token literal CI enforcement + 8 ADRs.
 
-- [x] Phase 1 — `0.1.0` — tokens + foundation + layout + Button / Card / Badge + ProductTheme
+- [x] Phase 1 — `0.1.0` — tokens + foundation + layout + Button / Card / Badge + AppTheme
 - [x] Phase 2 — `0.2.0` — Checkbox / FormField / Input / Segmented / Banner / EmptyState (extracted from `token-factory-initializr`)
-- [x] Phase 3 — `0.3.0` — `@layer` cascade + `<ProductTheme>` context (no DOM wrapper) + `<FormField>` aria wiring + `data-magi-accent` subtree accent + token literal CI + 8 ADRs
+- [x] Phase 3 — `0.3.0` — `@layer` cascade + `<AppTheme>` context (no DOM wrapper) + `<FormField>` aria wiring + `data-magi-accent` subtree accent + token literal CI + 8 ADRs
 - [x] **Phase 4** — `magidesign-system` repo migrated to use `@tokyo3rdhq/magi-design-system` itself (this repo's showroom consumes the local package)
 - [x] **Phase 5** — `magidesign-system` repo `magi-portal` migrated to use `@tokyo3rdhq/magi-design-system` 0.2.0 (commit `ae63ef7`)
 - [ ] **Phase 6** — `token-factory-initializr/web` migration to use `@tokyo3rdhq/magi-design-system` 0.3.0 (in progress)
@@ -69,12 +69,12 @@ import {
   Container, Section, Stack,
   Button, Card, Badge,
   Checkbox, FormField, Input, Segmented, Banner, EmptyState,
-  ProductTheme,
+  AppTheme,
 } from '@tokyo3rdhq/magi-design-system';
 
 function App() {
   return (
-    <ProductTheme accent="green" name="magi-portal">
+    <AppTheme accent="green" name="magi-portal">
       <Container size="xl">
         <Section spacing="lg">
           <Stack gap="6">
@@ -87,7 +87,7 @@ function App() {
           </Stack>
         </Section>
       </Container>
-    </ProductTheme>
+    </AppTheme>
   );
 }
 ```

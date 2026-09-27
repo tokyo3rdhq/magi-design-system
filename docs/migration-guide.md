@@ -70,19 +70,19 @@ document.body.setAttribute('data-magi-app', '');
 
 ### Astro + React islands
 
-If you later add React islands via `@astrojs/react`, mount them under `<ProductTheme>` so the accent override scopes to a subtree:
+If you later add React islands via `@astrojs/react`, mount them under `<AppTheme>` so the accent override scopes to a subtree:
 
 ```astro
 ---
-import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
+import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 import MyReactComponent from './MyReactComponent';
 ---
-<ProductTheme accent="green" client:load>
+<AppTheme accent="green" client:load>
   <MyReactComponent client:load />
-</ProductTheme>
+</AppTheme>
 ```
 
-> Note: Astro **server-renders** `ProductTheme` only if you also add React integration. Without React, you can only consume tokens and CSS classes from the package — React components need client islands.
+> Note: Astro **server-renders** `AppTheme` only if you also add React integration. Without React, you can only consume tokens and CSS classes from the package — React components need client islands.
 
 ## Phase 2 — migrate `magi.website` (Astro + Tailwind)
 
@@ -236,18 +236,18 @@ In `index.html`:
 </body>
 ```
 
-### Step 4 — Wrap the app in `<ProductTheme>`
+### Step 4 — Wrap the app in `<AppTheme>`
 
 The Initializr is a product of MAGI — it should default to the **cyan** accent (per spec §5 example):
 
 ```tsx
-import { ProductTheme } from '@tokyo3rdhq/magi-design-system';
+import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 
 function App() {
   return (
-    <ProductTheme accent="cyan" name="token-factory-initializr">
+    <AppTheme accent="cyan" name="token-factory-initializr">
       <Routes />
-    </ProductTheme>
+    </AppTheme>
   );
 }
 ```
@@ -270,7 +270,7 @@ Open the Initializr locally and verify the cyan accent flows correctly. Common i
 
 - Tokens don't show: check that `data-magi-app` is on `<body>` (not on `#root`)
 - Component styles don't apply: check the browser's computed `body[data-magi-app]` is matching the wrapper
-- Accent override doesn't propagate: verify `<ProductTheme>` wraps your routes
+- Accent override doesn't propagate: verify `<AppTheme>` wraps your routes
 
 ## Compatibility with existing i18n
 
@@ -284,7 +284,7 @@ Per spec §33:
 
 Current state at 0.3.0:
 
-- 13 primitives shipped (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / ProductTheme)
+- 13 primitives shipped (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme)
 - All have at least one consumer in `magi.website` or `token-factory-initializr`
 
 Still deferred per ADR-0004 (`docs/adr/0004-package-boundary.md`) and §34 non-goals:
@@ -297,24 +297,22 @@ Open an issue before building any of these. We do not want a 50-component librar
 
 ## Phase 5 — Upgrade from 0.2.0 to 0.3.0
 
-`@tokyo3rdhq/magi-design-system@0.3.0` ships three breaking changes from 0.2.0. All consumers must migrate.
+### Breaking change 1: `<AppTheme>` no longer wraps in `<div>`
 
-### Breaking change 1: `<ProductTheme>` no longer wraps in `<div>`
+**Before (0.2.0)**: `<AppTheme accent="cyan">` returned `<div data-magi-product="..." style={accentVars}>`. Children inherited via the wrapper.
 
-**Before (0.2.0)**: `<ProductTheme accent="cyan">` returned `<div data-magi-product="..." style={accentVars}>`. Children inherited via the wrapper.
-
-**After (0.3.0)**: `<ProductTheme>` is a React context provider + `useEffect` setter on `<html>`. No DOM wrapper. The four accent CSS variables are set on `document.documentElement` directly.
+**After (0.3.0)**: `<AppTheme>` is a React context provider + `useEffect` setter on `<html>`. No DOM wrapper. The four accent CSS variables are set on `document.documentElement` directly.
 
 ```tsx
 // 0.2.0 (old): wrapper renders <div data-magi-product="...">
-<ProductTheme accent="cyan" name="token-factory">
+<AppTheme accent="cyan" name="token-factory">
   <App />
-</ProductTheme>
+</AppTheme>
 
 // 0.3.0 (new): no DOM mutation; <html> gets the accent variables
-<ProductTheme accent="cyan" name="token-factory">
+<AppTheme accent="cyan" name="token-factory">
   <App />
-</ProductTheme>
+</AppTheme>
 // Inspect: document.documentElement.style.getPropertyValue('--magi-accent')
 //          → '#38bdf8' (cyan)
 // Inspect: document.documentElement.dataset.magiProduct
@@ -325,7 +323,7 @@ Open an issue before building any of these. We do not want a 50-component librar
 
 - **Layout**: any CSS that depended on the wrapper `<div>` (e.g. `:first-child`, `:nth-child(1)`, `display: grid` direct children) needs to be reviewed. The wrapper is gone — children are direct.
 - **DOM queries**: code that did `document.querySelector('[data-magi-product]')` to find the wrapper div now finds `<html>` instead. Update selectors if you read the attribute from a specific element.
-- **Portals**: portals rendered inside `<ProductTheme>` no longer have the wrapper as their layout parent — they go directly to the body. This is the desired behavior.
+- **Portals**: portals rendered inside `<AppTheme>` no longer have the wrapper as their layout parent — they go directly to the body. This is the desired behavior.
 
 **What does NOT break**:
 
@@ -334,7 +332,7 @@ Open an issue before building any of these. We do not want a 50-component librar
 
 ### Breaking change 2: `tokens?: Partial<CSSProperties>` prop removed
 
-**Before (0.2.0)**: `<ProductTheme tokens={{ '--magi-text-primary': 'red' }}>` let consumers redefine any CSS variable through the theme component.
+**Before (0.2.0)**: `<AppTheme tokens={{ '--magi-text-primary': 'red' }}>` let consumers redefine any CSS variable through the theme component.
 
 **After (0.3.0)**: this prop is removed. Only `accent` (preset) and `name` remain.
 
@@ -342,9 +340,9 @@ Open an issue before building any of these. We do not want a 50-component librar
 
 ```tsx
 // 0.2.0 (old): arbitrary variable override
-<ProductTheme tokens={{ '--magi-accent': 'var(--magi-error)' }}>
+<AppTheme tokens={{ '--magi-accent': 'var(--magi-error)' }}>
   <DangerCard />
-</ProductTheme>
+</AppTheme>
 
 // 0.3.0 (new): use the shipped data-magi-accent attribute
 <div data-magi-accent="danger">
@@ -434,3 +432,75 @@ Per ADR-0007 (`docs/adr/0007-accessibility.md`):
 - Playwright visual regression (~70 baseline snapshots)
 
 These are deferred to 0.4.0. Until then, manual visual verification is the regression strategy for visual changes.
+
+## Phase 6 — Upgrade from 0.3.x to 0.4.0
+
+`@tokyo3rdhq/magi-design-system@0.4.0` ships one breaking change: `<ProductTheme>` was renamed to `<AppTheme>`. The rename addresses the architectural mismatch flagged in `docs/architecture-review-0.3.md` §P0.1 — the component name claimed "subtree scope" but the implementation sets accent CSS variables on `<html>` (global). The new name reflects the actual behavior: **application-level** accent configuration.
+
+For CSS subtree scope, the dedicated mechanism is `<div data-magi-accent="<name>">` (introduced in 0.3.0). `<AppTheme>` is for app-level configuration only.
+
+### Breaking change 1: `<ProductTheme>` → `<AppTheme>`
+
+**Renamed in 0.4.0:**
+
+| 0.3.x | 0.4.0 |
+|---|---|
+| `<ProductTheme>` | `<AppTheme>` |
+| `useProductTheme()` | `useAppTheme()` |
+| `ProductThemeProps` (TS type) | `AppThemeProps` |
+| `ProductAccent` (TS type) | `AppAccent` |
+
+Internal types (`ProductThemeContext`, `ProductThemeContextValue`) are also renamed but were never exported.
+
+**No behavioral change.** Same accent presets, same `accent` / `name` props, same Context behavior, same CSS variable targets. The only difference is the name.
+
+### Migration
+
+```diff
+-import { ProductTheme, useProductTheme } from '@tokyo3rdhq/magi-design-system';
++import { AppTheme, useAppTheme } from '@tokyo3rdhq/magi-design-system';
+
+-const accent = useProductTheme().accent;
++const accent = useAppTheme().accent;
+
+-<ProductTheme accent="cyan" name="token-factory">
++<AppTheme accent="cyan" name="token-factory">
+   <App />
+-</ProductTheme>
++</AppTheme>
+```
+
+For consumers using `ProductAccent` as a type:
+
+```diff
+-const [accent, setAccent] = useState<ProductAccent>('green');
++const [accent, setAccent] = useState<AppAccent>('green');
+```
+
+### Why this rename
+
+Per `docs/architecture-review-0.3.md` §P0.1:
+
+> The component name is misleading. `<ProductTheme>` provides app-level accent (CSS vars on `<html>`), with a JS-only Context for children who explicitly call `useProductTheme()`. A consumer who calls `useProductTheme()` inside a nested `<ProductTheme>` gets the inner accent (correct React behavior). The CSS in that subtree also reads the inner accent (because the inner's effect overwrote `<html>`). But siblings outside the inner subtree ALSO read the inner accent (because the CSS variable is global). Context and CSS disagree.
+
+The rename to `<AppTheme>` makes the actual scope explicit:
+
+- **`<AppTheme>`**: app-level accent configuration. Set once at the root of your React tree. CSS variables land on `<html>`. Affects the entire document.
+- **`<div data-magi-accent="...">`**: CSS subtree accent override. The shipped CSS rules in `foundation/globals.css` map this attribute to accent presets or semantic colors. Works regardless of where in the tree it's used.
+
+For the full subtree vs app-level distinction and the nested-theme snapshot/restore behavior added in 0.3.1, see `docs/architecture-review-0.3.md` §P0.1 + §P0.2.
+
+### What 0.4.0 does NOT include (still deferred)
+
+Per `docs/architecture-review-0.3.md`:
+
+- **P1.1** Accent source-of-truth single test (defer to 0.4.x patch)
+- **P1.2** Extend token literal check to `.tsx`/`.ts` files (defer)
+- **P1.5** Drop `src/styles` from `files` in `package.json` (defer)
+- **P2** `<Segmented>` keyboard navigation (Arrow / Home / End / Space)
+- **P2.1** FormField child contract formalization (JSDoc only)
+- **P2.2** State token vocabulary in new ADR
+- **P2.3** Cascade contract for consumers in new ADR
+- **axe-playwright / Playwright visual regression** per ADR-0007
+
+The next 0.4.x patch will land P1.1 / P1.2 / P1.5. The next minor (0.5.0) will land P2 items + axe-playwright per ADR-0002 scope rename plan.

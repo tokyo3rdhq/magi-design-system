@@ -251,22 +251,22 @@ letter-spacing: ...
 
 # 6. Critical Review #3 — Theme Architecture
 
-Architecture v2 proposes changing ProductTheme from:
+Architecture v2 proposes changing AppTheme from:
 
 ```tsx
-<ProductTheme>
+<AppTheme>
     <div>
         ...
     </div>
-</ProductTheme>
+</AppTheme>
 ```
 
 to Context-only:
 
 ```tsx
-<ProductTheme>
+<AppTheme>
     ...
-</ProductTheme>
+</AppTheme>
 ```
 
 这是本次 review 最重要的部分之一。
@@ -294,9 +294,9 @@ CSS runtime / inheritance / cascade
 如果：
 
 ```tsx
-<ProductTheme accent="green">
+<AppTheme accent="green">
     <Button />
-</ProductTheme>
+</AppTheme>
 ```
 
 那么：

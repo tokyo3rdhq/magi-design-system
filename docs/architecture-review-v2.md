@@ -112,14 +112,14 @@ Today: 0 of 5. **No split justified.** Re-evaluate at 1.0.
 
 **Verdict: KEEP WITH MODIFICATION.**
 
-v2 says: `<ProductTheme>` becomes a context provider. Consumers wrap manually with `<div style={{ '--magi-accent': ... }}>` for scoped overrides.
+v2 says: `<AppTheme>` becomes a context provider. Consumers wrap manually with `<div style={{ '--magi-accent': ... }}>` for scoped overrides.
 
 The review's §6 challenges are right — Context alone doesn't solve propagation. We need to think about where the CSS variables actually live.
 
 **The fix**:
 
 ```
-1. <ProductTheme> at app root renders nothing visible.
+1. <AppTheme> at app root renders nothing visible.
    - It sets a Context with current accent (for any JS-aware consumers).
    - It uses useEffect to set document.documentElement.style.setProperty('--magi-accent', ...) on <html>.
    - This way, accent applies via standard CSS cascade — no DOM wrapper needed.
@@ -133,11 +133,11 @@ The review's §6 challenges are right — Context alone doesn't solve propagatio
 3. The default <html> setting can be overridden by a more-specific <div> override — that's how CSS cascade works.
 ```
 
-Two-API pattern (review's §6.B): **NO**. We don't need `<MagiProvider>` separately. `<ProductTheme>` is enough at the app level; consumers handle scoped overrides with normal CSS.
+Two-API pattern (review's §6.B): **NO**. We don't need `<MagiProvider>` separately. `<AppTheme>` is enough at the app level; consumers handle scoped overrides with normal CSS.
 
 Nested theme scopes (review's §6.C): **allowed via manual `<div>` overrides**, no first-class API needed. The CSS cascade handles nesting naturally.
 
-Leaked contract concern (review's §6.D): valid — asking consumers to write `style={{ '--magi-accent': ... }}` exposes the CSS variable name. **Mitigation**: provide a `useProductAccent()` hook that returns the typed current accent name; consumers can do `<div data-magi-accent="danger">` and we ship a tiny CSS file that maps `data-magi-accent` attributes to variable values.
+Leaked contract concern (review's §6.D): valid — asking consumers to write `style={{ '--magi-accent': ... }}` exposes the CSS variable name. **Mitigation**: provide a `useAppAccent()` hook that returns the typed current accent name; consumers can do `<div data-magi-accent="danger">` and we ship a tiny CSS file that maps `data-magi-accent` attributes to variable values.
 
 This last mitigation is a real new feature — add to 0.4.0 (not 0.3.0).
 
@@ -355,7 +355,7 @@ Updated per the new 0.3.0 scope:
 
 - **magi-portal**: no source change (uses tokens + utility classes only)
 - **tfi**: as v2 said, plus the FormField aria-describedby fix actually works after the 0.3.0 fix
-- **future consumers**: docs/migration-guide.md needs the new theme pattern (HTML-level CSS var + context-only ProductTheme) documented before they adopt
+- **future consumers**: docs/migration-guide.md needs the new theme pattern (HTML-level CSS var + context-only AppTheme) documented before they adopt
 
 ---
 
@@ -377,7 +377,7 @@ Phased rollout updated:
 
 | Phase | Scope | 0.3.0 status |
 |---|---|---|
-| 0.3.0 | (1) Token literal enforcement (2) @layer (3) FormField aria fix (4) ProductTheme context (5) axe + focus + reduced-motion + visual regression (6) ADRs 001–008 | — |
+| 0.3.0 | (1) Token literal enforcement (2) @layer (3) FormField aria fix (4) AppTheme context (5) axe + focus + reduced-motion + visual regression (6) ADRs 001–008 | — |
 | 0.4.0 | (1) Vitest unit tests for state-bearing primitives (2) HTML data-magi-accent helper (3) Icons primitive (only if 2+ consumers ask) | — |
 | 0.5.0 | (1) Scope rename `body[data-magi-app]` → `html[data-magi-app]` (after 2nd consumer confirms) (2) Density primitive (only if needed) | — |
 | 1.0 | (1) All 0.x breaking changes are out (2) Consumer contract tests (3) Public API freeze (4) React 19 peer (if not done in 0.4.0) | — |
@@ -398,12 +398,12 @@ Reasonable. No change.
 
 Updated:
 
-1. ~~`<ProductTheme>` DOM removal in 0.3.0 or 1.0?~~ **Resolved: 0.3.0**, with `<html>`-level CSS var + context.
+1. ~~`<AppTheme>` DOM removal in 0.3.0 or 1.0?~~ **Resolved: 0.3.0**, with `<html>`-level CSS var + context.
 2. ~~`axe-playwright` from day 1 of 0.3.0 or after 2nd product?~~ **Resolved: 0.3.0**.
 3. ~~`tsc --noEmit` for showroom in CI?~~ **Resolved: yes, add explicit job in 0.3.0**.
-4. **NEW**: should the `<html>`-level CSS var pattern be enabled by default for all consumers, or opt-in via `<ProductTheme>`?
-   - If always-on: every page with the design-system styles.css has an `--magi-accent: green` on `<html>`. Consumers using `<ProductTheme accent="cyan">` override it.
-   - If opt-in: consumers must always wrap with `<ProductTheme>` to get accent.
+4. **NEW**: should the `<html>`-level CSS var pattern be enabled by default for all consumers, or opt-in via `<AppTheme>`?
+   - If always-on: every page with the design-system styles.css has an `--magi-accent: green` on `<html>`. Consumers using `<AppTheme accent="cyan">` override it.
+   - If opt-in: consumers must always wrap with `<AppTheme>` to get accent.
    - **Default to always-on**. Opt-in is annoying.
 5. **NEW**: visual regression baseline generation — when 0.3.0 lands, the first CI run has no baseline screenshots, so it'll fail. Need to ship baselines with the release.
 
@@ -436,7 +436,7 @@ None of these block 0.3.0.
 ### MUST NOW (0.3.0)
 
 1. **FormField aria-describedby wiring** — actual fix (cloneElement). Without this, every FormField consumer has broken a11y.
-2. **`<ProductTheme>` becomes context provider + `<html>`-level CSS var setter** — fixes the DOM wrapper bug.
+2. **`<AppTheme>` becomes context provider + `<html>`-level CSS var setter** — fixes the DOM wrapper bug.
 3. **Drop `tokens?: Partial<CSSProperties>` from public API** — fixes the API leak.
 4. **`@layer` for design-system bundle** — fixes cascade order guarantee.
 5. **Token literal CI enforcement (MUST NOT + SHOULD tier)** — protects design language.
@@ -455,7 +455,7 @@ None of these block 0.3.0.
 - `<html>` scope rename (after 2nd consumer confirms)
 - Icons primitive (when 2+ consumers need)
 - `<html>` data-magi-accent attribute if not done in 0.3.0
-- `<ProductTheme>` accepts `defaultAccent` prop to skip first render flash
+- `<AppTheme>` accepts `defaultAccent` prop to skip first render flash
 
 ### NEVER UNLESS NEEDED
 
@@ -474,7 +474,7 @@ None of these block 0.3.0.
 | Phase | Target | Scope |
 |---|---|---|
 | **0.3.0** | late Oct 2026 | FormField bug fix + Theme context fix + tokens leak fix + @layer + token literal CI + axe + focus + reduced-motion + visual regression + 8 ADRs |
-| **0.4.0** | Dec 2026 | Vitest unit tests + Icons primitive (if asked) + `<ProductTheme defaultAccent` prop |
+| **0.4.0** | Dec 2026 | Vitest unit tests + Icons primitive (if asked) + `<AppTheme defaultAccent` prop |
 | **0.5.0** | Feb 2027 | Scope rename `body[data-magi-app]` → `html[data-magi-app]` (breaking — needs 2+ consumers ready to migrate) |
 | **1.0** | Q2 2027 | Public API freeze, React 19 peer (if not in 0.4.0), consumer contract tests, dark-mode canonical |
 
@@ -503,7 +503,7 @@ Ten principles, derived from the review (not copied from v2):
 |---|---|---|
 | ADR-001 | Token architecture: stay flat, document implicit semantic-then-state layering | Drafted in v2 |
 | ADR-002 | CSS scope: `body[data-magi-app]` now, `html[data-magi-app]` at 0.5.0 | Updated: scope rename plan added |
-| ADR-003 | Theme: `<ProductTheme>` is context provider + `<html>`-level CSS var setter; no DOM wrapper | Updated: clarified how CSS vars propagate |
+| ADR-003 | Theme: `<AppTheme>` is context provider + `<html>`-level CSS var setter; no DOM wrapper | Updated: clarified how CSS vars propagate |
 | ADR-004 | Package boundary: single package, no `@magi/design-tokens` | Unchanged |
 | ADR-005 | CSS bundling: single `dist/styles.css` | Unchanged |
 | ADR-006 | React peer range: `^18.0.0` for 0.x; expand to `^18 \|\| ^19` as minor when needed; 1.0 not gated on React major | **Updated: clarified major-bump triggers** |
@@ -550,11 +550,11 @@ Ten principles, derived from the review (not copied from v2):
 
 1. **Fix FormField aria-describedby wiring** — currently broken in 0.2.0; auto-inject via `cloneElement` on the child control. **Without this, the design system's a11y claims are false.**
 
-2. **Move `<ProductTheme>` from DOM wrapper to context + `<html>`-level CSS var setter** — fixes the `display: grid` / `:first-child` / portal breakage that the current wrapper causes.
+2. **Move `<AppTheme>` from DOM wrapper to context + `<html>`-level CSS var setter** — fixes the `display: grid` / `:first-child` / portal breakage that the current wrapper causes.
 
 3. **Adopt `@layer` for the design-system bundle** — declared cascade order replaces accidental source-order, which is what protects the design language from consumer overrides.
 
-4. **Drop `tokens?: Partial<CSSProperties>` from `<ProductTheme>` public API** — closes the API leak that lets products redefine any `--magi-*` variable (violates §7).
+4. **Drop `tokens?: Partial<CSSProperties>` from `<AppTheme>` public API** — closes the API leak that lets products redefine any `--magi-*` variable (violates §7).
 
 5. **CI enforcement: token literals + axe-playwright + Playwright focus + Playwright reduced-motion + Playwright visual regression** — five CI checks that together catch design-language drift, a11y regressions, and focus-ring regressions before they reach consumers.
 
@@ -574,7 +574,7 @@ Ten principles, derived from the review (not copied from v2):
 
 1. **Scope rename `body` → `html[data-magi-app]`** — wait for a second consumer to confirm this is what they want.
 
-2. **`<ProductTheme>` adds a `<MagiProvider>` + `<MagiThemeScope>` two-API pattern** — review's §6.B / §6.C challenge. We don't need it now; one API (`<ProductTheme>`) is enough at the app level. Defer until a product genuinely needs nested scopes.
+2. **`<AppTheme>` adds a `<MagiProvider>` + `<MagiThemeScope>` two-API pattern** — review's §6.B / §6.C challenge. We don't need it now; one API (`<AppTheme>`) is enough at the app level. Defer until a product genuinely needs nested scopes.
 
 3. **Light theme** — spec §9 says dark-first is canonical. No product asks for light. Defer until asked.
 

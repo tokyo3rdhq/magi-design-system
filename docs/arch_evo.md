@@ -12,7 +12,7 @@
 * foundation / reset / typography
 * layout primitives
 * Button / Card / Badge 等基础组件
-* ProductTheme
+* AppTheme
 * Vite library build
 * TypeScript declarations
 * CSS bundled output
@@ -417,9 +417,9 @@ other MAGI frontend stacks
 重点审查当前：
 
 ```tsx
-<ProductTheme accent="green">
+<AppTheme accent="green">
   ...
-</ProductTheme>
+</AppTheme>
 ```
 
 的设计。
@@ -431,9 +431,9 @@ other MAGI frontend stacks
 如果：
 
 ```tsx
-<ProductTheme>
+<AppTheme>
   <App />
-</ProductTheme>
+</AppTheme>
 ```
 
 最终生成：
@@ -478,7 +478,7 @@ controlled product-level customization
 而不是允许：
 
 ```tsx
-<ProductTheme
+<AppTheme
   tokens={{
     margin: ...
     background: ...
@@ -1198,7 +1198,7 @@ disabled
 
 确保符合合理 accessibility contrast requirements。
 
-尤其 ProductTheme accent 不能只测试默认 accent。
+尤其 AppTheme accent 不能只测试默认 accent。
 
 至少测试：
 

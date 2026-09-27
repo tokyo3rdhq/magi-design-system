@@ -64,7 +64,7 @@ These are non-negotiable and enforce the design spec:
 - **Component classes are prefixed `magi-`** (`magi-button`, `magi-card`, etc.) and additionally scoped to `body[data-magi-app]` in the CSS file. The latter is required to win specificity against the foundation reset.
 - **No CSS Modules in the package.** We use plain CSS with BEM-style classes; see [`docs/architecture.md`](./docs/architecture.md) for the rationale.
 - **Consumers must put `data-magi-app` on `<body>`**, not a child container. Body-level styles (background gradient, scrollbar, font baseline) require it.
-- **Don't redefine spacing / typography / base surfaces in product themes.** ProductTheme only owns the accent tokens. Spec §10.
+- **Don't redefine spacing / typography / base surfaces in product themes.** AppTheme only owns the accent tokens. Spec §10.
 - **Don't reintroduce CRT / terminal styling.** Spec §36 forbids it.
 
 ## Versioning & releases

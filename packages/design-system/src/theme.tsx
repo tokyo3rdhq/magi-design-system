@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 
-export type ProductAccent =
+export type AppAccent =
   | 'green'   // default — MAGI core
   | 'cyan'    // Token Factory Initializr
   | 'violet'  // API product
@@ -20,7 +20,7 @@ interface AccentTokens {
   '--magi-accent-contrast': string;
 }
 
-const ACCENT_PRESETS: Record<ProductAccent, AccentTokens> = {
+const ACCENT_PRESETS: Record<AppAccent, AccentTokens> = {
   green: {
     '--magi-accent': '#00c853',
     '--magi-accent-hover': '#00e676',
@@ -53,35 +53,36 @@ const ACCENT_PRESETS: Record<ProductAccent, AccentTokens> = {
   },
 };
 
-interface ProductThemeContextValue {
-  accent: ProductAccent;
+interface AppThemeContextValue {
+  accent: AppAccent;
 }
 
-const ProductThemeContext = createContext<ProductThemeContextValue | null>(null);
+const AppThemeContext = createContext<AppThemeContextValue | null>(null);
 
 /**
  * Hook for any JS-aware consumer that needs the current accent.
- * Returns `{ accent: 'green' }` (the default) when used outside a `<ProductTheme>`.
+ * Returns `{ accent: 'green' }` (the default) when used outside an `<AppTheme>`.
  */
-export function useProductTheme(): ProductThemeContextValue {
-  const ctx = useContext(ProductThemeContext);
+export function useAppTheme(): AppThemeContextValue {
+  const ctx = useContext(AppThemeContext);
   return ctx ?? { accent: 'green' };
 }
 
-export interface ProductThemeProps {
+export interface AppThemeProps {
   /** Accent preset. Default: `green`. */
-  accent?: ProductAccent;
+  accent?: AppAccent;
   /** Optional product identifier. Sets `data-magi-product="<name>"` on `<html>`. */
   name?: string;
   children?: ReactNode;
 }
 
 /**
- * ProductTheme — overrides the MAGI accent for a subtree.
+ * AppTheme — application-level accent configuration.
  *
  * Renders only a React context provider (no DOM wrapper). On mount, sets
  * the four accent CSS variables on `<html>` so all descendants inherit via
- * CSS cascade. For scoped overrides within a subtree, consumers can use:
+ * CSS cascade. For scoped overrides within a subtree, consumers should use
+ * `data-magi-accent`:
  *
  *   <div data-magi-accent="danger">
  *     <Button variant="primary">Delete</Button>
@@ -92,9 +93,9 @@ export interface ProductThemeProps {
  * without FOUC, set `data-magi-accent="<name>"` on `<html>` in your
  * server-side layout — the CSS rule in globals.css picks it up.
  *
- * Nested <ProductTheme>: each instance snapshots the previous accent
- * values on mount and restores them on unmount, so a child mounting
- * and unmounting leaves the outer theme intact. Note that CSS variables
+ * Nested <AppTheme>: each instance snapshots the previous accent values
+ * on mount and restores them on unmount, so a child mounting and
+ * unmounting leaves the outer theme intact. Note that CSS variables
  * are global (set on `<html>`), so siblings outside a child subtree
  * still see the child's accent — use `<div data-magi-accent="...">`
  * for true CSS subtree scope.
@@ -102,17 +103,17 @@ export interface ProductThemeProps {
  * @example
  *   function App() {
  *     return (
- *       <ProductTheme accent="cyan" name="token-factory">
+ *       <AppTheme accent="cyan" name="token-factory">
  *         <Routes />
- *       </ProductTheme>
+ *       </AppTheme>
  *     );
  *   }
  */
-export function ProductTheme({
+export function AppTheme({
   accent = 'green',
   name,
   children,
-}: ProductThemeProps) {
+}: AppThemeProps) {
   const value = useMemo(() => ({ accent }), [accent]);
 
   useInsertionEffect(() => {
@@ -161,8 +162,8 @@ export function ProductTheme({
   }, [accent, name]);
 
   return (
-    <ProductThemeContext.Provider value={value}>
+    <AppThemeContext.Provider value={value}>
       {children}
-    </ProductThemeContext.Provider>
+    </AppThemeContext.Provider>
   );
 }
