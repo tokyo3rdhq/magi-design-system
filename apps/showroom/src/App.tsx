@@ -13,6 +13,7 @@ import { Badges } from './pages/Badges';
 import { Layout } from './pages/Layout';
 import { Phase4 } from './pages/Phase4';
 import { Brand } from './pages/Brand';
+import { Guidelines } from './pages/Guidelines';
 import styles from './App.module.css';
 
 type Page =
@@ -23,7 +24,8 @@ type Page =
   | 'badges'
   | 'layout'
   | 'phase4'
-  | 'brand';
+  | 'brand'
+  | 'guidelines';
 
 const PAGES: { id: Page; label: string }[] = [
   { id: 'tokens', label: 'Tokens' },
@@ -34,6 +36,7 @@ const PAGES: { id: Page; label: string }[] = [
   { id: 'layout', label: 'Layout' },
   { id: 'phase4', label: 'Phase 4' },
   { id: 'brand', label: 'Brand' },
+  { id: 'guidelines', label: 'Guidelines' },
 ];
 
 const ACCENTS: { id: AppAccent; label: string }[] = [
@@ -113,6 +116,7 @@ export function App() {
             {page === 'layout' && <Layout />}
             {page === 'phase4' && <Phase4 />}
             {page === 'brand' && <Brand />}
+            {page === 'guidelines' && <Guidelines />}
           </Container>
         </main>
 

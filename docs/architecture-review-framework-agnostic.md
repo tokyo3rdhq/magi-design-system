@@ -137,6 +137,20 @@ MAGI Design System (conceptual — @tokyo3rdhq/magi-design-system)
 │   ├── Layout Foundations (.magi-* utilities)
 │   └── Theme Variables (accent mappings on data-magi-accent)
 │
+├── 3.5. Experience Guidelines           ← docs/guidelines.md (post-0.6.0)
+│   ├── Principles (clarity, icons support meaning, text is semantic source,
+│   │   quiet interfaces, consistency without rigidity)
+│   ├── Content & Copy
+│   ├── Internationalization (language names, no flags, no emoji UI)
+│   ├── Iconography (icon-only vs icon+text vs text decision matrix)
+│   ├── Links & External Destinations (↗ indicator)
+│   ├── Navigation (3 levels, hierarchy, active state)
+│   ├── Header / Footer (pattern, not mandatory component)
+│   ├── Responsive behavior
+│   ├── Accessibility floor
+│   └── Product vs System boundary (MUST / Recommended / Context /
+│       Product-owned / Do-not-use classification)
+│
 ├── 4. Component Contracts               ← ⚠ NOT yet formally documented
 │   ├── Semantic structure (DOM)
 │   ├── Accessibility (ARIA, keyboard, focus)
@@ -442,7 +456,7 @@ Nothing to remove. The current architecture has no abstraction that creates unne
 
 ## Architecture Verdict
 
-The current architecture is **fundamentally sound and already framework-agnostic in its foundation layers** — Brand SVGs, design tokens (CSS variables), CSS foundation, and per-component Web/CSS implementation files are all pure CSS / pure SVG / pure TypeScript modules with **zero React dependencies**. React appears only where it must: in the `.tsx` components and the `<AppTheme>` runtime that sets accent CSS variables. The dependency direction `Brand → Tokens → CSS Foundation → Component Contracts → Web/CSS Implementation → React/Vue Implementation → Application` is respected.
+The current architecture is **fundamentally sound and already framework-agnostic in its foundation layers** — Brand SVGs, design tokens (CSS variables), CSS foundation, and per-component Web/CSS implementation files are all pure CSS / pure SVG / pure TypeScript modules with **zero React dependencies**. React appears only where it must: in the `.tsx` components and the `<AppTheme>` runtime that sets accent CSS variables. The dependency direction `Brand → Tokens → CSS Foundation → Experience Guidelines → Component Contracts → Web/CSS Implementation → React/Vue Implementation → Application` is respected.
 
 The package is *not* pretending React is the definition of the Design System — it's just *not yet saying so loudly* in the README. The most important boundary not yet formalized is the distinction between **Component Contracts** (framework-agnostic behavior — semantic structure, a11y, states, token binding) and the **Web/CSS Implementation** that currently renders those contracts. CSS class names (`.magi-button--primary` etc.) are part of the Web Implementation layer, not the contract API; they may be freely refactored without breaking the Design System. The contract itself is not yet written down.
 
