@@ -1,10 +1,12 @@
 # Migration guide
 
-How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers three consumer profiles:
+How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers three consumer profiles and four version-upgrade paths:
 
-- **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site) — landed on `@tokyo3rdhq/magi-design-system@0.2.0`
+- **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site) — landed on `@tokyo3rdhq/magi-design-system@0.5.1` (current)
 - **Phase 3 — [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr)** (Cloudflare Pages + React + Vite) — landed on `@tokyo3rdhq/magi-design-system@0.2.0`; uses 6 primitives
 - **Phase 5 — upgrade from 0.2.0 to 0.3.0** — see "Phase 5 — Upgrade to 0.3.0" section below
+- **Phase 6 — upgrade from 0.3.x to 0.4.0** — see "Phase 6 — Upgrade to 0.4.0" section below
+- **Phase 7 — upgrade from 0.4.x to 0.5.x** — see "Phase 7 — Upgrade to 0.5.x" section below
 
 The three paths diverge after the shared installation step.
 
@@ -304,7 +306,7 @@ Per spec §33:
 
 Current state at 0.3.0:
 
-- 13 primitives shipped (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme)
+- 13 UI primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme) + 3 brand primitives (`MagiMark` / `MagiWordmark` / `MagiLockup`) shipped
 - All have at least one consumer in `magi.website` or `token-factory-initializr`
 
 Still deferred per ADR-0004 (`docs/adr/0004-package-boundary.md`) and §34 non-goals:
@@ -524,3 +526,59 @@ Per `docs/architecture-review-0.3.md`:
 - **axe-playwright / Playwright visual regression** per ADR-0007
 
 The next 0.4.x patch will land P1.1 / P1.2 / P1.5. The next minor (0.5.0) will land P2 items + axe-playwright per ADR-0002 scope rename plan.
+
+## Phase 7 — Upgrade from 0.4.x to 0.5.x
+
+`@tokyo3rdhq/magi-design-system@0.5.x` ships two minor releases:
+
+- **`0.5.0`** — adds the **MAGI Brand Foundation** (additive, no breaking changes).
+- **`0.5.1`** — boundary cleanup. `ACCENT_PRESETS` moves from `src/theme.tsx` to a new framework-agnostic module `src/tokens/accent-presets.ts`. Public API is unchanged — `AppAccent` and `AccentTokens` types are still re-exported from `src/theme.tsx` for compatibility.
+
+### Breaking change — none
+
+`0.5.x` is fully backward-compatible with `0.4.x`. Existing imports keep working. The `<Segmented>` keyboard navigation, `<AppTheme>` (no DOM wrapper), `data-magi-accent="<name>"` subtree accent, and all 13 UI primitives remain unchanged. The 3 new brand primitives are additive.
+
+### Additive 1 — Brand Foundation (0.5.0)
+
+Three new React components and five canonical SVG assets. Replace hand-rolled brand markup:
+
+```tsx
+import { MagiMark, MagiWordmark, MagiLockup } from '@tokyo3rdhq/magi-design-system';
+
+// Decorative (default — aria-hidden="true"):
+<MagiLockup size="md" />
+
+// Meaningful (when the logo is the only brand identifier on the page):
+<MagiLockup size="md" ariaHidden={false} alt="MAGI — home" />
+```
+
+Sizes: `sm` (20 px tall) / `md` (32 px tall, default) / `lg` (48 px tall).
+
+For static consumers (favicon, OG image) that don't render React, copy the canonical SVG from the published package:
+
+```bash
+cp node_modules/@tokyo3rdhq/magi-design-system/dist/assets/icons/favicon.svg public/favicon.svg
+cp node_modules/@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-lockup.svg public/og-default.svg
+```
+
+Full brand guidelines (clear space, minimum size, misuse rules, product relationship): [`brand.md`](./brand.md). Component contracts for the brand components: [`component-contracts.md`](./component-contracts.md#magi-mark).
+
+### Additive 2 — Component Contracts doc (0.5.1)
+
+A new document at [`docs/component-contracts.md`](./component-contracts.md) defines the framework-agnostic **Contract** for every shipped component (semantic structure / accessibility / visual states / token binding). This is the Layer 4 of the framework-agnostic architecture — see [`architecture-review-framework-agnostic.md`](./architecture-review-framework-agnostic.md) for the full boundary map.
+
+Consumers do not need to change code to adopt it. Future contributors reference it when adding new framework implementations (Vue, vanilla HTML, etc.) or auditing React parity.
+
+### Notes
+
+- The MAGI logo is **stable across product accents** — it uses `currentColor`, not `var(--magi-accent)`. Product accent belongs to CTAs and links; the brand mark stays in text color.
+- CSS class names (`magi-button--primary`, `magi-mark--md`, etc.) remain in Layer 5 (Web/CSS Implementation) and may be freely refactored. They are not the Design System API. The contract API is the four-section definition in `component-contracts.md`.
+- 0.5.x is the first release produced after the [framework-agnostic architecture review](./architecture-review-framework-agnostic.md). Future minor versions will continue to formalize the boundary map.
+
+### What 0.5.x does NOT include (still deferred)
+
+- `body[data-magi-app]` → `html[data-magi-app]` scope rename (per ADR-0002). Deferred to post-0.5.x — waiting for second consumer confirmation.
+- React 19 peer range expansion (per ADR-0006). Deferred until a consumer requires it.
+- axe-playwright / Playwright visual regression (per ADR-0007 + ADR-0008). Deferred to a future minor.
+- Vue framework implementation. Deferred until a Vue consumer exists.
+- New primitives beyond the current 13 + 3 brand primitives.

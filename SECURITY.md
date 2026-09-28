@@ -6,10 +6,13 @@ The MAGI Design System is a small, mostly-presentational package. Its attack sur
 
 | Version | Supported           |
 | ------- | ------------------- |
-| 0.1.x   | ✅ Active           |
-| < 0.1   | ❌ Not maintained   |
+| 0.5.x   | ✅ Active           |
+| 0.4.x   | ⚠️ Critical fixes only |
+| 0.3.x   | ⚠️ Critical fixes only |
+| 0.2.x   | ❌ End of life     |
+| 0.1.x   | ❌ End of life     |
 
-The package is currently in `0.x` (rapid iteration). Breaking changes are allowed within `0.x` but will be noted in [`CHANGELOG.md`](./CHANGELOG.md).
+The package is currently in `0.x` (rapid iteration). Breaking changes are allowed within `0.x` but will be noted in [`CHANGELOG.md`](./CHANGELOG.md). The most recent minor (0.5.x) is actively developed; older minors receive critical security fixes only.
 
 ## Reporting a vulnerability
 

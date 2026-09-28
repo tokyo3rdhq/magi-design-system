@@ -31,7 +31,7 @@ A sub-package extraction is justified when **3+** of these hold simultaneously:
 4. **Ownership**: a different team owns the extracted piece
 5. **Language boundary**: the extracted piece needs cross-language bridging
 
-Today: **0 of 5**.
+Today: **0 of 5** (re-verified at 0.5.1).
 
 ### Why single package now
 
@@ -39,6 +39,11 @@ Today: **0 of 5**.
 - **Co-change**: tokens and components change together (every release touches both).
 - **One repo, one CI, one release process**: less overhead.
 - **Token change cadence matches component change cadence**: no version skew.
+
+### 0.5.x status
+
+- **0.5.0** shipped the **Brand Foundation** (5 canonical SVG assets + 3 React rendering components). All inside the same package. No package split needed — brand assets are framework-agnostic SVG files consumed by both React (`<MagiLockup>`) and static consumers (favicon, OG image).
+- **0.5.1** shipped a **boundary cleanup** that strengthens this ADR's intent without splitting: `ACCENT_PRESETS` and the `AppAccent` type moved from `src/theme.tsx` (a React file) to `src/tokens/accent-presets.ts` (a framework-agnostic TS module). A Vue or vanilla-JS consumer can now import the same source of truth without pulling in React. The extraction criteria still score 0 of 5 — but the package is now *physically ready* for a future Vue consumer to land without requiring a split.
 
 ## Alternatives considered
 

@@ -55,7 +55,10 @@ React major version changes do **not** automatically trigger Design System major
 | 0.1.0 | `^18.0.0` | Initial |
 | 0.2.0 | `^18.0.0` | Phase 4 primitives |
 | 0.3.0 | `^18.0.0` | Theme + layers (this release) |
-| 0.4.0 (future) | `^18.0.0 \|\| ^19.0.0` | When a consumer asks for 19 |
+| 0.4.x | `^18.0.0` | `<Segmented>` keyboard nav + checks (no peer change) |
+| 0.5.0 | `^18.0.0` | Brand Foundation — no peer change |
+| 0.5.1 | `^18.0.0` | Boundary cleanup + Component Contracts doc — no peer change |
+| future | `^18.0.0 \|\| ^19.0.0` | When a consumer asks for 19 |
 | 1.0 | `^18.0.0 \|\| ^19.0.0` | 1.0 is for **our** contract changes |
 
 ### Duplicate React risk

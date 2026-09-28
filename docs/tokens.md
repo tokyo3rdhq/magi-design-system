@@ -2,7 +2,12 @@
 
 All tokens are CSS custom properties declared on `:root` in [`packages/design-system/src/tokens/index.css`](../packages/design-system/src/tokens/index.css). Consumers read them via `var(--token-name)`.
 
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.5.1`.
 > **Note**: Product themes override a small, controlled subset (accent family). Spec §10 forbids redefining spacing / typography / base surfaces in product themes.
+
+The accent hex values live in the framework-agnostic module [`packages/design-system/src/tokens/accent-presets.ts`](../packages/design-system/src/tokens/accent-presets.ts) (`AppAccent` type + `ACCENT_PRESETS` constant). A Vue or vanilla-JS consumer can import them without pulling in React.
+
+For component contracts (semantic structure / accessibility / visual states / token binding), see [`component-contracts.md`](./component-contracts.md). For the brand foundation (SVG assets + brand components), see [`brand.md`](./brand.md).
 
 ## Colors
 

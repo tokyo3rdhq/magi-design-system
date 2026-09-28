@@ -55,6 +55,12 @@ import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 <AppTheme accent="green" name="magi-portal">
   <App />
 </AppTheme>
+
+// 4. Use brand components where you want the canonical MAGI logo.
+//    0.5.0+: <MagiMark>, <MagiWordmark>, <MagiLockup>.
+import { MagiLockup } from '@tokyo3rdhq/magi-design-system';
+
+<MagiLockup size="md" />   // 32 px tall — default for navbars
 ```
 
 ## API
@@ -263,6 +269,65 @@ import { EmptyState } from '@tokyo3rdhq/magi-design-system';
   action={<Button variant="primary" onClick={goToBrowse}>Go to Browse</Button>}
 />
 ```
+
+### Brand primitives (since 0.5.0)
+
+Three React rendering components over five canonical SVG assets. The SVG files (in `dist/assets/logo/` and `dist/assets/icons/`) are the source of truth; the components inject them inline so `fill="currentColor"` propagates from the consumer's `color` property.
+
+See [`docs/brand.md`](../../docs/brand.md) for full brand guidelines (clear space, minimum size, misuse). See [`docs/component-contracts.md`](../../docs/component-contracts.md) for the per-component contract.
+
+#### `<MagiMark>` — three-dot triangle mark
+
+```tsx
+import { MagiMark } from '@tokyo3rdhq/magi-design-system';
+
+<MagiMark size="md" />                       // decorative (aria-hidden="true")
+<MagiMark size="md" ariaHidden={false} alt="MAGI" />  // meaningful
+// size: 'sm' (20 px) | 'md' (32 px, default) | 'lg' (48 px)
+// ariaHidden: boolean (default: true) — set false when the mark is the only brand identifier on the page
+// alt: string — required when ariaHidden is false
+// className: string — extra className for positioning
+```
+
+Use for favicon-adjacent surfaces, compact headers, avatar fallback.
+
+#### `<MagiWordmark>` — "MAGI" wordmark in Inter Bold
+
+```tsx
+import { MagiWordmark } from '@tokyo3rdhq/magi-design-system';
+
+<MagiWordmark size="md" />
+// size: 'sm' | 'md' | 'lg'   (same semantic tiers as MagiMark)
+```
+
+Use for doc headers, focused standalone contexts.
+
+#### `<MagiLockup>` — mark + wordmark composite
+
+```tsx
+import { MagiLockup } from '@tokyo3rdhq/magi-design-system';
+
+<MagiLockup size="md" />                       // decorative — navbar brand, OG image, README hero
+<MagiLockup size="md" ariaHidden={false} alt="MAGI — home" />
+```
+
+The default logo for most contexts.
+
+#### Static (non-React) usage
+
+For favicons, OG images, and any non-React surface, copy the canonical assets from the published package:
+
+```
+@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-mark.svg
+@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-wordmark.svg
+@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-lockup.svg
+@tokyo3rdhq/magi-design-system/dist/assets/icons/favicon.svg
+@tokyo3rdhq/magi-design-system/dist/assets/icons/app-icon.svg
+```
+
+Do not fork these files into a consumer repo. Bump the package dependency instead.
+
+The MAGI logo is **stable across product accents** — it uses `currentColor`, not `var(--magi-accent)`. Product accents belong to CTAs and links; the brand mark stays in text color.
 
 ### Theme
 

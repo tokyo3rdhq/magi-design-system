@@ -61,13 +61,17 @@ Live edits in `packages/design-system/src/` rebuild via `vite --watch`; the show
 These are non-negotiable and enforce the design spec:
 
 - **Tokens are CSS custom properties** (`var(--magi-*)`). Components reference them — never hardcode values.
+- **Token hex values live in the framework-agnostic layer.** `ACCENT_PRESETS` and the `AppAccent` type live in [`src/tokens/accent-presets.ts`](./packages/design-system/src/tokens/accent-presets.ts). `src/theme.tsx` imports them. `scripts/check-accent-tokens.mjs` reads the source of truth from `tokens/accent-presets.ts`. Do not move these values back into a React file.
 - **Component classes are prefixed `magi-`** (`magi-button`, `magi-card`, etc.) and additionally scoped to `body[data-magi-app]` in the CSS file. The latter is required to win specificity against the foundation reset.
+- **CSS class names are implementation detail, NOT the contract API.** Per [`docs/component-contracts.md`](./docs/component-contracts.md) (Layer 4 of the framework-agnostic architecture), contracts cover semantic structure / accessibility / visual states / token binding. Optimizing a selector (e.g. `.magi-button--primary` → `.magi-button[data-variant="primary"]`) is an implementation change, not a contract change.
+- **Brand assets use `currentColor`, never `var(--magi-accent)`.** The MAGI logo is stable across product accents. See [`docs/brand.md`](./docs/brand.md) for the misuse list.
 - **No CSS Modules in the package.** We use plain CSS with BEM-style classes; see [`docs/architecture-v2.md`](./docs/architecture-v2.md) for the rationale.
-- **Consumers must put `data-magi-app` on `<body>`**, not a child container. Body-level styles (background gradient, scrollbar, font baseline) require it. Per ADR-0002, this will move to `<html>` at 0.5.0; until then, `<body>` is the contract.
+- **Consumers must put `data-magi-app` on `<body>`**, not a child container. Body-level styles (background gradient, scrollbar, font baseline) require it. Per ADR-0002, this will move to `<html>` at a post-0.5.x release; until then, `<body>` is the contract.
 - **Don't redefine spacing / typography / base surfaces in product themes.** AppTheme only owns the accent tokens. Spec §10.
 - **Don't reintroduce CRT / terminal styling.** Spec §36 forbids it.
-- **Token literals must be tokens.** `scripts/check-tokens.mjs` enforces this in CI. Color literals (`#hex`, `rgb()`, `rgba()`), hardcoded px font sizes, and hardcoded ms durations are not allowed in component CSS / TSX / TS (with allowlist for `theme.tsx` and `foundation/globals.css`). Use `var(--magi-*)` references or `color-mix(in srgb, var(--magi-*) N%, transparent)`.
-- **Accent values must match across JS and CSS.** `scripts/check-accent-tokens.mjs` cross-validates `ACCENT_PRESETS` in `theme.tsx` against `data-magi-accent` rules in `foundation/globals.css`. If you change one, update the other.
+- **Token literals must be tokens.** `scripts/check-tokens.mjs` enforces this in CI. Color literals (`#hex`, `rgb()`, `rgba()`), hardcoded px font sizes, and hardcoded ms durations are not allowed in component CSS / TSX / TS (with allowlist for `tokens/accent-presets.ts` and `foundation/globals.css`). Use `var(--magi-*)` references or `color-mix(in srgb, var(--magi-*) N%, transparent)`.
+- **Accent values must match across JS and CSS.** `scripts/check-accent-tokens.mjs` cross-validates `ACCENT_PRESETS` in `tokens/accent-presets.ts` against `data-magi-accent` rules in `foundation/globals.css`. If you change one, update the other.
+- **Component Contracts are normative.** Every shipped component must have a corresponding section in [`docs/component-contracts.md`](./docs/component-contracts.md) covering semantic structure, accessibility, visual states, and token binding. The four sections are the contract; CSS class names are explicitly NOT the contract.
 
 ## Versioning & releases
 

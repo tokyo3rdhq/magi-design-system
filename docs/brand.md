@@ -99,12 +99,14 @@ MAGI is the **parent brand**. Products carry their own accent color:
 
 ```
 MAGI (parent)
-├── Token Factory   — accent: #00c853 (green)
-├── Models          — accent: TBD per product
+├── Token Factory   — accent: #00c853 (green) — `<AppTheme accent="green">`
+├── Models          — accent: #8b5cf6 (violet) — `<AppTheme accent="violet">` (planned)
 └── Future products — each gets its own accent
 ```
 
 **The MAGI logo never uses product accent.** It uses `currentColor` (text color). Product accent is applied to CTAs, links, focus rings — not the logo.
+
+The five available accent presets (`green`, `cyan`, `violet`, `amber`, `white`) are defined in [`packages/design-system/src/tokens/accent-presets.ts`](../packages/design-system/src/tokens/accent-presets.ts). See [`docs/tokens.md`](./tokens.md) for the full token list, [`docs/component-contracts.md`](./component-contracts.md) for the brand component contracts.
 
 ---
 

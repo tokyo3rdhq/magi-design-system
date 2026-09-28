@@ -59,8 +59,10 @@ The `@layer magi.*` adoption (ADR-007) makes the cascade order declared, not acc
 ## Consequences
 
 - **0.3.0**: keep `body[data-magi-app]`. Document the "attribute must be on body" contract clearly.
-- **0.5.0**: rename to `html[data-magi-app]`. Foundation's body styles move from `body[data-magi-app]` to `html[data-magi-app] body`. Component CSS can stay `body[data-magi-app]` since both `html` and `body` carry the attribute.
-- **Migration for consumers**: change `<body data-magi-app>` to `<html data-magi-app>`. Add `<body>` (no attribute) inside.
+- **0.5.0**: Brand Foundation shipped. CSS scope unchanged — `body[data-magi-app]` remains. Scope rename deferred.
+- **0.5.1**: Component Contracts doc added (`docs/component-contracts.md`). CSS scope still `body[data-magi-app]`.
+- **Post-0.5.x**: rename to `html[data-magi-app]`. Foundation's body styles move from `body[data-magi-app]` to `html[data-magi-app] body`. Component CSS can stay `body[data-magi-app]` since both `html` and `body` carry the attribute. Waiting for a second consumer to confirm the broader applicability before forcing a migration.
+- **Migration for consumers (when the rename lands)**: change `<body data-magi-app>` to `<html data-magi-app>`. Add `<body>` (no attribute) inside.
 
 ## References
 

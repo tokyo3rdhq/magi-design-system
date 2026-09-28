@@ -77,6 +77,12 @@ Mixing them into one release makes both harder to review.
   - Token literal check catches the most common drift
   - Showroom serves as a manual visual regression surface
 
+## 0.5.x status
+
+- **0.5.0** shipped the Brand Foundation. No accessibility / Playwright changes — the brand foundation adds SVG assets and React rendering APIs (decorative by default; configurable `ariaHidden` / `alt` for meaningful use). See [`docs/component-contracts.md#magimark`](../component-contracts.md#magimark) for the per-component contract.
+- **0.5.1** added the Component Contracts doc (`docs/component-contracts.md`). Per-component contracts now document the expected a11y behavior as part of the framework-agnostic contract layer. Any future Vue implementation must honor the same keyboard / ARIA / focus contracts.
+- **Playwright a11y / visual regression remain deferred.** The deferral rationale still holds (2 consumers, maintainer visual verification, ~150 MB chromium binary, ~70 baseline maintenance cost). The deferred status is tracked in `docs/architecture-review-framework-agnostic.md` §30 "5 Things To Defer".
+
 ## References
 
 - [Architecture review §10, §11](architecture-review-v2.md)

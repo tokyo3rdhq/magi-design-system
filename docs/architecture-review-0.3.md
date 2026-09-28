@@ -893,3 +893,36 @@ Principles 3, 4, 9, 10 are new for 0.4.0.
 3. **Single CSS bundle, not per-component CSS** — `dist/styles.css` at 24 kB is well under any reasonable budget. Don't split.
 4. **Flat token architecture** — primitive / semantic / component split would be ceremony. Don't do it.
 5. **`<FormField>` single-component API, not compound** — `FormField.Label` / `FormField.Control` would be over-engineering. Single API is enough.
+
+## Post-0.5.1 update — status of this review's items
+
+This review was the **post-0.3.0 implementation review**. Most P0/P1/P2 items were addressed in 0.3.1, 0.4.0, 0.4.1, and 0.4.2:
+
+- P0.1 (Theme Context vs CSS scope) — addressed by 0.4.0's `<ProductTheme>` → `<AppTheme>` rename and 0.4.0's "no DOM wrapper" clarification. The JSDoc now correctly states AppTheme is application-level (not subtree). See ADR-0002.
+- P0.2 (no `useEffect` cleanup) — addressed by 0.3.1's snapshot/restore pattern.
+- P1.1 (accent source-of-truth duplicated) — addressed by 0.4.1's `check-accent-tokens.mjs` CI cross-validation.
+- P1.2 (token literal check doesn't cover TSX/JS) — addressed by 0.4.1's extension of `check-tokens.mjs` to `.tsx`/`.ts` files.
+- P1.3 (FormField overwrites consumer's `aria-describedby`) — addressed by 0.3.1's merge (space-separated) behavior.
+- P2 (Segmented keyboard nav) — addressed by 0.4.2.
+
+### Items deferred from 0.3.0 (P1.5, P2.1-P2.3, etc.)
+
+- P1.5 (drop `src/styles` from `files` in `package.json`) — partial; see release notes for 0.4.x.
+- P2.1 (FormField child contract formalized) — formally addressed by the new `docs/component-contracts.md` (0.5.1). The contract covers semantic structure, accessibility, visual states, and token binding per component.
+- P2.2 (state token vocabulary in new ADR) — partial; covered in `docs/component-contracts.md`.
+- P2.3 (cascade contract for consumers in new ADR) — partial; documented in `docs/usage-guide.md` and `README.md`.
+
+### Items added in 0.5.0 / 0.5.1 (post-this-review work)
+
+- **Brand Foundation** (0.5.0) — 5 canonical SVG assets + 3 React rendering components (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`). See `docs/brand.md`.
+- **Component Contracts doc** (0.5.1) — `docs/component-contracts.md` defines the framework-agnostic contract for every shipped component and brand primitive (semantic structure / accessibility / visual states / token binding).
+- **Boundary cleanup** (0.5.1) — `ACCENT_PRESETS` and `AppAccent` type moved from `src/theme.tsx` to `src/tokens/accent-presets.ts` (a framework-agnostic TS module). A Vue or vanilla-JS consumer can now import the same source of truth without pulling in React.
+- **Framework-agnostic architecture review** (0.5.1) — `docs/architecture-review-framework-agnostic.md` establishes the 6 conceptual layers (Brand Foundation / Design Tokens / CSS Foundation / Component Contracts / Web-CSS Implementation / Framework Implementations) and verifies the boundary map. The review confirms that 0.5.x is already framework-agnostic in its foundation; future Vue implementations are physically possible without restructuring the package.
+
+### What's still deferred (per the framework-agnostic review's "5 Things To Defer")
+
+- `body[data-magi-app]` → `html[data-magi-app]` scope rename (ADR-0002). Awaiting second consumer confirmation.
+- React 19 peer range expansion (ADR-0006). Awaiting consumer request.
+- axe-playwright / Playwright visual regression (ADR-0007 + ADR-0008). Awaiting need.
+- Vue framework implementation. Awaiting a Vue consumer.
+- New primitives beyond the current 13 + 3 brand primitives.

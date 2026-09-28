@@ -2,7 +2,7 @@
 
 > **Purpose**: this is a copy-paste prompt for an AI coding agent that needs to integrate `@tokyo3rdhq/magi-design-system` into a new or existing `xxx.magi.website` product. Replace the `{...}` placeholders, paste the whole document (or the body after "Prompt") into the agent's input, and let it execute.
 >
-> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.4.2`. Re-check if you upgrade.
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.5.1`. Re-check if you upgrade.
 
 ---
 
@@ -41,7 +41,7 @@ These are **hard constraints**. Violating any of them breaks the family contract
 2. **Do not introduce another UI library** — no MUI / Chakra / Radix-based full UI framework unless one is already a peer dependency. Spec §4.
 3. **Do not reintroduce CRT / terminal / neon styling.** Spec §36.
 4. **Do not fork the package** — consume via `npm install @tokyo3rdhq/magi-design-system`. Spec §2.
-5. **`<body>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. Per ADR-0002, this will move to `<html>` at 0.5.0; until then, `<body>` is the contract. See [`architecture-v2.md`](./architecture-v2.md).
+5. **`<body>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. Per ADR-0002, this will move to `<html>` at a post-0.5.x release; until then, `<body>` is the contract. See [`architecture-v2.md`](./architecture-v2.md).
 6. **Accent overrides go through `<AppTheme>` (app-level) or `data-magi-accent` (subtree-level)** — never write raw CSS to override `--magi-accent`. Spec §10. Both mechanisms are documented in [`usage-guide.md`](./usage-guide.md) §Theming patterns.
 7. **All user-visible text must be styled through design-system utilities or components** — `.magi-h1`, `<ProductHeader>`, etc. Avoid hand-rolled typographic CSS unless a new pattern is justified.
 
@@ -53,7 +53,8 @@ Before any code changes:
 2. **Read [`docs/migration-guide.md`](./migration-guide.md)** — it has concrete steps for Astro + Tailwind and for Cloudflare Pages + React + Vite. The product you are integrating may match one of these profiles.
 3. **Read [`docs/tokens.md`](./tokens.md)** — every token you might need is documented with values and recommended usage.
 4. **Skim [`docs/usage-guide.md`](./usage-guide.md)** — patterns for forms, lists, navigation, theming, accessibility, anti-patterns. Skipping this leads to reinventing the wheel (or violating spec rules).
-5. **Skim [`docs/architecture-v2.md`](./architecture-v2.md)** — explains the target architecture: `@layer` cascade, `<AppTheme>` as context provider (no DOM wrapper), subtree accent via attribute. See also [`docs/architecture-review-0.3.md`](./architecture-review-0.3.md) for known issues + roadmap.
+5. **Skim [`docs/architecture-v2.md`](./architecture-v2.md)** — explains the target architecture: `@layer` cascade, `<AppTheme>` as context provider (no DOM wrapper), subtree accent via attribute. See also [`docs/architecture-review-0.3.md`](./architecture-review-0.3.md) for known issues + roadmap. For the framework-agnostic boundary map (Brand Foundation / Tokens / CSS Foundation / Component Contracts / Web-CSS Implementation / Framework Implementations), see [`docs/architecture-review-framework-agnostic.md`](./architecture-review-framework-agnostic.md).
+6. **Skim [`docs/component-contracts.md`](./component-contracts.md)** — the per-component framework-agnostic contracts. If you are consuming React components, you don't need to know this — but if you are building a non-React consumer (Vue, plain HTML) of the package, the contracts are what you must implement.
 
 ### Required steps
 
@@ -97,6 +98,8 @@ The order matters. Do not skip steps even if they seem trivial.
    | `<div class="container">` | `<Container size="xl">` |
    | `<section class="section">` | `<Section spacing="lg">` |
    | `<span class="badge">` | `<Badge variant="accent">` |
+   | hand-rolled brand logo (text / SVG / img) | `<MagiLockup size="md" />` (or `<MagiMark>` / `<MagiWordmark>` per context) |
+   | local `favicon.svg` / `og-default.svg` | copy from `node_modules/@tokyo3rdhq/magi-design-system/dist/assets/` |
 
    Do not replace product-specific components (`ModelCard`, `ProviderTabs`, etc.) — those stay in the product. Just make sure they **use** the design-system primitives internally.
 6. **Replace ad-hoc typography with utility classes**:

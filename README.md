@@ -6,16 +6,16 @@ Shared visual foundation for the [MAGI](https://magi.website) product family —
 
 This monorepo contains the package that every MAGI website consumes:
 
-- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, and a product theme mechanism. **Latest: 0.4.2**
+- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, brand foundation, and a product theme mechanism. **Latest: 0.5.1**
 - [`@tokyo3rdhq/showroom`](./apps/showroom) — the Vite + React + TypeScript visual showcase used during development
 
 ## What is MAGI?
 
-[MAGI](https://magi.website) is an independent AI lab operating a family of products (`magi.website`, `api.magi.website`, `chat.magi.website`, `agent.magi.website`). Every product inherits the same visual language — typography, spacing, surfaces, motion, accessibility rules — but each can override its accent color through `<AppTheme accent="…" />` or subtree-level `<div data-magi-accent="…">`.
+[MAGI](https://magi.website) is an independent AI lab operating a family of products (`magi.website`, `api.magi.website`, `chat.magi.website`, `agent.magi.website`). Every product inherits the same visual language — typography, spacing, surfaces, motion, accessibility rules, brand — but each can override its accent color through `<AppTheme accent="…" />` or subtree-level `<div data-magi-accent="…">`.
 
 ## Status
 
-**0.4.2 published.** 13 primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme) + CSS `@layer` cascade + token literal CI enforcement + accent source-of-truth CI + 8 ADRs.
+**0.5.1 published.** 13 primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme) + 3 brand primitives (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`) + 5 canonical brand SVG assets + Component Contracts document + framework-agnostic architecture review. CSS `@layer` cascade + token literal CI + accent source-of-truth CI + 8 ADRs.
 
 Release history (chronological):
 
@@ -26,21 +26,24 @@ Release history (chronological):
 - [x] `0.4.0` — rename `<ProductTheme>` → `<AppTheme>` (the original name misleadingly claimed subtree scope; the implementation sets CSS vars on `<html>`, which is global)
 - [x] `0.4.1` — token literal CI extended to `.tsx` / `.ts` files + new accent source-of-truth CI script (cross-validates `ACCENT_PRESETS` in `theme.tsx` against `data-magi-accent` rules in `globals.css`)
 - [x] `0.4.2` — `<Segmented>` keyboard navigation (Arrow / Home / End + roving tabindex) per WAI-ARIA radio group pattern
+- [x] `0.5.0` — **MAGI Brand Foundation** + showroom Brand page. 5 SVG assets (`magi-mark.svg` / `magi-wordmark.svg` / `magi-lockup.svg` / `favicon.svg` / `app-icon.svg`) shipped under `src/assets/`. 3 React rendering components (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`) consume them via `?raw` import so `fill="currentColor"` propagates. Brand doc at [`docs/brand.md`](./docs/brand.md).
+- [x] `0.5.1` — boundary cleanup + Component Contracts. `ACCENT_PRESETS` moved from `src/theme.tsx` to `src/tokens/accent-presets.ts` (a framework-agnostic TS module; Vue/JS consumers can import without React). README headline rewritten to distinguish the Design System from the React implementation per review §22. New [`docs/component-contracts.md`](./docs/component-contracts.md) — per-component contracts (semantic structure / accessibility / visual states / token binding). New [`docs/architecture-review-framework-agnostic.md`](./docs/architecture-review-framework-agnostic.md) — 30-section framework-agnostic architecture review establishing the 6 conceptual layers (Brand Foundation / Design Tokens / CSS Foundation / Component Contracts / Web-CSS Implementation / Framework Implementations) and the boundary map.
 
 Consumer adoption (separate from package versioning):
 
 - [x] `magidesign-system` repo showroom consumes `@tokyo3rdhq/magi-design-system` itself (file: link)
-- [x] `magi-portal` migrated to `@tokyo3rdhq/magi-design-system@0.2.0` (commit `ae63ef7` in magi-portal repo)
+- [x] `magi-portal` migrated to `@tokyo3rdhq/magi-design-system@0.5.1` — brand assets adopted (favicon + og + nav lockup) at commit `682fd06` / `e0f...` (see magi-portal repo `CHANGELOG`)
 - [ ] `token-factory-initializr/web` migration in progress
 
-Deferred to **0.5.0**:
+Deferred to **post-0.5.x**:
 
 - `body[data-magi-app]` → `html[data-magi-app]` scope rename (per ADR-0002)
-- axe-playwright + visual regression (per ADR-0007)
+- axe-playwright + visual regression (per ADR-0007 + ADR-0008)
 - React 19 peer range support (per ADR-0006)
-- FormField child contract / state token vocab / cascade policy (P2.1/P2.2/P2.3)
+- Component Contract doc is now in place; future work is to add more components under it rather than expand the doc per se
+- Vue framework implementation (deferred until a Vue consumer exists)
 
-See [`docs/architecture-v2.md`](./docs/architecture-v2.md), [`docs/architecture-review-v2.md`](./docs/architecture-review-v2.md), and [`docs/architecture-review-0.3.md`](./docs/architecture-review-0.3.md) for the architecture roadmap.
+See [`docs/architecture-v2.md`](./docs/architecture-v2.md), [`docs/architecture-review-v2.md`](./docs/architecture-review-v2.md), [`docs/architecture-review-0.3.md`](./docs/architecture-review-0.3.md), and [`docs/architecture-review-framework-agnostic.md`](./docs/architecture-review-framework-agnostic.md) for the architecture roadmap.
 
 ## Repo layout
 
@@ -51,18 +54,24 @@ magi-design-system/
 ├── apps/
 │   └── showroom/             # @tokyo3rdhq/showroom — local visual showcase
 ├── docs/
-│   ├── magi_design_system.md        # original design spec (also lives in magi-portal)
-│   ├── architecture.md              # OLD (0.1.0 era) — superseded by architecture-v2.md
-│   ├── architecture-v2.md           # target architecture proposal
-│   ├── architecture-review-v2.md    # challenge of the v2 proposal
-│   ├── architecture-v0.3-post-review.md  # original review brief
-│   ├── architecture-review-0.3.md   # post-0.3.0 implementation review (found 8 issues)
-│   ├── arch_evo.md                  # original refactor brief
-│   ├── tokens.md                    # every CSS custom property (current 0.4.x)
-│   ├── usage-guide.md               # patterns and recipes for common scenarios
-│   ├── migration-guide.md           # Phase 2 / 3 / 5 / 6 consumer migrations
-│   ├── integration-prompt.md        # AI agent prompt for new xxx.magi.website consumers
-│   └── adr/                         # Architecture Decision Records (0001–0008)
+│   ├── magi_design_system.md                       # original design spec (also lives in magi-portal)
+│   ├── architecture.md                             # OLD (0.1.0 era) — superseded by architecture-v2.md
+│   ├── architecture-v2.md                          # target architecture proposal
+│   ├── architecture-review-v2.md                   # challenge of the v2 proposal
+│   ├── architecture-v0.3-post-review.md            # original review brief
+│   ├── architecture-review-0.3.md                  # post-0.3.0 implementation review (found 8 issues)
+│   ├── architecture-review-framework-agnostic.md   # post-0.5.0 framework-agnostic review (30 sections, 6 layers)
+│   ├── brand.md                                    # Brand Foundation guidelines (since 0.5.0)
+│   ├── brand-foundation-architecture-review.md     # Brand Foundation pre-implementation review
+│   ├── brand_fundation_review_and_impl.md          # Brand Foundation review + impl prompt (legacy)
+│   ├── component-contracts.md                      # Component Contracts (since 0.5.1)
+│   ├── framework_agnostic_architecture_review.md   # the review brief this repo's review responds to
+│   ├── arch_evo.md                                 # original refactor brief
+│   ├── tokens.md                                   # every CSS custom property (current 0.5.x)
+│   ├── usage-guide.md                              # patterns and recipes for common scenarios
+│   ├── migration-guide.md                          # Phase 2 / 3 / 5 / 6 / 7 consumer migrations
+│   ├── integration-prompt.md                       # AI agent prompt for new xxx.magi.website consumers
+│   └── adr/                                        # Architecture Decision Records (0001–0008)
 │       ├── 0001-token-architecture.md
 │       ├── 0002-css-scope.md
 │       ├── 0003-theme-architecture.md
@@ -73,7 +82,7 @@ magi-design-system/
 │       └── 0008-visual-regression.md
 ├── scripts/
 │   ├── check-tokens.mjs            # CI token literal enforcement (MUST NOT / SHOULD)
-│   └── check-accent-tokens.mjs     # CI accent source-of-truth cross-check
+│   └── check-accent-tokens.mjs     # CI accent source-of-truth cross-check (now reads tokens/accent-presets.ts)
 ├── LICENSE
 └── README.md
 ```
@@ -94,6 +103,7 @@ import {
   Container, Section, Stack,
   Button, Card, Badge,
   Checkbox, FormField, Input, Segmented, Banner, EmptyState,
+  MagiMark, MagiWordmark, MagiLockup,
   AppTheme,
 } from '@tokyo3rdhq/magi-design-system';
 
@@ -160,19 +170,24 @@ The showroom uses `file:` linking to the local package, so live edits in
 
 | Doc | Purpose |
 | --- | --- |
-| [`packages/design-system/README.md`](./packages/design-system/README.md) | Full API reference for all 13 primitives |
-| [`docs/usage-guide.md`](./docs/usage-guide.md) | **Patterns and recipes**: forms, lists, navigation chrome, theming, accessibility, testing |
+| [`packages/design-system/README.md`](./packages/design-system/README.md) | Full API reference for the package — design-system layer + React implementation |
+| [`docs/usage-guide.md`](./docs/usage-guide.md) | **Patterns and recipes**: forms, lists, navigation chrome, theming, accessibility, brand, testing |
 | [`docs/tokens.md`](./docs/tokens.md) | Every CSS custom property with values |
-| [`docs/migration-guide.md`](./docs/migration-guide.md) | Phase 2 / 3 / 5 / 6 consumer migrations |
+| [`docs/brand.md`](./docs/brand.md) | **MAGI Brand Foundation** — hierarchy, clear space, minimum sizes, backgrounds, product relationship, misuse prohibitions |
+| [`docs/component-contracts.md`](./docs/component-contracts.md) | **Component Contracts** (Layer 4) — per-component semantic structure / accessibility / visual states / token binding. NOT CSS class names. |
+| [`docs/migration-guide.md`](./docs/migration-guide.md) | Phase 2 / 3 / 5 / 6 / 7 consumer migrations (incl. brand migration at 0.5.0+) |
 | [`docs/integration-prompt.md`](./docs/integration-prompt.md) | AI agent prompt for new `xxx.magi.website` consumers |
-| [`docs/architecture-v2.md`](./docs/architecture-v2.md) | Target architecture proposal |
+| [`docs/architecture-v2.md`](./docs/architecture-v2.md) | Target architecture proposal (0.2.0 era — largely implemented) |
 | [`docs/architecture-review-v2.md`](./docs/architecture-review-v2.md) | Challenge of v2 (proposed target architecture) |
 | [`docs/architecture-review-0.3.md`](./docs/architecture-review-0.3.md) | Post-0.3.0 implementation review (found the bugs fixed in 0.3.1 / 0.4.0 / 0.4.1) |
+| [`docs/architecture-review-framework-agnostic.md`](./docs/architecture-review-framework-agnostic.md) | **0.5.0 framework-agnostic review** — 30 sections, 6 conceptual layers, framework coupling matrix, dependency graph, refactoring plan |
+| [`docs/brand-foundation-architecture-review.md`](./docs/brand-foundation-architecture-review.md) | Pre-implementation review of the Brand Foundation |
+| [`docs/framework_agnostic_architecture_review.md`](./docs/framework_agnostic_architecture_review.md) | The original review brief that this repo's framework-agnostic review responds to |
 | [`docs/adr/`](./docs/adr/) | 8 Architecture Decision Records |
 | [`docs/magi_design_system.md`](./docs/magi_design_system.md) | Original design spec (also in magi-portal repo) |
 | [`docs/architecture.md`](./docs/architecture.md) | Old (0.1.0) — superseded by v2 docs |
 | [`docs/arch_evo.md`](./docs/arch_evo.md) | Original refactor brief |
-| [`CHANGELOG.md`](./CHANGELOG.md) | Release history (0.1.0 → 0.4.2) |
+| [`CHANGELOG.md`](./CHANGELOG.md) | Release history (0.1.0 → 0.5.1) |
 | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Workflow + architectural rules for contributors |
 | [`SECURITY.md`](./SECURITY.md) | Vulnerability disclosure |
 

@@ -72,6 +72,12 @@ Approximate count: ~70 baselines.
 - **Iteration cost**: ~5-10 minutes per visual change in 0.4.0+.
 - **Protection**: catches design-language drift before it reaches consumers.
 
+## 0.5.x status
+
+- **0.5.0** shipped the Brand Foundation. Visual regression for brand assets is now available **manually** via the showroom's Brand page (since 0.5.0 — 8th page in `apps/showroom/src/pages/Brand.tsx`). This serves as a manual visual regression surface for the 3 brand components × 3 sizes × 5 accents = 45 visual states, until Playwright is adopted.
+- **0.5.1** added the Component Contracts doc (`docs/component-contracts.md`). Visual states for every component are now documented as part of the framework-agnostic contract layer.
+- **Playwright visual regression remains deferred.** Same rationale as ADR-0007: ~150 MB chromium binary, ~70 baseline maintenance.
+
 ## References
 
 - [Architecture review §11](architecture-review-v2.md)

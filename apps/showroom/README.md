@@ -5,7 +5,7 @@ Local visual showcase for `@tokyo3rdhq/magi-design-system`. Used during package 
 ## What it is
 
 - Vite + React 18 + TypeScript app
-- Seven pages: **Tokens**, **Typography**, **Buttons**, **Cards**, **Badges**, **Layout**, **Phase 4**
+- Eight pages: **Tokens**, **Typography**, **Buttons**, **Cards**, **Badges**, **Layout**, **Phase 4** (form primitives), **Brand**
 - Sticky top nav with live accent picker (`green` / `cyan` / `violet` / `amber` / `white`)
 - file: linked to `../../packages/design-system` (symlink-installed by npm)
 - Picks up accent changes live via `data-magi-accent` subtree overrides on the Phase 4 page
@@ -36,11 +36,13 @@ The showroom has its own top-level CSS modules (`App.module.css`, `pages.module.
 | **Badges** | Variants (neutral / accent / success / warning / error), dot modifier, in-context usage |
 | **Layout** | Container sizes, Section spacing × surface, Stack (vertical + horizontal) |
 | **Phase 4** | All 6 primitives from 0.2.0 (Checkbox / FormField / Input / Segmented / Banner / EmptyState) with live state, including the providers-as-checkbox-group pattern |
+| **Brand** (since 0.5.0) | The MAGI mark / wordmark / lockup rendered at all 3 semantic sizes on dark and light surfaces; `currentColor` propagation verified across the 5 accent presets. Acts as the visual regression surface for the brand foundation. |
 
 ## When to update the showroom
 
 - A new primitive ships → add a page or section
 - A new token is added → add it to the Tokens swatch grid
+- A new brand asset ships → add it to the Brand page
 - A variant is renamed → update the page that demonstrates it
 - Visual regressions appear → use the showroom to bisect
 - A primitive's API changes (e.g. prop rename) → update the consuming page

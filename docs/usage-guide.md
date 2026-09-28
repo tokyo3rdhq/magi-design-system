@@ -1,7 +1,7 @@
 # Usage guide — `@tokyo3rdhq/magi-design-system`
 
 > **Audience**: developers integrating the package into a MAGI product (`magi.website`, `*.magi.website`, etc.).
-> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.4.2`.
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.5.1`.
 
 This guide covers **patterns** — how to compose the primitives into real UI surfaces. For per-component API signatures, see [`packages/design-system/README.md`](../packages/design-system/README.md). For token reference, see [`tokens.md`](./tokens.md).
 
