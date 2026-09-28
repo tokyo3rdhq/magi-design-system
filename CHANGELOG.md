@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] — 2026-09-28
+
+### Added
+
+- **`docs/component-contracts.md`** — Layer 4 of the framework-agnostic architecture. Per-component contracts (semantic structure, accessibility, visual states, token binding) for every shipped component and brand primitive. This is the document a future Vue or vanilla-HTML contributor reads to know what behavior the React components must preserve. CSS class names (`.magi-button--primary` etc.) are deliberately NOT part of the contracts — they belong to the Web/CSS Implementation layer (Layer 5) and may be freely refactored.
+
+- **`docs/architecture-review-framework-agnostic.md`** — 30-section framework-agnostic architecture review of the 0.5.0 codebase. Establishes the 7 conceptual layers (Brand Foundation / Design Tokens / CSS Foundation / Component Contracts / Web/CSS Implementation / Framework Implementations / Product Applications), produces the framework coupling matrix, dependency graph, README assessment, and the three-step refactoring plan executed in this release.
+
+### Changed
+
+- **`ACCENT_PRESETS` moved from `src/theme.tsx` to `src/tokens/accent-presets.ts`.** The accent hex values now live in a pure TypeScript module with zero React dependencies — a Vue or vanilla-JS design-token consumer can import the same source of truth without pulling in React. `src/theme.tsx` imports from there. This is a boundary cleanup: tokens belong to the framework-agnostic layer, not the React runtime.
+
+- **`scripts/check-accent-tokens.mjs`** follows the new source of truth — it now reads `src/tokens/accent-presets.ts` instead of `src/theme.tsx`. CI still cross-checks against `foundation/globals.css`.
+
+- **`packages/design-system/README.md` headline rewritten per the architecture review.** The opening now distinguishes the framework-agnostic Design System from the React implementation that ships in this package. Lists the six conceptual layers explicitly. Replaces the previous "React 18 + TypeScript" headline that conflated the package with the Design System definition.
+
+### Notes
+
+- Per ADR-0006 and the doc's §22, this is a **patch** release: no public API change (the moved `ACCENT_PRESETS` is not publicly exported, only `AppAccent` and `AccentTokens` types are, and they are still re-exported via `src/theme.tsx`). The shift from "React-owned tokens" to "framework-agnostic tokens" is an internal restructuring.
+
+- The contracts in `docs/component-contracts.md` are normative for any future framework implementation. A Vue `<MagiButton>` MUST satisfy the same four-section contract as the React `<Button>` — DOM, accessibility, states, tokens.
+
+### Verified
+
+- `npm run typecheck` → clean
+- `npm run build` → `dist/styles.css` 25.47 kB / `dist/index.js` 13.39 kB (gzip 4.42 / 4.04)
+- `node scripts/check-tokens.mjs` → 0 errors, 0 warnings
+- `node scripts/check-accent-tokens.mjs` → 5 presets cross-validated
+- `AccentTokens` and `AppAccent` types still re-exported from `src/theme.tsx` so existing imports (`import type { AppAccent } from '@tokyo3rdhq/magi-design-system'`) keep working
+
 ## [0.5.0] — 2026-09-28
 
 ### Added

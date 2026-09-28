@@ -1,12 +1,34 @@
 # `@tokyo3rdhq/magi-design-system`
 
-Shared visual foundation for the [MAGI](https://magi.website) product family — dark-first, near-monochrome, restrained.
+The shared visual foundation for the [MAGI](https://magi.website) product ecosystem. Built around brand assets, design tokens, CSS foundations, component visual contracts, and accessibility principles.
 
-- **React 18** + **TypeScript** (strict)
-- **Plain CSS** with `magi-` prefixed classes — works in any React app, no Tailwind, no Next, no Vite, no Cloudflare coupling
-- **CSS custom properties** for every token — readable from any stylesheet
-- **CSS `@layer` cascade** — consumer unlayered styles always win (declared architecture, not accidental)
-- **~24 kB** stylesheet (gzip ~4 kB), **~9 kB** JS (gzip ~3 kB)
+The package currently ships the **React implementation** of the MAGI Design System. The underlying design language (tokens, CSS, brand) is **framework-agnostic** and is intended to be consumed by any frontend stack — React today, Vue or HTML tomorrow. See [`docs/architecture-review-framework-agnostic.md`](../../docs/architecture-review-framework-agnostic.md) for the full boundary map.
+
+## What's inside
+
+| Layer | What it is | Framework-agnostic? |
+|---|---|---|
+| **Brand Foundation** | SVG assets (mark / wordmark / lockup / favicon / app icon) + `docs/brand.md` | ✅ Yes |
+| **Design Tokens** | CSS variables for color, typography, spacing, radius, motion, breakpoints | ✅ Yes |
+| **CSS Foundation** | Reset, base typography, dark backdrop, scrollbar, focus ring, reduced-motion | ✅ Yes |
+| **Component Contracts** | Semantic structure, accessibility, states, token binding per component — see [`docs/component-contracts.md`](../../docs/component-contracts.md) | ✅ Yes (contract) |
+| **Web/CSS Implementation** | Per-component `.css` files; CSS selectors, `@layer`, CSS variables | ✅ Yes (Web-specific) |
+| **Framework Implementation** | React 18 + TypeScript components, JSX, hooks, Context | React only |
+
+The dependency direction is always: **Brand → Tokens → CSS Foundation → Component Contracts → Web/CSS Implementation → React Implementation → Application**. CSS class names (e.g. `.magi-button--primary`) belong to the **Web/CSS Implementation** layer and may be freely refactored — they are NOT part of the Design System API.
+
+## React compatibility
+
+This package currently provides the React implementation.
+
+- React 18 (peer)
+- TypeScript (strict)
+- Plain CSS with `magi-` prefixed classes
+- CSS `@layer` cascade — consumer unlayered styles always win
+- No Tailwind, no Next, no Vite, no Cloudflare coupling
+- ~25 kB stylesheet (gzip ~4 kB), ~13 kB JS (gzip ~4 kB)
+
+React 19 is supported as a peer when the consumer requires it (per ADR-0006).
 
 ## Install
 

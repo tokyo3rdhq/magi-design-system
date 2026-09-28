@@ -28,11 +28,16 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = 'packages/design-system/src';
-const THEME = join(ROOT, 'theme.tsx');
+// As of 0.5.1, the framework-agnostic source of truth for accent presets
+// lives in `tokens/accent-presets.ts` (a pure TS module with zero React
+// dependencies). `src/theme.tsx` imports from there. The CI script follows
+// the source of truth, not the React runtime.
+const ACCENT_PRESETS_FILE = join(ROOT, 'tokens/accent-presets.ts');
 const GLOBALS = join(ROOT, 'foundation/globals.css');
 
 /**
- * Parse `ACCENT_PRESETS` from theme.tsx without compiling TypeScript.
+ * Parse `ACCENT_PRESETS` from tokens/accent-presets.ts without compiling
+ * TypeScript.
  *
  * Captures: <name>: { '--magi-accent': '#hex', '--magi-accent-hover': '#hex', ... }
  */
@@ -86,7 +91,7 @@ function parseGlobalsAccents(src) {
   return out;
 }
 
-const themeSrc = readFileSync(THEME, 'utf8');
+const themeSrc = readFileSync(ACCENT_PRESETS_FILE, 'utf8');
 const globalsSrc = readFileSync(GLOBALS, 'utf8');
 
 const themeAccents = parseThemeAccents(themeSrc);

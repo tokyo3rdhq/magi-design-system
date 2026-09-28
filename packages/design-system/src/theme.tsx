@@ -6,52 +6,17 @@ import {
   type ReactNode,
 } from 'react';
 
-export type AppAccent =
-  | 'green'   // default — MAGI core
-  | 'cyan'    // Token Factory Initializr
-  | 'violet'  // API product
-  | 'amber'   // Agent product
-  | 'white';  // monochrome MAGI
+import {
+  ACCENT_PRESETS,
+  type AccentTokens,
+  type AppAccent,
+} from './tokens/accent-presets';
 
-interface AccentTokens {
-  '--magi-accent': string;
-  '--magi-accent-hover': string;
-  '--magi-accent-soft': string;
-  '--magi-accent-contrast': string;
-}
-
-const ACCENT_PRESETS: Record<AppAccent, AccentTokens> = {
-  green: {
-    '--magi-accent': '#00c853',
-    '--magi-accent-hover': '#00e676',
-    '--magi-accent-soft': 'rgba(0, 200, 83, 0.08)',
-    '--magi-accent-contrast': '#050505',
-  },
-  cyan: {
-    '--magi-accent': '#38bdf8',
-    '--magi-accent-hover': '#7dd3fc',
-    '--magi-accent-soft': 'rgba(56, 189, 248, 0.08)',
-    '--magi-accent-contrast': '#050505',
-  },
-  violet: {
-    '--magi-accent': '#8b5cf6',
-    '--magi-accent-hover': '#a78bfa',
-    '--magi-accent-soft': 'rgba(139, 92, 246, 0.08)',
-    '--magi-accent-contrast': '#f5f5f7',
-  },
-  amber: {
-    '--magi-accent': '#f59e0b',
-    '--magi-accent-hover': '#fbbf24',
-    '--magi-accent-soft': 'rgba(245, 158, 11, 0.08)',
-    '--magi-accent-contrast': '#050505',
-  },
-  white: {
-    '--magi-accent': '#ffffff',
-    '--magi-accent-hover': '#f5f5f7',
-    '--magi-accent-soft': 'rgba(255, 255, 255, 0.08)',
-    '--magi-accent-contrast': '#050505',
-  },
-};
+// Re-export the framework-neutral pieces so the public API surface
+// (./index.ts → `export type { AppThemeProps, AppAccent } from './theme'`)
+// is preserved exactly. A Vue or vanilla-JS consumer could import them
+// directly from `./tokens/accent-presets` without pulling in React.
+export type { AppAccent, AccentTokens };
 
 interface AppThemeContextValue {
   accent: AppAccent;
