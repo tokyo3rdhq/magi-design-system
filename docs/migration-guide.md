@@ -2,11 +2,12 @@
 
 How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers three consumer profiles and four version-upgrade paths:
 
-- **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site) — landed on `@tokyo3rdhq/magi-design-system@0.5.1` (current)
+- **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site) — landed on `@tokyo3rdhq/magi-design-system@0.6.0` (current)
 - **Phase 3 — [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr)** (Cloudflare Pages + React + Vite) — landed on `@tokyo3rdhq/magi-design-system@0.2.0`; uses 6 primitives
 - **Phase 5 — upgrade from 0.2.0 to 0.3.0** — see "Phase 5 — Upgrade to 0.3.0" section below
 - **Phase 6 — upgrade from 0.3.x to 0.4.0** — see "Phase 6 — Upgrade to 0.4.0" section below
 - **Phase 7 — upgrade from 0.4.x to 0.5.x** — see "Phase 7 — Upgrade to 0.5.x" section below
+- **Phase 8 — upgrade from 0.5.x to 0.6.x** — see "Phase 8 — Upgrade to 0.6.x" section below
 
 The three paths diverge after the shared installation step.
 
@@ -527,7 +528,7 @@ Per `docs/architecture-review-0.3.md`:
 
 The next 0.4.x patch will land P1.1 / P1.2 / P1.5. The next minor (0.5.0) will land P2 items + axe-playwright per ADR-0002 scope rename plan.
 
-## Phase 7 — Upgrade from 0.4.x to 0.5.x
+## Phase 7 — Upgrade from 0.4.x to 0.5.x (Brand Foundation)
 
 `@tokyo3rdhq/magi-design-system@0.5.x` ships two minor releases:
 
@@ -582,3 +583,126 @@ Consumers do not need to change code to adopt it. Future contributors reference 
 - axe-playwright / Playwright visual regression (per ADR-0007 + ADR-0008). Deferred to a future minor.
 - Vue framework implementation. Deferred until a Vue consumer exists.
 - New primitives beyond the current 13 + 3 brand primitives.
+
+## Phase 8 — Upgrade from 0.5.x to 0.6.x (Light/Dark Theme + Scope Rename)
+
+`@tokyo3rdhq/magi-design-system@0.6.0` formalizes the **Light/Dark color mode** as part of the public surface, executes the long-deferred **`body[data-magi-app]` → `html[data-magi-app]` scope rename** (per ADR-0002), and **enforces the Logo Contrast Rule** by binding the brand component wrapper to `--magi-logo-color`.
+
+### Breaking changes — two
+
+#### Breaking 1 — `data-magi-app` is now on `<html>` (was `<body>`)
+
+```diff
+- <body data-magi-app>
++ <html data-magi-app>
++   <body>
++     <!-- app mounts here -->
++   </body>
++ </html>
+```
+
+`body[data-magi-app]` **still works** for backward compatibility — the CSS selector is now `[data-magi-app]` (matches any element). But the canonical placement is `<html>`. Migration is recommended but not required:
+
+- `<body data-magi-app>` keeps working. Component CSS still applies.
+- `<html data-magi-app>` is canonical — better for apps that render into nested roots.
+
+If your server-rendered layout hard-codes `<body data-magi-app>`, no change needed. Move to `<html>` at your own pace.
+
+#### Breaking 2 — `<AppTheme>` writes `data-magi-theme="<theme>"` to `<html>`
+
+`<AppTheme>` now writes a second attribute (`data-magi-theme`) in addition to the four accent CSS variables. **No new prop is required** — `theme` defaults to `'dark'` (canonical, same as pre-0.6.0 behavior). To opt into Light:
+
+```tsx
+<AppTheme theme="light">
+  <App />
+</AppTheme>
+```
+
+Without the new prop, the rendered DOM looks like `<html data-magi-app data-magi-product="…" data-magi-theme="dark">` (theme attribute is set, but to the default Dark value). Existing consumers see no behavior change.
+
+### Additive — `<AppTheme>` accepts a `theme` prop
+
+```tsx
+<AppTheme accent="cyan" theme="light">
+  <App />
+</AppTheme>
+// accent: 'green' | 'cyan' | 'violet' | 'amber' | 'white' (default: 'green')
+// theme:  'dark' | 'light'                              (default: 'dark' — canonical)
+```
+
+### Additive — `<AppTheme>` returns `{ accent, theme }` from context
+
+```tsx
+import { useAppTheme } from '@tokyo3rdhq/magi-design-system';
+
+function MyComponent() {
+  const { accent, theme } = useAppTheme();
+  // theme is 'dark' | 'light'. Default: { accent: 'green', theme: 'dark' }.
+}
+```
+
+### Additive — `data-magi-theme="<theme>"` for subtree scope
+
+Opt into Light within a Dark page (or vice versa) without React:
+
+```html
+<div data-magi-theme="light">
+  <Card>…</Card>
+</div>
+```
+
+### Additive — `--magi-logo-color` semantic token
+
+The brand component wrapper (`.magi-mark`, `.magi-wordmark`, `.magi-lockup`) now sets `color: var(--magi-logo-color)`. The Logo Contrast Rule is enforced by the system, not by the consumer:
+
+| Theme | `--magi-logo-color` | Logo appearance |
+|---|---|---|
+| Dark (default) | `#f5f5f7` (near-white) | White logo |
+| Light | `#050505` (near-black) | Black logo |
+
+Consumers no longer need to set `color` on the brand wrapper themselves — the system picks the right foreground for the current theme automatically.
+
+If you previously hard-coded a logo color (e.g., `style={{ color: '#fff' }}` on a dark surface to fix visibility), remove that override — the system now handles it. Hard-coded overrides still work for overriding the system in specific contexts (e.g., placing the logo on an accent-colored CTA background).
+
+### Migration steps
+
+1. **Move `data-magi-app` to `<html>`** (optional but recommended):
+   ```diff
+   - <body data-magi-app>
+   + <html data-magi-app>
+   ```
+     No code change beyond HTML structure. CSS selectors are now element-agnostic.
+
+2. **Adopt the `theme` prop if you want Light** (optional):
+   ```tsx
+   <AppTheme accent="cyan" theme="light">…</AppTheme>
+   ```
+     Default Dark behavior unchanged.
+
+3. **Remove hard-coded logo color overrides** (recommended):
+   ```diff
+   - <a href="/" style={{ color: '#fff' }}>
+   -   <MagiLockup />
+   - </a>
+   + <a href="/">
+   +   <MagiLockup />
+   + </a>
+   ```
+     The system now handles foreground color automatically per theme.
+
+4. **If you have a CSS file that uses `body[data-magi-app]` selectors**: rewrite to `[data-magi-app]`. The selector matches any element.
+
+### Notes
+
+- The package remains **dark-first**: the SSR-safe default is Dark. White-on-white flash before hydration is impossible.
+- Accent (`--magi-accent`) is **independent** of theme: `<AppTheme accent="cyan" theme="light">` is a valid combination. Accent and theme are orthogonal axes.
+- The MAGI logo geometry is unchanged — only the runtime color binding changed.
+- See [`docs/brand.md`](./brand.md#color-modes) for the canonical Color Modes + Logo Contrast Rule documentation.
+
+### What 0.6.0 does NOT include (still deferred)
+
+- React 19 peer range expansion (per ADR-0006).
+- axe-playwright / Playwright visual regression (per ADR-0007 + ADR-0008).
+- Vue framework implementation.
+- New primitives beyond the current 13 + 3 brand primitives.
+- Light theme for individual component CSS classes (component-level Light variants) — not needed today since the entire subtree theme swap is sufficient.

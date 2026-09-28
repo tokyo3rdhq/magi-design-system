@@ -1,4 +1,4 @@
-# ADR-003: Theme architecture — context provider + `<html>`-level CSS var setter
+# ADR-003: Theme architecture — context provider + `<html>`-level CSS var setter (Light/Dark mode added in 0.6.0)
 
 | | |
 |---|---|
@@ -66,6 +66,46 @@ The `data-magi-accent` attribute maps to the matching accent preset (green / cya
 ### Hooks added
 
 - `useAppTheme()` — returns `{ accent: AppAccent }`. Default `{ accent: 'green' }` when used outside `<AppTheme>`.
+
+### 0.6.0 — Light/Dark color mode added
+
+**`<AppTheme>` gained a `theme` prop**: `'dark' | 'light'`. Default `'dark'` (canonical MAGI presentation).
+
+```tsx
+<AppTheme accent="cyan" theme="light">
+  <App />
+</AppTheme>
+```
+
+What happens internally on mount:
+1. React Context provides `{ accent: 'cyan', theme: 'light' }` to children.
+2. `useInsertionEffect` writes:
+   - The four accent CSS variables on `<html>` (unchanged behavior)
+   - `data-magi-theme="light"` on `<html>` (new)
+3. All descendants inherit via CSS cascade.
+
+The color mode token rules live in `tokens/colors.css`:
+- `:root, [data-magi-theme="dark"]` — canonical Dark values (Dark is the SSR-safe default; `data-magi-theme="dark"` is explicit)
+- `[data-magi-theme="light"]` — alternative Light values
+
+Color mode swaps these tokens:
+- `--magi-bg-base` (background)
+- `--magi-bg-raised` / `--magi-surface` (surfaces)
+- `--magi-text-primary` / `--magi-text-secondary` / `--magi-text-tertiary` (text)
+- `--magi-border` / `--magi-border-strong`
+- `--magi-scrollbar-thumb`
+- `--magi-logo-color` (NEW token — bound to `--magi-text-primary` in both modes; the Logo Contrast Rule is enforced by `brand.css`)
+
+Color mode does NOT swap:
+- `--magi-accent` and family — accent is product-defined, not theme-defined. Accent and theme are orthogonal axes.
+
+`useAppTheme()` now returns `{ accent, theme }`. Default `{ accent: 'green', theme: 'dark' }`.
+
+### 0.6.0 — Logo Contrast Rule enforced by `brand.css`
+
+The brand component wrapper (`.magi-mark`, `.magi-wordmark`, `.magi-lockup`) now sets `color: var(--magi-logo-color)` so the logo automatically picks the right foreground color in each theme. Previously, the logo relied on the consumer setting `color` correctly; a consumer who forgot got a black logo on a black background (the bug that motivated this refactor).
+
+The Logo Contrast Rule is now enforced by the system, not by the consumer. See `docs/brand.md` and `docs/component-contracts.md#magimark`.
 
 ## Alternatives considered
 

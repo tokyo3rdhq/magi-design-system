@@ -1,12 +1,12 @@
 /* MAGI Design System — Checkbox
  *
  * Native <input type="checkbox"> restyled for the dark theme. Keeps full
- * form integration + a11y. Scoped under body[data-magi-app] for
+ * form integration + a11y. Scoped under [data-magi-app] for
  * specificity parity with foundation reset.
  */
 
 @layer magi.components {
-body[data-magi-app] .magi-checkbox {
+[data-magi-app] .magi-checkbox {
   appearance: none;
   -webkit-appearance: none;
   width: 18px;
@@ -24,16 +24,16 @@ body[data-magi-app] .magi-checkbox {
   vertical-align: middle;
 }
 
-body[data-magi-app] .magi-checkbox:hover {
+[data-magi-app] .magi-checkbox:hover {
   border-color: var(--magi-border-strong);
 }
 
-body[data-magi-app] .magi-checkbox:checked {
+[data-magi-app] .magi-checkbox:checked {
   background-color: var(--magi-accent);
   border-color: var(--magi-accent);
 }
 
-body[data-magi-app] .magi-checkbox:checked::after {
+[data-magi-app] .magi-checkbox:checked::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -45,18 +45,18 @@ body[data-magi-app] .magi-checkbox:checked::after {
   transform: rotate(45deg) translate(-1px, -1px);
 }
 
-body[data-magi-app] .magi-checkbox:focus-visible {
+[data-magi-app] .magi-checkbox:focus-visible {
   outline: none;
   box-shadow: var(--magi-focus-ring);
 }
 
-body[data-magi-app] .magi-checkbox:disabled {
+[data-magi-app] .magi-checkbox:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 /* Inline label wrapper used by Checkbox when children are provided. */
-body[data-magi-app] .magi-checkbox-label {
+[data-magi-app] .magi-checkbox-label {
   display: inline-flex;
   align-items: center;
   gap: var(--magi-space-2);
@@ -64,13 +64,13 @@ body[data-magi-app] .magi-checkbox-label {
   user-select: none;
 }
 
-body[data-magi-app] .magi-checkbox-label--disabled {
+[data-magi-app] .magi-checkbox-label--disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body[data-magi-app] .magi-checkbox {
+  [data-magi-app] .magi-checkbox {
     transition: none;
   }
 }

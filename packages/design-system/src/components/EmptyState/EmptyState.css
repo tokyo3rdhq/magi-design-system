@@ -6,7 +6,7 @@
  */
 
 @layer magi.components {
-body[data-magi-app] .magi-empty {
+[data-magi-app] .magi-empty {
   padding: var(--magi-space-7);
   text-align: center;
   color: var(--magi-text-secondary);
@@ -17,32 +17,32 @@ body[data-magi-app] .magi-empty {
   line-height: var(--magi-leading-snug);
 }
 
-body[data-magi-app] .magi-empty--structured {
+[data-magi-app] .magi-empty--structured {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--magi-space-3);
 }
 
-body[data-magi-app] .magi-empty-title {
+[data-magi-app] .magi-empty-title {
   color: var(--magi-text-primary);
   font-size: var(--magi-font-size-body-lg);
   font-weight: var(--magi-font-weight-medium);
   margin: 0;
 }
 
-body[data-magi-app] .magi-empty-description {
+[data-magi-app] .magi-empty-description {
   color: var(--magi-text-secondary);
   margin: 0;
   max-width: 480px;
 }
 
-body[data-magi-app] .magi-empty-action {
+[data-magi-app] .magi-empty-action {
   margin-top: var(--magi-space-2);
 }
 
 /* Inline links inside the simple variant */
-body[data-magi-app] .magi-empty a {
+[data-magi-app] .magi-empty a {
   color: var(--magi-accent);
   text-decoration: underline;
   text-underline-offset: 2px;

@@ -1,8 +1,8 @@
-# ADR-002: CSS scope — `body[data-magi-app]`, defer `html[]` rename to 0.5.0
+# ADR-002: CSS scope — `body[data-magi-app]`, rename to `[data-magi-app]` (executed in 0.6.0)
 
 | | |
 |---|---|
-| **Status** | Accepted |
+| **Status** | Accepted → **Executed in 0.6.0** |
 | **Date** | 2026-09-27 |
 | **Scope** | `@tokyo3rdhq/magi-design-system` 0.x |
 
@@ -61,8 +61,8 @@ The `@layer magi.*` adoption (ADR-007) makes the cascade order declared, not acc
 - **0.3.0**: keep `body[data-magi-app]`. Document the "attribute must be on body" contract clearly.
 - **0.5.0**: Brand Foundation shipped. CSS scope unchanged — `body[data-magi-app]` remains. Scope rename deferred.
 - **0.5.1**: Component Contracts doc added (`docs/component-contracts.md`). CSS scope still `body[data-magi-app]`.
-- **Post-0.5.x**: rename to `html[data-magi-app]`. Foundation's body styles move from `body[data-magi-app]` to `html[data-magi-app] body`. Component CSS can stay `body[data-magi-app]` since both `html` and `body` carry the attribute. Waiting for a second consumer to confirm the broader applicability before forcing a migration.
-- **Migration for consumers (when the rename lands)**: change `<body data-magi-app>` to `<html data-magi-app>`. Add `<body>` (no attribute) inside.
+- **0.6.0** — **rename executed**: scope attribute changed from `body[data-magi-app]` to `[data-magi-app]`. Canonical placement is now `<html data-magi-app>` (was `<body data-magi-app>`). `body[data-magi-app]` still works for backward compatibility (the selector matches any element with the attribute). Component CSS rules rewritten to use `[data-magi-app]` prefix (works regardless of element).
+- **Migration for consumers**: `<html data-magi-app>` is canonical. `<body data-magi-app>` still works (no breakage for 0.5.x consumers). To get full benefit, move the attribute to `<html>` and remove `<body data-magi-app>`.
 
 ## References
 

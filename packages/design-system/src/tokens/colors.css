@@ -1,23 +1,46 @@
 /* MAGI Design System — Colors
  *
- * Dark-first, near-monochrome. The default MAGI accent is green (#00C853),
- * matching the live magi.website visual language. Products can override the
- * accent (and accent-muted / accent-soft) via the product theme mechanism —
- * see ProductTheme.tsx.
+ * Layer: 2 — Design Tokens (framework-agnostic)
  *
- * Rule of thumb (§5 spec): product accents must remain subordinate to the
- * MAGI visual system. Override accent only — never text/border/surface.
+ * Two UI color modes are supported:
+ *   - Dark  — canonical MAGI presentation (default)
+ *   - Light — supported alternative presentation
+ *
+ * Color mode applies to:
+ *   - Background / surface / card
+ *   - Text (primary / secondary / tertiary / inverse)
+ *   - Border
+ *   - Scrollbar
+ *
+ * Color mode does NOT apply to:
+ *   - Accent (--magi-accent and family) — accent is product-defined,
+ *     not theme-defined. Accent is independent of Dark/Light.
+ *
+ * Logo color (--magi-logo-color) defaults to the semantic foreground
+ * (--magi-text-primary) but is a separate token so it can diverge if
+ * a future use-case requires it.
+ *
+ * SSR-safe default: `:root` carries the Dark values so that an unstyled
+ * flash before JS hydration never shows white-on-white. Consumers
+ * opt into Light via `<html data-magi-theme="light">`.
+ *
+ * Rule of thumb (§5 spec): product accents must remain subordinate to
+ * the MAGI visual system. Override accent only — never text/border/surface.
  */
 
 @layer magi.tokens {
-:root {
-  /* Background — fixed gradient stops on body, these are the raw values */
+
+/* Dark — canonical MAGI presentation. Default.
+ * Inherited on plain `:root` (no theme attribute) for SSR-safe defaults. */
+:root,
+[data-magi-theme="dark"] {
+  /* Background — fixed gradient stops on body */
   --magi-bg-base: #000000;
   --magi-bg-raised: #1d1d1f;
   --magi-bg-card: rgba(255, 255, 255, 0.04);
   --magi-bg-card-hover: rgba(255, 255, 255, 0.06);
 
-  /* Surface (for elevated panels, modals, CodeBlock) */
+  /* Surface (elevated panels, modals, CodeBlock) */
   --magi-surface: #0a0a0a;
   --magi-surface-elevated: #171717;
 
@@ -31,23 +54,72 @@
   --magi-border: rgba(255, 255, 255, 0.08);
   --magi-border-strong: rgba(255, 255, 255, 0.14);
 
-  /* Accent — green per MAGI visual identity. Override in product themes. */
-  --magi-accent: #00c853;
-  --magi-accent-hover: #00e676;
-  --magi-accent-soft: rgba(0, 200, 83, 0.08);
-  --magi-accent-contrast: #050505;
+  /* Scrollbar */
+  --magi-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --magi-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
 
   /* Selection */
   --magi-selection-bg: rgba(0, 200, 83, 0.3);
   --magi-selection-fg: #f5f5f7;
 
-  /* Semantic — for badges, status, errors. Restrained. */
+  /* Logo — follow the semantic foreground. Override only if a future
+   * surface demands logo independent of body text. */
+  --magi-logo-color: var(--magi-text-primary);
+}
+
+/* Light — supported alternative presentation. */
+[data-magi-theme="light"] {
+  /* Background */
+  --magi-bg-base: #ffffff;
+  --magi-bg-raised: #f5f5f7;
+  --magi-bg-card: rgba(0, 0, 0, 0.04);
+  --magi-bg-card-hover: rgba(0, 0, 0, 0.06);
+
+  /* Surface */
+  --magi-surface: #ffffff;
+  --magi-surface-elevated: #fafafa;
+
+  /* Text */
+  --magi-text-primary: #050505;
+  --magi-text-secondary: #424245;
+  --magi-text-tertiary: #6e6e73;
+  --magi-text-inverse: #f5f5f7;
+
+  /* Border */
+  --magi-border: rgba(0, 0, 0, 0.08);
+  --magi-border-strong: rgba(0, 0, 0, 0.14);
+
+  /* Scrollbar */
+  --magi-scrollbar-thumb: rgba(0, 0, 0, 0.18);
+  --magi-scrollbar-thumb-hover: rgba(0, 0, 0, 0.32);
+
+  /* Selection — green-on-white is fine for dark text on light surface.
+   * Selection fg follows text-primary for proper contrast. */
+  --magi-selection-bg: rgba(0, 200, 83, 0.25);
+  --magi-selection-fg: #050505;
+
+  /* Logo follows the semantic foreground */
+  --magi-logo-color: var(--magi-text-primary);
+}
+
+/* Accent — theme-independent. Green per MAGI visual identity.
+ * Override per product via <AppTheme accent="…">. */
+:root,
+[data-magi-theme="dark"],
+[data-magi-theme="light"] {
+  --magi-accent: #00c853;
+  --magi-accent-hover: #00e676;
+  --magi-accent-soft: rgba(0, 200, 83, 0.08);
+  --magi-accent-contrast: #050505;
+}
+
+/* Semantic — theme-independent. Used for badges, status, errors. */
+:root,
+[data-magi-theme="dark"],
+[data-magi-theme="light"] {
   --magi-success: #30d158;
   --magi-warning: #ff9f0a;
   --magi-error: #ff453a;
+}
 
-  /* Scrollbar — Apple-style, hidden by default */
-  --magi-scrollbar-thumb: rgba(255, 255, 255, 0.18);
-  --magi-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
-}
-}
+} /* @layer magi.tokens */

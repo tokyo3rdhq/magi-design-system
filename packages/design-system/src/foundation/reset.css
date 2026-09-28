@@ -19,7 +19,7 @@
   box-sizing: inherit;
 }
 
-body[data-magi-app] {
+[data-magi-app] {
   margin: 0;
 }
 

@@ -1,7 +1,7 @@
 /* MAGI Design System — Input */
 
 @layer magi.components {
-body[data-magi-app] .magi-input {
+[data-magi-app] .magi-input {
   width: 100%;
   appearance: none;
   background-color: var(--magi-surface);
@@ -15,48 +15,48 @@ body[data-magi-app] .magi-input {
   transition: border-color var(--magi-duration-fast) var(--magi-ease-standard);
 }
 
-body[data-magi-app] .magi-input:focus {
+[data-magi-app] .magi-input:focus {
   border-color: var(--magi-accent);
 }
 
-body[data-magi-app] .magi-input::placeholder {
+[data-magi-app] .magi-input::placeholder {
   color: var(--magi-text-tertiary);
 }
 
-body[data-magi-app] .magi-input:disabled {
+[data-magi-app] .magi-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-body[data-magi-app] .magi-input:focus-visible {
+[data-magi-app] .magi-input:focus-visible {
   outline: none;
   box-shadow: var(--magi-focus-ring);
 }
 
 /* Size variants — CSS-only, no JS state. */
-body[data-magi-app] .magi-input--sm {
+[data-magi-app] .magi-input--sm {
   padding: 6px 10px;
   font-size: var(--magi-font-size-label);
 }
 
-body[data-magi-app] .magi-input--md {
+[data-magi-app] .magi-input--md {
   padding: 10px 12px;
   font-size: var(--magi-font-size-body-sm);
 }
 
-body[data-magi-app] .magi-input--lg {
+[data-magi-app] .magi-input--lg {
   padding: 14px 16px;
   font-size: var(--magi-font-size-body);
 }
 
 /* Invalid state — adds error border + aria-invalid. */
-body[data-magi-app] .magi-input--invalid,
-body[data-magi-app] .magi-input--invalid:focus {
+[data-magi-app] .magi-input--invalid,
+[data-magi-app] .magi-input--invalid:focus {
   border-color: var(--magi-error);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body[data-magi-app] .magi-input {
+  [data-magi-app] .magi-input {
     transition: none;
   }
 }

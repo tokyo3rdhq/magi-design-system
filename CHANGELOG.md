@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] — 2026-09-28
+
+### Added
+
+- **Light/Dark color mode (theme contract).** The package now supports two UI color modes — `dark` (canonical MAGI presentation, default) and `light` (supported alternative). The color mode changes background / surface / text / border / scrollbar / logo-color. Accent is **independent** of color mode — they are orthogonal axes.
+  - CSS selector: `<html data-magi-theme="dark | light">` (or `[data-magi-theme="..."]` on any subtree element).
+  - SSR-safe default: `:root` carries the Dark values so an unstyled flash before hydration never shows white-on-white. Consumers opt into Light by setting `data-magi-theme="light"` on `<html>`.
+  - Subtree scope: `<div data-magi-theme="light">` flips a subtree to Light without React.
+
+- **`<AppTheme>` `theme` prop.** `theme?: 'dark' | 'light'` (default `'dark'`). Writes `data-magi-theme="<theme>"` to `<html>` via the existing `useInsertionEffect` (no FOUC for the SSR-safe default).
+  ```tsx
+  <AppTheme accent="cyan" theme="light">
+    <App />
+  </AppTheme>
+  ```
+
+- **`useAppTheme()` returns `{ accent, theme }`.** JS-aware consumers can read both. Default: `{ accent: 'green', theme: 'dark' }`.
+
+- **`--magi-logo-color` semantic token.** New token in `tokens/colors.css`, bound to `--magi-text-primary` in both Dark and Light modes. Used by `brand.css` to enforce the Logo Contrast Rule.
+
+- **Logo Contrast Rule enforced by `brand.css`.** The `.magi-mark` / `.magi-wordmark` / `.magi-lockup` wrappers now set `color: var(--magi-logo-color)`. Logos automatically pick the right foreground color for the current theme — no consumer action required.
+
+### Changed
+
+- **`data-magi-app` is now on `<html>` (was `<body>`).** The deferred scope rename from ADR-0002 finally executed. CSS selector changed from `body[data-magi-app]` to `[data-magi-app]` (element-agnostic). `<body data-magi-app>` still works for backward compatibility — the selector matches any element. See ADR-0002.
+
+- **All component CSS rules rewritten to use `[data-magi-app]`** (was `body[data-magi-app]`). The CSS bundle now uses the same selector everywhere. ~13 files changed; semantics unchanged for consumers.
+
+- **`docs/brand.md` rewritten** to match the new Theme contract. New sections: "Color Modes", "Logo Surface Rules", "Logo Contrast Rule". Removed the old "Backgrounds" table that conflated surfaces with accent. Per-mode color tables (Dark and Light) added.
+
+- **`<AppTheme>` writes `data-magi-theme` in addition to the four accent CSS variables.** No new prop required to keep current behavior (default `theme="dark"`). See `<AppTheme>` contract in `docs/component-contracts.md`.
+
+- **`useAppTheme()` returns `{ accent, theme }`** instead of `{ accent }`. Backward-compatible at runtime — `accent` consumers continue to work.
+
+### Notes
+
+- **Minor (breaking) version bump.** Per ADR-0006, this is a minor release because:
+  - `data-magi-app` scope rename is technically breaking for consumers using the attribute on `<body>` (still works, but recommended migration to `<html>`).
+  - The new `theme` prop is additive — no consumer breakage.
+  - Logo Contrast Rule auto-binding is purely additive — existing `style={{ color: ... }}` overrides still work.
+- **The MAGI logo geometry is unchanged.** No SVG file edits. Only the runtime color binding changed.
+- **Dark is still the canonical MAGI presentation.** Light is a supported alternative for products that need it. The default remains Dark.
+- **Accent and theme are orthogonal.** `<AppTheme accent="cyan" theme="light">` is a valid combination. Future themes (e.g., high-contrast, sepia) would follow the same selector pattern.
+
+### Verified
+
+- `npm run typecheck` → clean (new `AppThemeName` type + updated `useAppTheme` return shape).
+- `npm run build` → `dist/styles.css` 26.01 kB / `dist/index.js` 13.57 kB (gzip 4.55 / 4.08).
+- `node scripts/check-tokens.mjs` → 0 errors, 0 warnings.
+- `node scripts/check-accent-tokens.mjs` → 5 presets cross-validated (no change to accent source of truth).
+- Showroom: `apps/showroom` builds clean (`tsc -b` passes; `vite build` succeeds). Theme picker live in the top nav — switching `dark` ↔ `light` flips the entire showroom surface.
+- Component contracts (`docs/component-contracts.md`) updated for `<AppTheme>`, `useAppTheme`, `data-magi-theme`.
+- ADRs updated: ADR-0002 (status: Executed in 0.6.0), ADR-0003 (Light/Dark section added).
+
 ## [0.5.1] — 2026-09-28
 
 ### Added

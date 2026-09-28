@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Container, AppTheme, type AppAccent } from '@tokyo3rdhq/magi-design-system';
+import {
+  Container,
+  AppTheme,
+  type AppAccent,
+  type AppThemeName,
+} from '@tokyo3rdhq/magi-design-system';
 import { Tokens } from './pages/Tokens';
 import { Typography } from './pages/Typography';
 import { Buttons } from './pages/Buttons';
@@ -39,12 +44,18 @@ const ACCENTS: { id: AppAccent; label: string }[] = [
   { id: 'white', label: 'White' },
 ];
 
+const THEMES: { id: AppThemeName; label: string }[] = [
+  { id: 'dark', label: 'Dark (canonical)' },
+  { id: 'light', label: 'Light' },
+];
+
 export function App() {
   const [page, setPage] = useState<Page>('tokens');
   const [accent, setAccent] = useState<AppAccent>('green');
+  const [theme, setTheme] = useState<AppThemeName>('dark');
 
   return (
-    <AppTheme accent={accent} name="showroom">
+    <AppTheme accent={accent} theme={theme} name="showroom">
       <div className={styles.shell}>
         <header className={styles.topbar}>
           <div className={styles.brand}>
@@ -62,19 +73,34 @@ export function App() {
               </button>
             ))}
           </nav>
-          <label className={styles.accentPicker}>
-            <span className={styles.accentLabel}>Accent</span>
-            <select
-              value={accent}
-              onChange={(e) => setAccent(e.target.value as AppAccent)}
-            >
-              {ACCENTS.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div style={{ display: 'flex', gap: 'var(--magi-space-4)' }}>
+            <label className={styles.accentPicker}>
+              <span className={styles.accentLabel}>Theme</span>
+              <select
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as AppThemeName)}
+              >
+                {THEMES.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.accentPicker}>
+              <span className={styles.accentLabel}>Accent</span>
+              <select
+                value={accent}
+                onChange={(e) => setAccent(e.target.value as AppAccent)}
+              >
+                {ACCENTS.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         </header>
 
         <main>

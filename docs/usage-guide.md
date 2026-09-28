@@ -1,7 +1,7 @@
 # Usage guide — `@tokyo3rdhq/magi-design-system`
 
 > **Audience**: developers integrating the package into a MAGI product (`magi.website`, `*.magi.website`, etc.).
-> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.5.1`.
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.6.0`.
 
 This guide covers **patterns** — how to compose the primitives into real UI surfaces. For per-component API signatures, see [`packages/design-system/README.md`](../packages/design-system/README.md). For token reference, see [`tokens.md`](./tokens.md).
 
@@ -41,40 +41,50 @@ import '@tokyo3rdhq/magi-design-system/styles.css';
 
 This single import pulls in tokens + foundation + all 13 components. **Do not** import per-component CSS — the package bundles one stylesheet.
 
-### 3. Mark `<body>`
+### 3. Mark `<html>`
 
 ```html
-<body data-magi-app>
+<html data-magi-app>
   <!-- app mounts here -->
-</body>
+</html>
 ```
 
-`<body data-magi-app>` is how foundation styles scope themselves. Every component CSS rule is prefixed `body[data-magi-app] .magi-*` for specificity. Without the attribute, **no design-system styles apply** — this is intentional.
+Since 0.6.0, the canonical placement of `data-magi-app` is `<html>` (not `<body>`). The selector `[data-magi-app]` matches the attribute regardless of which element carries it, so `<body data-magi-app>` still works for 0.5.x consumers. To get full benefit, move the attribute to `<html>`.
 
-For consumers that don't control `<body>` directly (rare), set it via JavaScript before first render:
+`<html data-magi-app>` is how foundation styles scope themselves. Every component CSS rule is prefixed `[data-magi-app] .magi-*` for specificity. Without the attribute, **no design-system styles apply** — this is intentional.
+
+For consumers that don't control `<html>` directly (rare), set it via JavaScript before first render:
 
 ```ts
-document.body.setAttribute('data-magi-app', '');
+document.documentElement.setAttribute('data-magi-app', '');
 ```
 
 ---
 
 ## Theming patterns
 
-The package ships **one** theme mechanism for accent overrides: `<AppTheme>` (app-level) and `data-magi-accent` (subtree-level). The accent defines your product's brand color.
+The package ships **two orthogonal theme mechanisms** since 0.6.0:
 
-### App-level accent with `<AppTheme>`
+| Dimension | App-level (React) | Subtree (HTML attribute) |
+|---|---|---|
+| **Accent** (which accent color?) | `<AppTheme accent="…">` | `<div data-magi-accent="…">` |
+| **Color mode** (Dark / Light?) | `<AppTheme theme="…">` (since 0.6.0) | `<div data-magi-theme="…">` (since 0.6.0) |
 
-`<AppTheme>` is **application-level**. It sets the four accent CSS variables on `<html>`, and they cascade through the entire document via standard CSS inheritance.
+They are independent — `<AppTheme accent="cyan" theme="light">` is a valid combination.
+
+### App-level accent + theme with `<AppTheme>`
+
+`<AppTheme>` is **application-level**. It sets the four accent CSS variables + `data-magi-theme="<theme>"` on `<html>`. Both cascade through the entire document.
 
 ```tsx
 import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 
 function App() {
   return (
-    // accent: 'green' | 'cyan' | 'violet' | 'amber' | 'white'
-    // name: optional identifier — sets data-magi-product="<name>" on <html>
-    <AppTheme accent="cyan" name="token-factory">
+    // accent: 'green' | 'cyan' | 'violet' | 'amber' | 'white'   (default: 'green')
+    // theme:  'dark' | 'light'                                 (default: 'dark' — canonical)
+    // name:   optional identifier — sets data-magi-product="<name>" on <html>
+    <AppTheme accent="cyan" theme="light" name="token-factory">
       <Routes />
     </AppTheme>
   );
@@ -84,8 +94,8 @@ function App() {
 Where to mount `<AppTheme>`:
 
 - **React apps**: as high as practical in the tree — usually wrapping the entire `<Routes />` or `<Outlet />`.
-- **Astro apps** (no React islands): currently `<AppTheme>` doesn't work server-side. Set `data-magi-accent="<name>"` on `<html>` in your Astro layout instead. The CSS rules in `foundation/globals.css` apply the accent before the page renders.
-- **SSR pages**: `<AppTheme>` works on hydration. The very first paint uses the default theme until `useInsertionEffect` runs on the client. For zero-FOUC SSR, set `data-magi-accent` on `<html>` in your server layout.
+- **Astro apps** (no React islands): currently `<AppTheme>` doesn't work server-side. Set `data-magi-accent="<name>"` and `data-magi-theme="<theme>"` on `<html>` in your Astro layout instead. The CSS rules in `colors.css` + `globals.css` apply both before the page renders.
+- **SSR pages**: `<AppTheme>` works on hydration. The very first paint uses the default theme (Dark + green accent) until `useInsertionEffect` runs on the client. For zero-FOUC SSR, set both attributes on `<html>` in your server layout.
 
 ### Subtree accent with `data-magi-accent`
 
@@ -116,21 +126,45 @@ Eight values:
 </Banner>
 ```
 
-The CSS rules in `foundation/globals.css` ship the mapping; you don't need to write any CSS.
+### Subtree color mode with `data-magi-theme` (since 0.6.0)
+
+For scoped color-mode overrides — a Light card within a Dark page, or vice versa — use the `data-magi-theme` attribute. **No React component required.**
+
+Two values:
+
+| Attribute | Effect |
+| --- | --- |
+| `dark` | Canonical MAGI presentation. Same as the default `:root`. |
+| `light` | Supported alternative. Inverts surface, text, border, scrollbar, logo. Accent is independent. |
+
+```tsx
+// A Light callout inside a Dark page
+<div data-magi-theme="light" data-magi-accent="danger">
+  <Banner variant="error">
+    This action cannot be undone.
+  </Banner>
+</div>
+```
+
+The CSS rules in `tokens/colors.css` apply the swap automatically — no JS needed.
 
 ### When to use which
 
 | Scope | Use |
 | --- | --- |
-| Whole app, brand identity | `<AppTheme accent="cyan">` at the root |
+| Whole app, brand identity | `<AppTheme accent="cyan" theme="light">` at the root |
 | One section, one card, one CTA | `<div data-magi-accent="danger">` inline |
+| A subtree flips to Light within a Dark page | `<div data-magi-theme="light">` inline |
 | A button inside a danger surface | rely on cascade — the accent vars already flow from the outer `data-magi-accent` |
+| A button inside a Light subtree | rely on cascade — `--magi-text-primary` + `--magi-logo-color` already flow from the outer `data-magi-theme="light"` |
 
 ### Common mistakes
 
 - ❌ Writing `<div style={{ '--magi-accent': 'red' }}>` — this works but bypasses the curated palette. Use `data-magi-accent="danger"` instead.
+- ❌ Writing `<div style={{ '--magi-text-primary': '#000' }}>` — same thing. Use `data-magi-theme="light"` instead.
 - ❌ Wrapping your app in two `<AppTheme>` to mix two accents. CSS vars are global — only the last-mounted one wins. Use `data-magi-accent` for subtree scope.
-- ❌ Trying to set typography or spacing via `<AppTheme>`. `<AppTheme>` owns accent only. Spec §10 forbids the rest.
+- ❌ Wrapping your app in two `<AppTheme>` to mix two themes. Same — use `data-magi-theme` for subtree scope.
+- ❌ Trying to set typography or spacing via `<AppTheme>`. `<AppTheme>` owns accent + theme only. Spec §10 forbids the rest.
 
 ---
 ## Brand identity patterns
@@ -159,21 +193,26 @@ Semantic sizes only — pixel props are not part of the API:
 
 ### Color
 
-The logo is `currentColor` — it takes the `color` of its parent. Do not hard-code fills:
+The logo is `currentColor` — it takes the `color` of its parent. Since 0.6.0, the brand component wrapper sets `color: var(--magi-logo-color)` automatically, which follows `--magi-text-primary` in both Dark and Light modes. **You don't need to set `color` yourself** — the system picks the right foreground for the current theme.
+
+If you mount the logo on a special surface where you need a different color (e.g., a green CTA button background), override `color` per-instance:
 
 ```tsx
-// White on dark (inherits --magi-text-primary)
+// Override per-instance — logo follows the surrounding color
 <header style={{ color: 'var(--magi-text-primary)' }}>
   <MagiLockup ariaHidden={false} alt="MAGI" />
 </header>
 
-// On a light surface, the surrounding color flips and the logo follows
-<div style={{ color: 'var(--magi-text-inverse)' }}>
-  <MagiLockup />
-</div>
+// On a green accent surface, use accent-contrast (still follows brand rules)
+<Button variant="primary">
+  <MagiLockup size="sm" />
+  {/* logo color: var(--magi-accent-contrast) inherited from Button.primary */}
+</Button>
 ```
 
-The MAGI logo **never uses a product accent**. Accent colors belong to CTAs and links; the brand mark stays in text color.
+The MAGI logo **never uses a product accent as its own fill**. Accent is for CTAs and links; the brand mark stays in the current theme's semantic foreground.
+
+See [`brand.md`](./brand.md#logo-contrast-rule) for the full Logo Contrast Rule.
 
 ### Accessibility
 

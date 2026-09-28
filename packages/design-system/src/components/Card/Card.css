@@ -1,7 +1,7 @@
 /* MAGI Design System — Card */
 
 @layer magi.components {
-body[data-magi-app] .magi-card  {
+[data-magi-app] .magi-card  {
   background-color: var(--magi-bg-card);
   border: 1px solid var(--magi-border);
   border-radius: var(--magi-radius-xl);
@@ -13,26 +13,26 @@ body[data-magi-app] .magi-card  {
   position: relative;
 }
 
-body[data-magi-app] .magi-card--padding-none  { padding: 0; }
-body[data-magi-app] .magi-card--padding-sm    { padding: var(--magi-space-4); }
-body[data-magi-app] .magi-card--padding-md    { padding: var(--magi-space-6); }
-body[data-magi-app] .magi-card--padding-lg    { padding: var(--magi-space-8); }
+[data-magi-app] .magi-card--padding-none  { padding: 0; }
+[data-magi-app] .magi-card--padding-sm    { padding: var(--magi-space-4); }
+[data-magi-app] .magi-card--padding-md    { padding: var(--magi-space-6); }
+[data-magi-app] .magi-card--padding-lg    { padding: var(--magi-space-8); }
 
-body[data-magi-app] .magi-card--elevated  {
+[data-magi-app] .magi-card--elevated  {
   background-color: var(--magi-surface-elevated);
   border-color: var(--magi-border);
   box-shadow: var(--magi-shadow-md);
 }
 
-body[data-magi-app] .magi-card--interactive  {
+[data-magi-app] .magi-card--interactive  {
   cursor: pointer;
   text-decoration: none;
 }
-body[data-magi-app] .magi-card--interactive:hover  {
+[data-magi-app] .magi-card--interactive:hover  {
   background-color: var(--magi-bg-card-hover);
   border-color: var(--magi-border-strong);
 }
-body[data-magi-app] .magi-card--interactive:active  {
+[data-magi-app] .magi-card--interactive:active  {
   transform: translateY(1px);
 }
 

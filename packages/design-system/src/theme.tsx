@@ -18,36 +18,52 @@ import {
 // directly from `./tokens/accent-presets` without pulling in React.
 export type { AppAccent, AccentTokens };
 
+/**
+ * MAGI UI color mode (added in 0.6.0).
+ *
+ * - `dark` — canonical MAGI presentation. Default.
+ * - `light` — supported alternative presentation.
+ *
+ * Set on `<html data-magi-theme="…">` via `<AppTheme theme="…">`,
+ * or directly on the attribute (SSR-friendly: server-rendered layouts
+ * can set the attribute before hydration to avoid FOUC).
+ */
+export type AppThemeName = 'dark' | 'light';
+
 interface AppThemeContextValue {
   accent: AppAccent;
+  theme: AppThemeName;
 }
 
 const AppThemeContext = createContext<AppThemeContextValue | null>(null);
 
 /**
- * Hook for any JS-aware consumer that needs the current accent.
- * Returns `{ accent: 'green' }` (the default) when used outside an `<AppTheme>`.
+ * Hook for any JS-aware consumer that needs the current accent and theme.
+ * Returns `{ accent: 'green', theme: 'dark' }` (the defaults) when used
+ * outside an `<AppTheme>`.
  */
 export function useAppTheme(): AppThemeContextValue {
   const ctx = useContext(AppThemeContext);
-  return ctx ?? { accent: 'green' };
+  return ctx ?? { accent: 'green', theme: 'dark' };
 }
 
 export interface AppThemeProps {
   /** Accent preset. Default: `green`. */
   accent?: AppAccent;
+  /** Color mode. Default: `dark`. Set to `light` to opt into the alternative. */
+  theme?: AppThemeName;
   /** Optional product identifier. Sets `data-magi-product="<name>"` on `<html>`. */
   name?: string;
   children?: ReactNode;
 }
 
 /**
- * AppTheme — application-level accent configuration.
+ * AppTheme — application-level theme + accent configuration.
  *
  * Renders only a React context provider (no DOM wrapper). On mount, sets
- * the four accent CSS variables on `<html>` so all descendants inherit via
- * CSS cascade. For scoped overrides within a subtree, consumers should use
- * `data-magi-accent`:
+ * the four accent CSS variables AND `data-magi-theme="<theme>"` on `<html>`
+ * so all descendants inherit via CSS cascade. For scoped overrides within
+ * a subtree, consumers should use `data-magi-accent`:
  *
  *   <div data-magi-accent="danger">
  *     <Button variant="primary">Delete</Button>
@@ -55,8 +71,8 @@ export interface AppThemeProps {
  *
  * SSR: useInsertionEffect does not run on the server, so on SSR pages
  * the default theme applies during the initial render. For SSR theming
- * without FOUC, set `data-magi-accent="<name>"` on `<html>` in your
- * server-side layout — the CSS rule in globals.css picks it up.
+ * without FOUC, set `data-magi-theme="<name>"` on `<html>` in your
+ * server-side layout — the CSS rule in `colors.css` picks it up.
  *
  * Nested <AppTheme>: each instance snapshots the previous accent values
  * on mount and restores them on unmount, so a child mounting and
@@ -68,7 +84,7 @@ export interface AppThemeProps {
  * @example
  *   function App() {
  *     return (
- *       <AppTheme accent="cyan" name="token-factory">
+ *       <AppTheme accent="cyan" theme="light" name="token-factory">
  *         <Routes />
  *       </AppTheme>
  *     );
@@ -76,10 +92,11 @@ export interface AppThemeProps {
  */
 export function AppTheme({
   accent = 'green',
+  theme: themeProp = 'dark',
   name,
   children,
 }: AppThemeProps) {
-  const value = useMemo(() => ({ accent }), [accent]);
+  const value = useMemo(() => ({ accent, theme: themeProp }), [accent, themeProp]);
 
   useInsertionEffect(() => {
     if (typeof document === 'undefined') return;
@@ -95,12 +112,14 @@ export function AppTheme({
       accentSoft: root.style.getPropertyValue('--magi-accent-soft'),
       accentContrast: root.style.getPropertyValue('--magi-accent-contrast'),
       product: root.dataset.magiProduct,
+      theme: root.dataset.magiTheme,
     };
 
     root.style.setProperty('--magi-accent', tokens['--magi-accent']);
     root.style.setProperty('--magi-accent-hover', tokens['--magi-accent-hover']);
     root.style.setProperty('--magi-accent-soft', tokens['--magi-accent-soft']);
     root.style.setProperty('--magi-accent-contrast', tokens['--magi-accent-contrast']);
+    root.dataset.magiTheme = themeProp;
 
     if (name) {
       root.dataset.magiProduct = name;
@@ -118,13 +137,19 @@ export function AppTheme({
       restoreOrRemove('--magi-accent-soft', prev.accentSoft);
       restoreOrRemove('--magi-accent-contrast', prev.accentContrast);
 
+      if (prev.theme !== undefined) {
+        root.dataset.magiTheme = prev.theme;
+      } else {
+        delete root.dataset.magiTheme;
+      }
+
       if (prev.product !== undefined) {
         root.dataset.magiProduct = prev.product;
       } else if (root.dataset.magiProduct !== undefined) {
         delete root.dataset.magiProduct;
       }
     };
-  }, [accent, name]);
+  }, [accent, themeProp, name]);
 
   return (
     <AppThemeContext.Provider value={value}>

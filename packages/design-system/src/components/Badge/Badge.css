@@ -1,7 +1,7 @@
 /* MAGI Design System — Badge */
 
 @layer magi.components {
-body[data-magi-app] .magi-badge  {
+[data-magi-app] .magi-badge  {
   display: inline-flex;
   align-items: center;
   gap: var(--magi-space-2);
@@ -16,7 +16,7 @@ body[data-magi-app] .magi-badge  {
   user-select: none;
 }
 
-body[data-magi-app] .magi-badge__dot  {
+[data-magi-app] .magi-badge__dot  {
   display: inline-block;
   width: 6px;
   height: 6px;
@@ -25,31 +25,31 @@ body[data-magi-app] .magi-badge__dot  {
   flex-shrink: 0;
 }
 
-body[data-magi-app] .magi-badge--neutral  {
+[data-magi-app] .magi-badge--neutral  {
   background: color-mix(in srgb, var(--magi-text-primary) 6%, transparent);
   color: var(--magi-text-secondary);
   border-color: var(--magi-border);
 }
 
-body[data-magi-app] .magi-badge--accent  {
+[data-magi-app] .magi-badge--accent  {
   background: var(--magi-accent-soft);
   color: var(--magi-accent);
   border-color: color-mix(in srgb, var(--magi-accent) 25%, transparent);
 }
 
-body[data-magi-app] .magi-badge--success  {
+[data-magi-app] .magi-badge--success  {
   background: color-mix(in srgb, var(--magi-success) 12%, transparent);
   color: var(--magi-success);
   border-color: color-mix(in srgb, var(--magi-success) 30%, transparent);
 }
 
-body[data-magi-app] .magi-badge--warning  {
+[data-magi-app] .magi-badge--warning  {
   background: color-mix(in srgb, var(--magi-warning) 12%, transparent);
   color: var(--magi-warning);
   border-color: color-mix(in srgb, var(--magi-warning) 30%, transparent);
 }
 
-body[data-magi-app] .magi-badge--error  {
+[data-magi-app] .magi-badge--error  {
   background: color-mix(in srgb, var(--magi-error) 12%, transparent);
   color: var(--magi-error);
   border-color: color-mix(in srgb, var(--magi-error) 30%, transparent);

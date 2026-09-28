@@ -1,7 +1,7 @@
 /* MAGI Design System — Container */
 
 @layer magi.layout {
-body[data-magi-app] .magi-container  {
+[data-magi-app] .magi-container  {
   margin-inline: auto;
   padding-inline: var(--magi-space-6);
   width: 100%;
@@ -13,10 +13,10 @@ body[data-magi-app] .magi-container  {
   }
 }
 
-body[data-magi-app] .magi-container--sm    { max-width: var(--magi-container-sm); }
-body[data-magi-app] .magi-container--md    { max-width: var(--magi-container-md); }
-body[data-magi-app] .magi-container--lg    { max-width: var(--magi-container-lg); }
-body[data-magi-app] .magi-container--xl    { max-width: var(--magi-container-xl); }
-body[data-magi-app] .magi-container--wide  { max-width: var(--magi-container-wide); }
-body[data-magi-app] .magi-container--full  { max-width: 100%; }
+[data-magi-app] .magi-container--sm    { max-width: var(--magi-container-sm); }
+[data-magi-app] .magi-container--md    { max-width: var(--magi-container-md); }
+[data-magi-app] .magi-container--lg    { max-width: var(--magi-container-lg); }
+[data-magi-app] .magi-container--xl    { max-width: var(--magi-container-xl); }
+[data-magi-app] .magi-container--wide  { max-width: var(--magi-container-wide); }
+[data-magi-app] .magi-container--full  { max-width: 100%; }
 }

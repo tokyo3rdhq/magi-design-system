@@ -1,10 +1,20 @@
 /* MAGI Design System — Globals
  *
- * Applies body baseline + the dark gradient backdrop + selection + scrollbar.
+ * Applies body baseline + the gradient backdrop + selection + scrollbar.
  * Mirrors magi.website's exact visual rhythm.
  *
- * `data-magi-accent="<name>"` is a CSS-only accent override for subtrees
- * (complement to <ProductTheme> for app-level). Maps to accent presets
+ * **Scope (0.6.0):** `data-magi-app` is now expected on `<html>` (was
+ * `<body>` at 0.x). It still works on `<body>` for backward compatibility,
+ * but the canonical placement is `<html>`. See ADR-0002.
+ *
+ * **`data-magi-theme="dark" | "light"`** is a CSS-only color mode override.
+ * Default is Dark (canonical MAGI presentation). Light is a supported
+ * alternative. The selector `html, [data-magi-theme="dark"]` covers the
+ * default case (no attribute) and the explicit Dark attribute. The
+ * `[data-magi-theme="light"]` block carries the Light values.
+ *
+ * **`data-magi-accent="<name>"`** is a CSS-only accent override for subtrees
+ * (complement to <AppTheme> for app-level). Maps to accent presets
  * (green / cyan / violet / amber / white) or semantic colors (danger /
  * warning / success).
  */
@@ -21,7 +31,7 @@
   text-rendering: optimizeLegibility;
 }
 
-body[data-magi-app] {
+[data-magi-app] {
   background-color: var(--magi-bg-base);
   background-image:
     radial-gradient(
@@ -34,38 +44,52 @@ body[data-magi-app] {
   min-height: 100vh;
 }
 
+/* Light theme — the gradient backdrop must invert to feel native.
+ * Dark = radial highlight on top of dark base (Apple-style).
+ * Light = subtle radial highlight on top of pure white (still recognizable
+ * as the same "raised top" rhythm, just inverted). */
+[data-magi-app][data-magi-theme="light"] {
+  background-image:
+    radial-gradient(
+      ellipse 80% 50% at 50% -10%,
+      color-mix(in srgb, var(--magi-text-primary) 5%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--magi-bg-raised) 0%, var(--magi-bg-base) 35%);
+}
+
 [data-magi-app] ::selection {
   background: var(--magi-selection-bg);
   color: var(--magi-selection-fg);
 }
 
-html:has(body[data-magi-app]) {
+[data-magi-app] {
   scrollbar-width: thin;
   scrollbar-color: var(--magi-scrollbar-thumb) transparent;
 }
 
-body[data-magi-app] ::-webkit-scrollbar {
+[data-magi-app] ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-body[data-magi-app] ::-webkit-scrollbar-track {
+[data-magi-app] ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-body[data-magi-app] ::-webkit-scrollbar-thumb {
+[data-magi-app] ::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--magi-text-primary) 0%, transparent);
   border-radius: var(--magi-radius-full);
   transition: background var(--magi-duration-slow) var(--magi-ease-out);
 }
 
-body[data-magi-app]:hover ::-webkit-scrollbar-thumb,
-body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb {
+[data-magi-app]:hover ::-webkit-scrollbar-thumb,
+[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb {
   background: var(--magi-scrollbar-thumb);
 }
 
-body[data-magi-app]:hover ::-webkit-scrollbar-thumb:hover,
-body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
+[data-magi-app]:hover ::-webkit-scrollbar-thumb:hover,
+[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
   background: var(--magi-scrollbar-thumb-hover);
 }
 
@@ -80,7 +104,7 @@ body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
 }
 
 /* Accent override via attribute — for subtrees that need a different
- * accent from the app-level ProductTheme. Component CSS reads --magi-accent
+ * accent from the app-level AppTheme. Component CSS reads --magi-accent
  * and --magi-accent-hover, which cascade through normally. */
 [data-magi-app] [data-magi-accent="green"] {
   --magi-accent: #00c853;
@@ -121,7 +145,7 @@ body[data-magi-app][data-scrolling] ::-webkit-scrollbar-thumb:hover {
     transition-duration: 0.01ms !important;
   }
 
-  html:has(body[data-magi-app]) {
+  [data-magi-app] {
     scroll-behavior: auto;
   }
 }

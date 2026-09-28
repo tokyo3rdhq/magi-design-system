@@ -6,7 +6,7 @@
  */
 
 @layer magi.components {
-body[data-magi-app] .magi-banner {
+[data-magi-app] .magi-banner {
   background-color: var(--magi-surface);
   border: 1px solid var(--magi-border);
   border-left: 2px solid var(--magi-warning);
@@ -17,24 +17,24 @@ body[data-magi-app] .magi-banner {
   line-height: var(--magi-leading-snug);
 }
 
-body[data-magi-app] .magi-banner--warning {
+[data-magi-app] .magi-banner--warning {
   border-left-color: var(--magi-warning);
 }
 
-body[data-magi-app] .magi-banner--error {
+[data-magi-app] .magi-banner--error {
   border-left-color: var(--magi-error);
 }
 
-body[data-magi-app] .magi-banner--success {
+[data-magi-app] .magi-banner--success {
   border-left-color: var(--magi-success);
 }
 
-body[data-magi-app] .magi-banner--info {
+[data-magi-app] .magi-banner--info {
   border-left-color: var(--magi-accent);
 }
 
 /* Inline elements inside a banner (links, code) get the accent color. */
-body[data-magi-app] .magi-banner a {
+[data-magi-app] .magi-banner a {
   color: var(--magi-accent);
   text-decoration: underline;
   text-underline-offset: 2px;

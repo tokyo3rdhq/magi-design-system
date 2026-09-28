@@ -28,4 +28,4 @@ export * from './components/Banner/index';
 export * from './components/EmptyState/index';
 export * from './brand/index';
 export { AppTheme } from './theme';
-export type { AppThemeProps, AppAccent } from './theme';
+export type { AppThemeProps, AppAccent, AppThemeName } from './theme';

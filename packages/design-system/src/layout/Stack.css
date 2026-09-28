@@ -1,33 +1,33 @@
 /* MAGI Design System — Stack */
 
 @layer magi.layout {
-body[data-magi-app] .magi-stack  {
+[data-magi-app] .magi-stack  {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-body[data-magi-app] .magi-stack--row  {
+[data-magi-app] .magi-stack--row  {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   min-width: 0;
 }
 
-body[data-magi-app] .magi-stack--gap-0   { gap: var(--magi-space-0); }
-body[data-magi-app] .magi-stack--gap-1   { gap: var(--magi-space-1); }
-body[data-magi-app] .magi-stack--gap-2   { gap: var(--magi-space-2); }
-body[data-magi-app] .magi-stack--gap-3   { gap: var(--magi-space-3); }
-body[data-magi-app] .magi-stack--gap-4   { gap: var(--magi-space-4); }
-body[data-magi-app] .magi-stack--gap-5   { gap: var(--magi-space-5); }
-body[data-magi-app] .magi-stack--gap-6   { gap: var(--magi-space-6); }
-body[data-magi-app] .magi-stack--gap-8   { gap: var(--magi-space-8); }
-body[data-magi-app] .magi-stack--gap-10  { gap: var(--magi-space-10); }
-body[data-magi-app] .magi-stack--gap-12  { gap: var(--magi-space-12); }
-body[data-magi-app] .magi-stack--gap-16  { gap: var(--magi-space-16); }
+[data-magi-app] .magi-stack--gap-0   { gap: var(--magi-space-0); }
+[data-magi-app] .magi-stack--gap-1   { gap: var(--magi-space-1); }
+[data-magi-app] .magi-stack--gap-2   { gap: var(--magi-space-2); }
+[data-magi-app] .magi-stack--gap-3   { gap: var(--magi-space-3); }
+[data-magi-app] .magi-stack--gap-4   { gap: var(--magi-space-4); }
+[data-magi-app] .magi-stack--gap-5   { gap: var(--magi-space-5); }
+[data-magi-app] .magi-stack--gap-6   { gap: var(--magi-space-6); }
+[data-magi-app] .magi-stack--gap-8   { gap: var(--magi-space-8); }
+[data-magi-app] .magi-stack--gap-10  { gap: var(--magi-space-10); }
+[data-magi-app] .magi-stack--gap-12  { gap: var(--magi-space-12); }
+[data-magi-app] .magi-stack--gap-16  { gap: var(--magi-space-16); }
 
-body[data-magi-app] .magi-stack--align-start    { align-items: flex-start; }
-body[data-magi-app] .magi-stack--align-center   { align-items: center; }
-body[data-magi-app] .magi-stack--align-end      { align-items: flex-end; }
-body[data-magi-app] .magi-stack--align-stretch  { align-items: stretch; }
+[data-magi-app] .magi-stack--align-start    { align-items: flex-start; }
+[data-magi-app] .magi-stack--align-center   { align-items: center; }
+[data-magi-app] .magi-stack--align-end      { align-items: flex-end; }
+[data-magi-app] .magi-stack--align-stretch  { align-items: stretch; }
 }

@@ -20,7 +20,7 @@ Each contract has four sections:
 - Form primitives: [Input](#input) · [FormField](#formfield) · [Checkbox](#checkbox) · [Segmented](#segmented)
 - Feedback: [Banner](#banner) · [EmptyState](#emptystate)
 - Brand: [MagiMark](#magimark) · [MagiWordmark](#magiwordmark) · [MagiLockup](#magilockup)
-- Theme: [AppTheme](#apptheme) · [useAppTheme](#useapptheme) · [data-magi-accent](#data-magi-accent-subtree)
+- Theme: [AppTheme](#apptheme) · [useAppTheme](#useapptheme) · [data-magi-accent](#data-magi-accent-subtree) · [data-magi-theme](#data-magi-theme-subtree)
 
 ---
 
@@ -441,24 +441,27 @@ Each contract has four sections:
 
 - React context provider. Does NOT render a DOM wrapper (no `<div>`).
 - On mount, sets the four accent CSS variables (`--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`, `--magi-accent-contrast`) on `document.documentElement` (i.e. `<html>`).
+- On mount (0.6.0+), also writes `data-magi-theme="<theme>"` to `<html>`, which selects the Light or Dark semantic token block in `tokens/colors.css`.
 - If `name` is provided, sets `data-magi-product="<name>"` on `<html>`.
 
 **Accessibility**
 
 - No direct accessibility role; AppTheme is invisible. It only affects how descendant components render their existing contracts.
-- Nested `<AppTheme>` instances snapshot the previous accent values on mount and restore them on unmount, so children unmounting leaves the outer theme intact.
+- Nested `<AppTheme>` instances snapshot the previous accent values + theme on mount and restore them on unmount, so children unmounting leaves the outer theme intact.
 
 **Visual states**
 
 - `accent` prop — `green` (default), `cyan`, `violet`, `amber`, `white`. Mapped via `src/tokens/accent-presets.ts`.
+- `theme` prop (0.6.0+) — `'dark'` (default, canonical) | `'light'`. Mapped via the `:root, [data-magi-theme="dark"]` and `[data-magi-theme="light"]` blocks in `src/tokens/colors.css`.
 
 **Token binding**
 
 - Reads: `ACCENT_PRESETS` from `src/tokens/accent-presets.ts` (framework-agnostic source of truth).
 - Writes: `--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`, `--magi-accent-contrast` on `<html>`.
+- Writes: `data-magi-theme="dark" | "light"` on `<html>` (new in 0.6.0).
 - Sets: `data-magi-product` attribute on `<html>` (when `name` is provided).
 
-**SSR**: `useInsertionEffect` does not run on the server. SSR pages render with the default theme during the first paint; `<html>` is hydrated with the chosen accent on the client. For zero-FOUC SSR, set `data-magi-accent="<name>"` on `<html>` in the server-side layout — the CSS rule in `foundation/globals.css` picks it up before paint.
+**SSR**: `useInsertionEffect` does not run on the server. SSR pages render with the default theme (Dark) during the first paint; `<html>` is hydrated with the chosen accent + theme on the client. For zero-FOUC SSR, set both `data-magi-accent="<name>"` and `data-magi-theme="<theme>"` on `<html>` in the server-side layout — the CSS rules in `colors.css` and `globals.css` pick them up before paint.
 
 ---
 
@@ -466,9 +469,9 @@ Each contract has four sections:
 
 **Contract**
 
-- Returns `{ accent: AppAccent }` for JS-aware consumers.
-- Default value: `{ accent: 'green' }` when used outside an `<AppTheme>`.
-- The hook itself is **React-specific**; the contract is the returned shape. A non-React consumer reads the same accent information by inspecting the `--magi-accent` CSS variable via `getComputedStyle(document.documentElement).getPropertyValue('--magi-accent')`.
+- Returns `{ accent: AppAccent, theme: AppThemeName }` for JS-aware consumers (theme added in 0.6.0).
+- Default value: `{ accent: 'green', theme: 'dark' }` when used outside an `<AppTheme>`.
+- The hook itself is **React-specific**; the contract is the returned shape. A non-React consumer reads the same information by inspecting the `--magi-accent` CSS variable and `data-magi-theme` attribute via the DOM.
 
 ---
 
@@ -495,6 +498,36 @@ Each contract has four sections:
 - Writes: the same `--magi-accent-*` variables, scoped to the subtree via CSS specificity (the `data-magi-accent` selector wins over the `body[data-magi-app]` selector).
 
 ---
+
+### `data-magi-theme` subtree
+
+**Contract**
+
+- HTML attribute. Set on any element. Maps to a CSS rule in `tokens/colors.css` that overrides the semantic color tokens for that subtree.
+- Two values:
+  - `'dark'` — canonical MAGI presentation (default). Same values as the `:root` selector (no attribute = dark).
+  - `'light'` — supported alternative presentation. Inverts the surface / text / border tokens; keeps accent independent.
+- The mapping is **pure CSS** — no JavaScript runtime is required to honor the attribute.
+- This is the **preferred** way to scope a subtree to Light theme (e.g., a card that flips to Light within a Dark page). `<AppTheme theme="light">` is the app-level equivalent.
+- Canonical placement: `<html data-magi-theme="dark">` (or no attribute for default) at the root of the document.
+
+**Accessibility**
+
+- No direct ARIA semantics. Screen readers ignore it. Color-mode switches are **purely visual** — components must continue to function (keyboard, screen reader, high-contrast) regardless of theme.
+
+**Visual states**
+
+- One per value:
+  - `'dark'` — `--magi-bg-base` = `#000`, `--magi-text-primary` = `#f5f5f7`, `--magi-logo-color` = `#f5f5f7`.
+  - `'light'` — `--magi-bg-base` = `#fff`, `--magi-text-primary` = `#050505`, `--magi-logo-color` = `#050505`.
+- Accent (`--magi-accent` and family) is **independent** of the color mode. `<AppTheme accent="cyan" theme="light">` is a valid combination.
+
+**Token binding**
+
+- Reads: the color-mode-dependent semantic tokens (`--magi-bg-*`, `--magi-text-*`, `--magi-border*`, `--magi-scrollbar-thumb*`, `--magi-logo-color`).
+- Writes: same tokens, scoped to the subtree via CSS specificity (the `[data-magi-theme]` selector wins over the `:root` selector).
+
+**SSR**: set `<html data-magi-theme="light">` in the server-rendered layout to avoid FOUC. The CSS rule in `colors.css` applies before the page paints.
 
 ## Versioning the contracts
 
