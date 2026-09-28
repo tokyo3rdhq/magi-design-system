@@ -201,6 +201,26 @@ import { Button, Badge } from '@tokyo3rdhq/magi-design-system';
 ### Step 6 — Remove duplicated tokens from the host app
 
 Once Tailwind reads from CSS variables, you can **delete** the duplicated token values from `tailwind.config.mjs` and `src/styles/global.css`. This is the moment the design system becomes the single source of truth.
+### Step 6.5 — Brand identity (0.5.0+)
+
+The package ships the canonical MAGI logo as of 0.5.0. Replace hand-rolled brand markup:
+
+```astro
+---
+import { MagiLockup, MagiMark } from '@tokyo3rdhq/magi-design-system';
+---
+<MagiLockup size="sm" ariaHidden={false} alt="MAGI" client:load />
+```
+
+For static assets (favicon, OG image), copy from the package's dist:
+
+```bash
+cp node_modules/@tokyo3rdhq/magi-design-system/dist/assets/icons/favicon.svg public/favicon.svg
+cp node_modules/@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-lockup.svg public/og-default.svg
+```
+
+Full guidelines: [`brand.md`](./brand.md).
+
 
 ### Step 7 — Visual regression check
 

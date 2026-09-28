@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" aria-hidden="true">
+  <g fill="currentColor">
+    <!-- Mark: three dots forming an equilateral triangle -->
+    <circle cx="32" cy="14" r="6"/>
+    <circle cx="14" cy="48" r="6"/>
+    <circle cx="50" cy="48" r="6"/>
+    <!-- Wordmark: MAGI -->
+    <text x="80" y="50" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif" font-size="48" font-weight="700" letter-spacing="-2.16">MAGI</text>
+  </g>
+</svg>

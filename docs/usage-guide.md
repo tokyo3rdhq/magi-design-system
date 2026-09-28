@@ -11,13 +11,14 @@ This guide covers **patterns** — how to compose the primitives into real UI su
 
 1. [Setup checklist](#setup-checklist)
 2. [Theming patterns](#theming-patterns)
-3. [Form patterns](#form-patterns)
-4. [List patterns](#list-patterns)
-5. [Empty / loading / error states](#empty--loading--error-states)
-6. [Navigation chrome patterns](#navigation-chrome-patterns)
-7. [Accessibility patterns](#accessibility-patterns)
-8. [Composition with non-design-system code](#composition-with-non-design-system-code)
-9. [Anti-patterns](#anti-patterns)
+3. [Brand identity patterns](#brand-identity-patterns)
+4. [Form patterns](#form-patterns)
+5. [List patterns](#list-patterns)
+6. [Empty / loading / error states](#empty--loading--error-states)
+7. [Navigation chrome patterns](#navigation-chrome-patterns)
+8. [Accessibility patterns](#accessibility-patterns)
+9. [Composition with non-design-system code](#composition-with-non-design-system-code)
+10. [Anti-patterns](#anti-patterns)
 
 ---
 
@@ -132,6 +133,81 @@ The CSS rules in `foundation/globals.css` ship the mapping; you don't need to wr
 - ❌ Trying to set typography or spacing via `<AppTheme>`. `<AppTheme>` owns accent only. Spec §10 forbids the rest.
 
 ---
+## Brand identity patterns
+
+The package ships the canonical MAGI identity: three React components (`MagiMark`, `MagiWordmark`, `MagiLockup`) over five SVG assets. The SVG files are the source of truth; the components render them inline so `fill="currentColor"` inherits from your `color` property.
+
+Full brand guidelines (clear space, minimum size, misuse rules): [`brand.md`](./brand.md).
+
+### Logo selection
+
+| Component | Use |
+| --- | --- |
+| `<MagiLockup />` | Default — navbar brand, OG image, README hero |
+| `<MagiMark />` | Small surfaces: favicon-adjacent, compact headers, avatar fallback |
+| `<MagiWordmark />` | Doc headers, focused standalone contexts |
+
+### Sizing
+
+Semantic sizes only — pixel props are not part of the API:
+
+```tsx
+<MagiLockup size="sm" />  // 20px tall — nav / tab
+<MagiLockup size="md" />  // 32px tall — default (the default)
+<MagiLockup size="lg" />  // 48px tall — hero / OG
+```
+
+### Color
+
+The logo is `currentColor` — it takes the `color` of its parent. Do not hard-code fills:
+
+```tsx
+// White on dark (inherits --magi-text-primary)
+<header style={{ color: 'var(--magi-text-primary)' }}>
+  <MagiLockup ariaHidden={false} alt="MAGI" />
+</header>
+
+// On a light surface, the surrounding color flips and the logo follows
+<div style={{ color: 'var(--magi-text-inverse)' }}>
+  <MagiLockup />
+</div>
+```
+
+The MAGI logo **never uses a product accent**. Accent colors belong to CTAs and links; the brand mark stays in text color.
+
+### Accessibility
+
+Default is decorative (`aria-hidden="true"`). When the logo is the *only* brand identifier on the page (e.g. it is the only content in a home link):
+
+```tsx
+<a href="/" aria-label="MAGI — home">
+  <MagiLockup ariaHidden={false} alt="MAGI — home" />
+</a>
+```
+
+### Static (non-React) usage
+
+For favicons, OG images, and any non-React surface, copy the canonical assets from the package:
+
+```
+@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-mark.svg
+@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-wordmark.svg
+@tokyo3rdhq/magi-design-system/dist/assets/logo/magi-lockup.svg
+@tokyo3rdhq/magi-design-system/dist/assets/icons/favicon.svg
+@tokyo3rdhq/magi-design-system/dist/assets/icons/app-icon.svg
+```
+
+Do not fork these files into a consumer repo. Bump the package dependency instead.
+
+### Common mistakes
+
+- ❌ `<img src="/logo.svg">` with a locally copied SVG — drifts from the canonical asset.
+- ❌ Setting `style={{ fill: '#00c853' }}` on the component — breaks the `currentColor` contract.
+- ❌ Rendering the mark below 20px without using `favicon.svg` — circles become indistinguishable.
+- ❌ Rotating, stretching, or adding glow/shadow/gradient to any asset — see [`brand.md` misuse section](./brand.md#misuse-prohibitions).
+
+---
+
 
 ## Form patterns
 

@@ -1,0 +1,59 @@
+/* MAGI Brand Foundation — minimal CSS.
+ *
+ * Sizing modifiers for the React <MagiMark>, <MagiWordmark>,
+ * and <MagiLockup> components. Components render <svg> elements
+ * (not <img>) via <use href>, so fill="currentColor" propagates
+ * correctly and consumers control size via this layer.
+ *
+ * Scoped under body[data-magi-app] per the existing scope convention
+ * (see docs/architecture-v2.md §7.2 — consumer override policy).
+ */
+
+@layer magi.components {
+
+body[data-magi-app] .magi-mark svg,
+body[data-magi-app] .magi-wordmark svg,
+body[data-magi-app] .magi-lockup svg {
+  display: block;
+  vertical-align: middle;
+}
+
+/* Size modifiers — semantic, not pixel-driven.
+ * Height is what we set; width derives from the SVG's intrinsic ratio. */
+body[data-magi-app] .magi-mark--sm svg {
+  height: 20px;
+}
+
+body[data-magi-app] .magi-wordmark--sm svg {
+  height: 20px;
+}
+
+body[data-magi-app] .magi-lockup--sm svg {
+  height: 20px;
+}
+
+body[data-magi-app] .magi-mark--md svg {
+  height: 32px;
+}
+
+body[data-magi-app] .magi-wordmark--md svg {
+  height: 32px;
+}
+
+body[data-magi-app] .magi-lockup--md svg {
+  height: 32px;
+}
+
+body[data-magi-app] .magi-mark--lg svg {
+  height: 48px;
+}
+
+body[data-magi-app] .magi-wordmark--lg svg {
+  height: 48px;
+}
+
+body[data-magi-app] .magi-lockup--lg svg {
+  height: 48px;
+}
+
+} /* @layer magi.components */

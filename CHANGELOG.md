@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] — 2026-09-28
+
+### Added
+
+- **MAGI Brand Foundation** — canonical brand assets and React rendering APIs:
+  - Five SVG assets (single source of truth):
+    - `src/assets/logo/magi-mark.svg` — three-dot triangle mark (64×64)
+    - `src/assets/logo/magi-wordmark.svg` — "MAGI" in Inter Bold (200×56)
+    - `src/assets/logo/magi-lockup.svg` — mark + wordmark composite (280×64)
+    - `src/assets/icons/favicon.svg` — browser favicon (32×32)
+    - `src/assets/icons/app-icon.svg` — PWA icon (512×512)
+  - Three React components (rendering APIs, never re-defining geometry):
+    - `<MagiMark />` — `size="sm" | "md" | "lg"`
+    - `<MagiWordmark />` — `size="sm" | "md" | "lg"`
+    - `<MagiLockup />` — `size="sm" | "md" | "lg"`
+  - Assets copied to `dist/assets/` on build for static consumers
+  - `docs/brand.md` — complete brand guidelines (clear space, minimum size, backgrounds, product relationship, misuse prohibitions)
+
+- **`src/brand/brand.css`** — sizing modifiers (`--sm` 20px, `--md` 32px, `--lg` 48px) scoped under `body[data-magi-app]`
+- **Showroom Brand page** — live demo of all brand assets at semantic sizes with color treatments and contrast verification
+
+### Changed
+
+- Brand components use `?raw` inline SVG import instead of `<img src>` so `fill="currentColor"` propagates correctly across all browsers (the SVG becomes part of the DOM tree)
+- `src/env.d.ts` declares `*.svg?raw` module for TypeScript
+
+### Notes
+
+- The MAGI logo is **stable across product accents** — it uses `currentColor`, not `var(--magi-accent)`. Product accent belongs to CTAs and links; the brand mark stays in text color.
+- Static consumers (favicon, OG image) should copy from `dist/assets/` of the published package, not fork the SVGs.
+- Per ADR-0006, this is a **minor** version bump (additive new public API, no breaking changes).
+
+### Verified
+
+- `npm run build` → `dist/styles.css` 25.47 kB / `dist/index.js` 13.73 kB
+- `npm run typecheck` → clean
+- `node scripts/check-tokens.mjs` → 0 errors, 0 warnings
+- `node scripts/check-accent-tokens.mjs` → 0 errors
+- Showroom Brand page renders at http://127.0.0.1:4176/ — all 12 brand images show `fill: rgb(245,245,247)` (white) on dark background
+
 ## [0.4.2] — 2026-09-27
 
 ### Added
