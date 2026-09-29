@@ -28,6 +28,8 @@ jobs:
         run: node scripts/check-accent-tokens.mjs
       - name: Theme × Accent verification matrix
         run: node scripts/verify-theme-accent-matrix.mjs
+      - name: Accessibility quality gate (static contract compliance)
+        run: node scripts/check-accessibility.mjs
       - name: Typecheck
         working-directory: packages/design-system
         run: npm run typecheck
