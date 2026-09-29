@@ -1,5 +1,7 @@
 # ADR-002: CSS scope — `body[data-magi-app]`, rename to `[data-magi-app]` (executed in 0.6.0)
 
+> **See also**: [`docs/contracts/data-magi-app-scope-contract.md`](../contracts/data-magi-app-scope-contract.md) — the formal contract this ADR feeds into. Includes scope matrix, legacy window (no removal before 1.0.0), and CSS selector contract.
+
 | | |
 |---|---|
 | **Status** | Accepted → **Executed in 0.6.0** |

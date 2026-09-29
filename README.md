@@ -66,6 +66,8 @@ magi-design-system/
 │   ├── brand-foundation-architecture-review.md     # Brand Foundation pre-implementation review
 │   ├── brand_fundation_review_and_impl.md          # Brand Foundation review + impl prompt (legacy)
 │   ├── component-contracts.md                      # Component Contracts (since 0.5.1)
+│   ├── contracts/                                    # Formal contract specs
+│   │   └── data-magi-app-scope-contract.md          # Scope contract (since 0.6.0)
 │   ├── guidelines.md                               # Experience Guidelines (since 0.6.0)
 │   ├── framework_agnostic_architecture_review.md   # the review brief this repo's review responds to
 │   ├── arch_evo.md                                 # original refactor brief
@@ -179,6 +181,7 @@ The showroom uses `file:` linking to the local package, so live edits in
 | [`docs/tokens.md`](./docs/tokens.md) | Every CSS custom property with values |
 | [`docs/brand.md`](./docs/brand.md) | **MAGI Brand Foundation** — hierarchy, clear space, minimum sizes, backgrounds, product relationship, misuse prohibitions, Color Modes, Logo Contrast Rule |
 | [`docs/component-contracts.md`](./docs/component-contracts.md) | **Component Contracts** (Layer 4) — per-component semantic structure / accessibility / visual states / token binding. NOT CSS class names. |
+| [`docs/contracts/data-magi-app-scope-contract.md`](./docs/contracts/data-magi-app-scope-contract.md) | **Scope contract** (since 0.6.0) — canonical placement of `data-magi-app` + legacy window + CSS selector contract |
 | [`docs/guidelines.md`](./docs/guidelines.md) | **Experience Guidelines** (Layer 3.5) — content, i18n (language names not flags), iconography decision matrix, links, nav, header/footer patterns, responsive, a11y floor, product-vs-system boundary |
 | [`docs/migration-guide.md`](./docs/migration-guide.md) | Phase 2 / 3 / 5 / 6 / 7 / 8 consumer migrations (incl. brand at 0.5.0+, Light/Dark + scope rename at 0.6.0) |
 | [`docs/integration-prompt.md`](./docs/integration-prompt.md) | AI agent prompt for new `xxx.magi.website` consumers |
