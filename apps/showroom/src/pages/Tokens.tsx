@@ -91,6 +91,95 @@ export function Tokens() {
           ))}
         </div>
       </section>
+
+      <section className={styles.section}>
+        <h2 className="magi-h3" style={{ marginBottom: 'var(--magi-space-6)' }}>
+          Surfaces
+        </h2>
+        <p
+          className="magi-body-sm"
+          style={{ marginBottom: 'var(--magi-space-4)', color: 'var(--magi-text-secondary)' }}
+        >
+          Background surfaces used by the foundation backdrop and component
+          containers. The dark backdrop is a fixed gradient; surfaces layer
+          on top with progressive elevation.
+        </p>
+        <div className={styles.surfaceRow}>
+          {[
+            { name: '--magi-bg-base', surfaceClass: styles.surfaceTileBase },
+            { name: '--magi-bg-raised', surfaceClass: styles.surfaceTileRaised },
+            { name: '--magi-bg-card', surfaceClass: styles.surfaceTileCard },
+            { name: '--magi-surface', surfaceClass: styles.surfaceTileSurface },
+            { name: '--magi-surface-elevated', surfaceClass: styles.surfaceTileSurfaceElevated },
+          ].map((s) => (
+            <div
+              key={s.name}
+              className={`${styles.surfaceTile} ${s.surfaceClass}`}
+              data-surface={s.name}
+            >
+              <p className={styles.surfaceTileLabel}>{s.name}</p>
+              <p className={styles.surfaceTileValue}>
+                Used for the dark gradient backdrop and elevated cards.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className="magi-h3" style={{ marginBottom: 'var(--magi-space-6)' }}>
+          Borders
+        </h2>
+        <p
+          className="magi-body-sm"
+          style={{ marginBottom: 'var(--magi-space-4)', color: 'var(--magi-text-secondary)' }}
+        >
+          Two border tiers. <code className="magi-code">border</code> is
+          the default for inputs, surfaces, and cards.{' '}
+          <code className="magi-code">border-strong</code> marks hover
+          and focus edges.
+        </p>
+        <div className={styles.borderRow}>
+          <div className={`${styles.borderTile} ${styles.borderTileBorder}`} data-border="border">
+            <code className="magi-code">--magi-border</code> · 1px · rgba(255, 255, 255, 0.08)
+          </div>
+          <div
+            className={`${styles.borderTile} ${styles.borderTileBorderStrong}`}
+            data-border="border-strong"
+          >
+            <code className="magi-code">--magi-border-strong</code> · 1px · rgba(255, 255, 255, 0.14)
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className="magi-h3" style={{ marginBottom: 'var(--magi-space-6)' }}>
+          Motion
+        </h2>
+        <p
+          className="magi-body-sm"
+          style={{ marginBottom: 'var(--magi-space-4)', color: 'var(--magi-text-secondary)' }}
+        >
+          Durations and easings used by transitions. All transitions are
+          disabled in the showroom for screenshot determinism
+          (<code className="magi-code">data-magi-app[data-screenshot-mode]</code>).
+        </p>
+        <div className={styles.motionRow}>
+          {[
+            { name: '--magi-duration-fast', value: '120ms' },
+            { name: '--magi-duration-normal', value: '200ms' },
+            { name: '--magi-duration-slow', value: '320ms' },
+            { name: '--magi-ease-standard', value: 'cubic-bezier(.4,.0,.2,1)' },
+            { name: '--magi-ease-out', value: 'cubic-bezier(.0,.0,.2,1)' },
+          ].map((m) => (
+            <div key={m.name} data-motion-token={m.name}>
+              <code className={styles.motionToken}>{m.name}</code>
+              <span className={styles.motionValue}>{m.value}</span>
+              <span className={styles.motionDemo} />
+            </div>
+          ))}
+        </div>
+      </section>
     </article>
   );
 }

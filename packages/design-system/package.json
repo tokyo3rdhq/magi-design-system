@@ -15,7 +15,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./dist/assets/icons/favicon.svg": "./dist/assets/icons/favicon.svg",
+    "./dist/assets/icons/app-icon.svg": "./dist/assets/icons/app-icon.svg",
+    "./dist/assets/logo/magi-mark.svg": "./dist/assets/logo/magi-mark.svg",
+    "./dist/assets/logo/magi-wordmark.svg": "./dist/assets/logo/magi-wordmark.svg",
+    "./dist/assets/logo/magi-lockup.svg": "./dist/assets/logo/magi-lockup.svg",
+    "./dist/assets/*.svg": "./dist/assets/*/*.svg"
   },
   "sideEffects": [
     "**/*.css"

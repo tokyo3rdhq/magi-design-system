@@ -14,6 +14,7 @@ import { Layout } from './pages/Layout';
 import { Phase4 } from './pages/Phase4';
 import { Brand } from './pages/Brand';
 import { Guidelines } from './pages/Guidelines';
+import { Matrix } from './pages/Matrix';
 import styles from './App.module.css';
 
 type Page =
@@ -25,7 +26,8 @@ type Page =
   | 'layout'
   | 'phase4'
   | 'brand'
-  | 'guidelines';
+  | 'guidelines'
+  | 'matrix';
 
 const PAGES: { id: Page; label: string }[] = [
   { id: 'tokens', label: 'Tokens' },
@@ -37,6 +39,7 @@ const PAGES: { id: Page; label: string }[] = [
   { id: 'phase4', label: 'Phase 4' },
   { id: 'brand', label: 'Brand' },
   { id: 'guidelines', label: 'Guidelines' },
+  { id: 'matrix', label: 'Matrix' },
 ];
 
 const ACCENTS: { id: AppAccent; label: string }[] = [
@@ -56,10 +59,11 @@ export function App() {
   const [page, setPage] = useState<Page>('tokens');
   const [accent, setAccent] = useState<AppAccent>('green');
   const [theme, setTheme] = useState<AppThemeName>('dark');
+  const [screenshotMode, setScreenshotMode] = useState(false);
 
   return (
     <AppTheme accent={accent} theme={theme} name="showroom">
-      <div className={styles.shell}>
+      <div className={styles.shell} data-screenshot-mode={screenshotMode ? 'true' : undefined}>
         <header className={styles.topbar}>
           <div className={styles.brand}>
             <span className={styles.brandKicker}>MAGI</span>
@@ -76,7 +80,19 @@ export function App() {
               </button>
             ))}
           </nav>
-          <div style={{ display: 'flex', gap: 'var(--magi-space-4)' }}>
+          <div style={{ display: 'flex', gap: 'var(--magi-space-4)', alignItems: 'center' }}>
+            <label
+              className={styles.accentPicker}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--magi-space-1)' }}
+            >
+              <input
+                type="checkbox"
+                checked={screenshotMode}
+                onChange={(e) => setScreenshotMode(e.target.checked)}
+                data-screenshot-toggle
+              />
+              <span className={styles.accentLabel}>Screenshot mode</span>
+            </label>
             <label className={styles.accentPicker}>
               <span className={styles.accentLabel}>Theme</span>
               <select
@@ -117,6 +133,7 @@ export function App() {
             {page === 'phase4' && <Phase4 />}
             {page === 'brand' && <Brand />}
             {page === 'guidelines' && <Guidelines />}
+            {page === 'matrix' && <Matrix />}
           </Container>
         </main>
 

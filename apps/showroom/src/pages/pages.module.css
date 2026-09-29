@@ -181,3 +181,172 @@
   background: color-mix(in srgb, var(--magi-bg-card) 50%, transparent);
   position: relative;
 }
+
+/* Surface visualization (visual contract for the foundation surfaces) */
+.surfaceRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--magi-space-4);
+}
+.surfaceTile {
+  border-radius: var(--magi-radius-lg);
+  padding: var(--magi-space-6);
+  border: 1px solid var(--magi-border);
+}
+.surfaceTile--base {
+  background: var(--magi-bg-base);
+}
+.surfaceTile--raised {
+  background: var(--magi-bg-raised);
+}
+.surfaceTile--card {
+  background: var(--magi-bg-card);
+}
+.surfaceTile--surface {
+  background: var(--magi-surface);
+}
+.surfaceTile--surface-elevated {
+  background: var(--magi-surface-elevated);
+}
+.surfaceTileLabel {
+  font-family: var(--magi-font-mono);
+  font-size: var(--magi-font-size-label);
+  color: var(--magi-text-tertiary);
+  margin-bottom: var(--magi-space-2);
+}
+.surfaceTileValue {
+  font-size: var(--magi-font-size-body);
+  color: var(--magi-text-primary);
+}
+
+/* Border visualization */
+.borderRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--magi-space-3);
+}
+.borderTile {
+  height: 64px;
+  border-radius: var(--magi-radius-md);
+  background: var(--magi-bg-raised);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--magi-space-6);
+  font-family: var(--magi-font-mono);
+  font-size: var(--magi-font-size-label);
+  color: var(--magi-text-secondary);
+}
+.borderTile--border {
+  border: 1px solid var(--magi-border);
+}
+.borderTile--border-strong {
+  border: 1px solid var(--magi-border-strong);
+}
+
+/* Motion visualization */
+.motionRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--magi-space-3);
+}
+.motionRow > div {
+  display: flex;
+  align-items: center;
+  gap: var(--magi-space-4);
+  padding: var(--magi-space-3) var(--magi-space-4);
+  background: var(--magi-bg-card);
+  border-radius: var(--magi-radius-md);
+}
+.motionToken {
+  font-family: var(--magi-font-mono);
+  font-size: var(--magi-font-size-label);
+  color: var(--magi-text-secondary);
+  min-width: 200px;
+}
+.motionValue {
+  font-size: var(--magi-font-size-body-sm);
+  color: var(--magi-text-primary);
+}
+.motionDemo {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--magi-radius-sm);
+  background: var(--magi-accent);
+}
+
+/* Theme × Accent matrix */
+.matrixCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--magi-space-2);
+  padding: var(--magi-space-4);
+  border-radius: var(--magi-radius-md);
+  border: 1px solid var(--magi-border);
+}
+.matrixCell[data-accent="green"] {
+  --magi-accent: #00c853;
+  --magi-accent-hover: #00e676;
+}
+.matrixCell[data-accent="cyan"] {
+  --magi-accent: #38bdf8;
+  --magi-accent-hover: #7dd3fc;
+}
+.matrixCell[data-accent="violet"] {
+  --magi-accent: #8b5cf6;
+  --magi-accent-hover: #a78bfa;
+}
+.matrixCell[data-accent="amber"] {
+  --magi-accent: #f59e0b;
+  --magi-accent-hover: #fbbf24;
+}
+.matrixCell[data-accent="white"] {
+  --magi-accent: #ffffff;
+  --magi-accent-hover: #f5f5f7;
+}
+.matrixGrid {
+  display: grid;
+  grid-template-columns: 200px repeat(5, minmax(180px, 1fr));
+  gap: var(--magi-space-3);
+  align-items: stretch;
+}
+.matrixRowLabel {
+  display: flex;
+  align-items: center;
+  padding: var(--magi-space-3);
+  border-radius: var(--magi-radius-md);
+  background: var(--magi-bg-raised);
+  font-size: var(--magi-font-size-body-sm);
+  color: var(--magi-text-secondary);
+}
+.matrixAccentLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--magi-space-3);
+  border-radius: var(--magi-radius-md);
+  background: var(--magi-bg-raised);
+  font-size: var(--magi-font-size-label);
+  color: var(--magi-text-secondary);
+  font-weight: var(--magi-font-weight-medium);
+}
+.matrixButton {
+  background: var(--magi-accent);
+  color: var(--magi-accent-contrast);
+  border-radius: var(--magi-radius-full);
+  padding: var(--magi-space-2) var(--magi-space-4);
+  font-size: var(--magi-font-size-label);
+  font-weight: var(--magi-font-weight-medium);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+.matrixBadge {
+  background: var(--magi-accent-soft);
+  color: var(--magi-accent);
+  border-radius: var(--magi-radius-full);
+  padding: var(--magi-space-1) var(--magi-space-3);
+  font-size: var(--magi-font-size-label);
+  font-weight: var(--magi-font-weight-medium);
+  display: inline-block;
+}

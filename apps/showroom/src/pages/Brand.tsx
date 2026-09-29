@@ -3,6 +3,8 @@ import {
   MagiWordmark,
   MagiLockup,
 } from '@tokyo3rdhq/magi-design-system';
+import faviconUrl from '@tokyo3rdhq/magi-design-system/dist/assets/icons/favicon.svg';
+import appIconUrl from '@tokyo3rdhq/magi-design-system/dist/assets/icons/app-icon.svg';
 import { PageHeader } from './index';
 import styles from './pages.module.css';
 
@@ -82,6 +84,77 @@ export function Brand() {
             <MagiLockup size="lg" />
             <span className="magi-caption">lg · 48px</span>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h3 className="magi-h4" style={{ marginBottom: 'var(--magi-space-4)' }}>
+          Static assets
+        </h3>
+        <p
+          className="magi-body-sm"
+          style={{ marginBottom: 'var(--magi-space-4)' }}
+        >
+          Canonical SVGs shipped in <code className="magi-code">dist/assets/icons/</code> for
+          non-React surfaces (browser favicon, PWA install icon, OG image).
+          Both use <code className="magi-code">fill="currentColor"</code> — the
+          surface tone controls them.
+        </p>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: 'var(--magi-space-6)',
+          }}
+        >
+          <figure
+            style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: 'var(--magi-space-2)' }}
+            data-asset="favicon"
+          >
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                padding: 'var(--magi-space-3)',
+                background: 'var(--magi-bg-raised)',
+                borderRadius: 'var(--magi-radius-md)',
+                border: '1px solid var(--magi-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--magi-text-primary)',
+              }}
+            >
+              <img src={faviconUrl} alt="favicon" width="32" height="32" />
+            </div>
+            <figcaption className="magi-caption" style={{ color: 'var(--magi-text-secondary)' }}>
+              favicon.svg · 32×32 · browser favicon
+            </figcaption>
+          </figure>
+          <figure
+            style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: 'var(--magi-space-2)' }}
+            data-asset="app-icon"
+          >
+            <div
+              style={{
+                width: 96,
+                height: 96,
+                padding: 'var(--magi-space-3)',
+                background: 'var(--magi-bg-raised)',
+                borderRadius: 'var(--magi-radius-md)',
+                border: '1px solid var(--magi-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--magi-text-primary)',
+              }}
+            >
+              <img src={appIconUrl} alt="app icon" width="64" height="64" />
+            </div>
+            <figcaption className="magi-caption" style={{ color: 'var(--magi-text-secondary)' }}>
+              app-icon.svg · 512×512 · PWA / desktop install
+            </figcaption>
+          </figure>
         </div>
       </section>
 

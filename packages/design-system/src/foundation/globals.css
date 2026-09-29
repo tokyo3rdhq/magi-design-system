@@ -149,4 +149,20 @@
     scroll-behavior: auto;
   }
 }
+
+/* Screenshot mode — when the showroom / consumer sets
+ * data-screenshot-mode="true" anywhere under [data-magi-app], all
+ * transitions and animations are zeroed. Used by future Playwright
+ * visual regression (ADR-0008) for deterministic captures. The
+ * showroom can also toggle this from its top-nav for manual
+ * deterministic screenshots.
+ */
+[data-magi-app] [data-screenshot-mode="true"] *,
+[data-magi-app] [data-screenshot-mode="true"] *::before,
+[data-magi-app] [data-screenshot-mode="true"] *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
 }
