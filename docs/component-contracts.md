@@ -126,8 +126,9 @@ Each contract has four sections:
 - Color: `--magi-accent`, `--magi-accent-hover`, `--magi-accent-soft`, `--magi-accent-contrast`, `--magi-text-primary`, `--magi-text-inverse`
 - Radius: `--magi-radius-full` (pill)
 - Spacing: `--magi-space-{2|3|6}`, `--magi-font-size-{label|body|body-sm}`, `--magi-leading-{tight|normal}`
-- Motion: `--magi-duration-fast`, `--magi-ease-standard`
+- Motion: `--magi-duration-normal` (background/color/border transitions), `--magi-duration-fast` (transform press feedback), `--magi-ease-standard`
 - Focus: `--magi-focus-ring`
+- Typography: Button inherits `font-family` from the consumer; `font-weight: --magi-font-weight-medium`; `line-height: 1` (raw, for tight pill geometry)
 
 ---
 
@@ -151,10 +152,10 @@ Each contract has four sections:
 
 **Token binding**
 
-- Surface: `--magi-bg-card`, `--magi-border`, `--magi-border-strong`
-- Radius: `--magi-radius-{md|lg|xl}`
-- Spacing: `--magi-space-{4|6|8|10}` (per `padding` tier)
-- Motion (interactive only): `--magi-duration-fast`, `--magi-ease-standard`
+- Surface: `--magi-bg-card`, `--magi-border`, `--magi-border-strong`, `--magi-bg-card-hover` (interactive hover), `--magi-surface-elevated` (elevated variant)
+- Radius: `--magi-radius-xl` (all variants use the same radius)
+- Spacing: `--magi-space-{4|6|8}` (per `padding` tier — sm/md/lg respectively)
+- Motion (interactive only): `--magi-duration-normal` (border + background transitions), `--magi-duration-fast` (transform press feedback), `--magi-ease-standard`
 
 ---
 
@@ -210,9 +211,9 @@ Each contract has four sections:
 
 **Token binding**
 
-- Color: `--magi-bg-base`, `--magi-border`, `--magi-border-strong`, `--magi-text-primary`, `--magi-placeholder`, `--magi-error`
+- Color: `--magi-surface` (field background), `--magi-bg-base` (default), `--magi-border`, `--magi-border-strong` (hover), `--magi-text-primary`, `--magi-text-tertiary` (placeholder), `--magi-error` (invalid border + helper text)
 - Radius: `--magi-radius-md`
-- Spacing: `--magi-space-{2|3}`, `--magi-font-size-{body|body-sm|label}`
+- Spacing: input padding is hard-coded at `10px 12px` (md), `6px 10px` (sm). The Input is a low-level primitive — its own intrinsic geometry is intentional. If consumers need token-driven spacing, wrap Input in `<Stack gap>`.
 - Focus: `--magi-focus-ring`
 
 ---
@@ -357,9 +358,9 @@ Each contract has four sections:
 
 **Token binding**
 
-- Color: `--magi-text-primary`, `--magi-text-secondary`, `--magi-text-tertiary`
-- Typography: `--magi-font-size-{body|body-sm|label}`
-- Spacing: `--magi-space-{4|6|8}`
+- Color: `--magi-surface` (background), `--magi-text-primary` (implicit inheritance), `--magi-text-secondary` (default text), `--magi-text-tertiary` (reserved for variants — title uses secondary)
+- Typography: `--magi-font-size-body-sm`, `--magi-leading-snug`
+- Spacing: `--magi-space-{4|6|8}` (the description uses 7px because it's a single line at body-sm; the structured layout uses `--magi-space-3` between items)
 
 ---
 
