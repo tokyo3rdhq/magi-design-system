@@ -69,15 +69,19 @@ The order matters. Do not skip steps even if they seem trivial.
    ```ts
    import '@tokyo3rdhq/magi-design-system/styles.css';
    ```
-3. **Mark `<body>`**. If you control the HTML template (Astro `<body>` tag, Vite `index.html`):
+3. **Mark `<html>` (0.6.0 canonical)**. If you control the HTML template (Astro `<html>` tag, Vite `index.html`):
    ```html
-   <body data-magi-app>
-     <!-- existing root element -->
-   </body>
+   <html data-magi-app>
+     <body>
+       <!-- existing root element -->
+     </body>
+   </html>
    ```
-   If you don't, set it from JavaScript before the first render:
+   `<body data-magi-app>` still works for backward compatibility (the `[data-magi-app]` selector matches any element), but `<html>` is the canonical placement since 0.6.0.
+
+   If you don't control the HTML root, set it from JavaScript before the first render:
    ```ts
-   document.body.setAttribute('data-magi-app', '');
+   document.documentElement.setAttribute('data-magi-app', '');
    ```
 4. **Wrap your app in `<AppTheme>`** at the highest practical level — usually just inside `<body>`, around the entire routes tree:
    ```tsx

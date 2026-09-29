@@ -26,7 +26,7 @@ Release history (chronological):
 - [x] `0.4.0` — rename `<ProductTheme>` → `<AppTheme>` (the original name misleadingly claimed subtree scope; the implementation sets CSS vars on `<html>`, which is global)
 - [x] `0.4.1` — token literal CI extended to `.tsx` / `.ts` files + new accent source-of-truth CI script (cross-validates `ACCENT_PRESETS` in `theme.tsx` against `data-magi-accent` rules in `globals.css`)
 - [x] `0.4.2` — `<Segmented>` keyboard navigation (Arrow / Home / End + roving tabindex) per WAI-ARIA radio group pattern
-- [x] `0.5.0` — **MAGI Brand Foundation** + showroom Brand page. 5 SVG assets (`magi-mark.svg` / `magi-wordmark.svg` / `magi-lockup.svg` / `favicon.svg` / `app-icon.svg`) shipped under `src/assets/`. 3 React rendering components (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`) consume them via `?raw` import so `fill="currentColor"` propagates. Brand doc at [`docs/brand.md`](./docs/brand.md).
+- [x] `0.5.0` — **MAGI Brand Foundation** + showroom Brand page. 5 SVG assets (`magi-mark.svg` / `magi-wordmark.svg` / `magi-lockup.svg` / `favicon.svg` / `app-icon.svg`) shipped under `src/assets/`. 3 React rendering components (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`) inline the SVG source so `fill="currentColor"` propagates correctly across browsers. `<MagiMark>` uses Vite `?url` + `<use href>`; `<MagiWordmark>` / `<MagiLockup>` use `?raw` + `dangerouslySetInnerHTML` (needed for the embedded `<text>` glyph with the page font). Brand doc at [`docs/brand.md`](./docs/brand.md).
 - [x] `0.5.1` — boundary cleanup + Component Contracts. `ACCENT_PRESETS` moved from `src/theme.tsx` to `src/tokens/accent-presets.ts` (a framework-agnostic TS module; Vue/JS consumers can import without React). README headline rewritten to distinguish the Design System from the React implementation per review §22. New [`docs/component-contracts.md`](./docs/component-contracts.md) — per-component contracts (semantic structure / accessibility / visual states / token binding). New [`docs/architecture-review-framework-agnostic.md`](./docs/architecture-review-framework-agnostic.md) — 30-section framework-agnostic architecture review establishing the 7 conceptual layers (Brand Foundation / Design Tokens / CSS Foundation / Experience Guidelines / Component Contracts / Web-CSS Implementation / Framework Implementations) and the boundary map.
 - [x] `0.6.0` — **Light/Dark color mode + scope rename + Logo Contrast Rule**. `<AppTheme>` gained `theme?: 'dark' | 'light'` (default `'dark'` canonical; `'light'` is supported alternative). `data-magi-theme="light"` attribute supported on any subtree. `data-magi-app` canonical on `<html>` (was `<body>`) — `body[data-magi-app]` still works for backward compatibility (per ADR-0002 deferred rename executed). New `--magi-logo-color` semantic token bound to `--magi-text-primary` in both themes. Brand CSS now sets `color: var(--magi-logo-color)` on `.magi-mark` / `.magi-wordmark` / `.magi-lockup` so the Logo Contrast Rule is enforced by the system, not the consumer. [`docs/brand.md`](./docs/brand.md) rewritten with Color Modes + Logo Contrast Rule sections. All 13 component CSS rules rewritten to use the `[data-magi-app]` selector (element-agnostic). See [Phase 8 migration guide](./docs/migration-guide.md#phase-8--upgrade-from-05x-to-060x-lightdark-theme--scope-rename).
 
@@ -131,12 +131,14 @@ function App() {
 }
 ```
 
-`<body>` must carry `data-magi-app` so the foundation styles can scope themselves:
+`<html>` must carry `data-magi-app` so the foundation styles can scope themselves (0.6.0 canonical; `<body data-magi-app>` still works for backward compatibility — the `[data-magi-app]` CSS selector matches any element with the attribute):
 
 ```html
-<body data-magi-app>
-  <div id="root"></div>
-</body>
+<html data-magi-app>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
 ```
 
 **For subtree accent overrides** (e.g. a "danger" callout), use the `data-magi-accent` attribute — no React wrapper needed:

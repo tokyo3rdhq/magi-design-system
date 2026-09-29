@@ -495,7 +495,7 @@ Each contract has four sections:
 **Token binding**
 
 - Reads: the same `--magi-accent-*` variables as components.
-- Writes: the same `--magi-accent-*` variables, scoped to the subtree via CSS specificity (the `data-magi-accent` selector wins over the `body[data-magi-app]` selector).
+- Writes: the same `--magi-accent-*` variables, scoped to the subtree via CSS specificity (the `data-magi-accent` selector wins over the `[data-magi-app]` selector).
 
 ---
 

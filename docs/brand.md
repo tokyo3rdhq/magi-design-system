@@ -14,7 +14,7 @@
 | **Favicon** | Browser tab (32×32) | `src/assets/icons/favicon.svg` |
 | **App Icon** | PWA / desktop install (512×512) | `src/assets/icons/app-icon.svg` |
 
-All assets are canonical SVGs. React components (`MagiMark`, `MagiWordmark`, `MagiLockup`) are rendering APIs — they inject the same SVG source via `?raw`, never re-defining geometry.
+All assets are canonical SVGs. React components (`MagiMark`, `MagiWordmark`, `MagiLockup`) are rendering APIs — they inject the same SVG source as the canonical assets, never re-defining geometry. `<MagiMark>` uses Vite `?url` + `<use href>`; `<MagiWordmark>` / `<MagiLockup>` use `?raw` + `dangerouslySetInnerHTML` (they embed `<text>` glyphs that need the page font).
 
 ---
 

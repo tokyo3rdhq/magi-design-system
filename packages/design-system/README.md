@@ -42,14 +42,19 @@ npm install @tokyo3rdhq/magi-design-system
 // 1. Styles — import once at the application root.
 import '@tokyo3rdhq/magi-design-system/styles.css';
 
-// 2. <body> needs data-magi-app so foundation styles can scope themselves.
-<body data-magi-app>
-  <div id="root"></div>
-</body>
+// 2. <html> needs data-magi-app so foundation styles can scope themselves.
+//    0.6.0 canonical; <body data-magi-app> still works for backward
+//    compatibility (the [data-magi-app] CSS selector matches any element).
+<html data-magi-app>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
 
-// 3. Wrap your app in <AppTheme> to optionally override the accent.
+// 3. Wrap your app in <AppTheme> to optionally override the accent + theme.
 //    0.3.0+: AppTheme is a context provider + sets accent CSS
-//    variables on <html>. No DOM wrapper.
+//    variables on <html>. No DOM wrapper. 0.6.0+: also writes
+//    data-magi-theme="<theme>" to <html> for Light/Dark mode.
 import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 
 <AppTheme accent="green" name="magi-portal">
@@ -384,9 +389,9 @@ the override automatically. The mapping is shipped as static CSS in
 import { useAppTheme } from '@tokyo3rdhq/magi-design-system';
 
 function MyComponent() {
-  const { accent } = useAppTheme();
-  // Returns { accent: AppAccent } or { accent: 'green' } outside
-  // a <AppTheme>.
+  // 0.6.0+: returns { accent, theme }. Default
+  //   { accent: 'green', theme: 'dark' } when used outside a <AppTheme>.
+  const { accent, theme } = useAppTheme();
 }
 ```
 

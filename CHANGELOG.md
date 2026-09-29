@@ -59,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Component contracts (`docs/component-contracts.md`) updated for `<AppTheme>`, `useAppTheme`, `data-magi-theme`.
 - ADRs updated: ADR-0002 (status: Executed in 0.6.0), ADR-0003 (Light/Dark section added).
 
+[0.6.0]: https://github.com/tokyo3rdhq/magi-design-system/releases/tag/v0.6.0
+
 ## [0.5.1] — 2026-09-28
 
 ### Added
@@ -112,8 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Brand components use `?raw` inline SVG import instead of `<img src>` so `fill="currentColor"` propagates correctly across all browsers (the SVG becomes part of the DOM tree)
-- `src/env.d.ts` declares `*.svg?raw` module for TypeScript
+- Brand components use Vite `?url` + `<use href>` (Mark) and `?raw` + `dangerouslySetInnerHTML` (Wordmark/Lockup, which embed `<text>` glyphs and need the page font) instead of `<img src>` so `fill="currentColor"` propagates correctly across all browsers (the SVG becomes part of the DOM tree).
+- `src/env.d.ts` declares `*.svg?raw` and `*.svg?url` modules for TypeScript.
 
 ### Notes
 

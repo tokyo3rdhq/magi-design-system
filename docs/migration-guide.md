@@ -580,11 +580,12 @@ Consumers do not need to change code to adopt it. Future contributors reference 
 
 ### What 0.5.x does NOT include (still deferred)
 
-- `body[data-magi-app]` → `html[data-magi-app]` scope rename (per ADR-0002). Deferred to post-0.5.x — waiting for second consumer confirmation.
 - React 19 peer range expansion (per ADR-0006). Deferred until a consumer requires it.
 - axe-playwright / Playwright visual regression (per ADR-0007 + ADR-0008). Deferred to a future minor.
 - Vue framework implementation. Deferred until a Vue consumer exists.
 - New primitives beyond the current 13 + 3 brand primitives.
+
+> Note on historical `<body data-magi-app>` examples: every consumer-migration step in this doc (Phase 2 / 3 / 5 / 6 / 7) shows `<body data-magi-app>` because those migrations describe the **state at the time of that upgrade step**. The Phase 8 upgrade step migrates `<body>` → `<html>` per ADR-0002's deferred rename executed in 0.6.0.
 
 ## Phase 8 — Upgrade from 0.5.x to 0.6.x (Light/Dark Theme + Scope Rename)
 
