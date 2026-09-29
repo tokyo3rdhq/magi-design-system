@@ -26,6 +26,8 @@ jobs:
         run: node scripts/check-tokens.mjs
       - name: Accent source-of-truth check
         run: node scripts/check-accent-tokens.mjs
+      - name: Theme × Accent verification matrix
+        run: node scripts/verify-theme-accent-matrix.mjs
       - name: Typecheck
         working-directory: packages/design-system
         run: npm run typecheck
