@@ -2,7 +2,7 @@
 
 All tokens are CSS custom properties declared on `:root` in [`packages/design-system/src/tokens/index.css`](../packages/design-system/src/tokens/index.css). Consumers read them via `var(--token-name)`.
 
-> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.5.1`.
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.6.0`.
 > **Note**: Product themes override a small, controlled subset (accent family). Spec §10 forbids redefining spacing / typography / base surfaces in product themes.
 
 The accent hex values live in the framework-agnostic module [`packages/design-system/src/tokens/accent-presets.ts`](../packages/design-system/src/tokens/accent-presets.ts) (`AppAccent` type + `ACCENT_PRESETS` constant). A Vue or vanilla-JS consumer can import them without pulling in React.
@@ -11,8 +11,15 @@ For component contracts (semantic structure / accessibility / visual states / to
 
 ## Colors
 
-| Token | Value | Use |
-| --- | --- | --- |
+Two UI color modes are supported (since 0.6.0): **Dark** (canonical MAGI presentation, default) and **Light** (supported alternative). The values below are the **Dark** defaults — Light values are documented in [`docs/brand.md`](./brand.md#color-modes) and listed in the rule blocks of `packages/design-system/src/tokens/colors.css`. To switch color mode:
+
+- React: `<AppTheme theme="light">`
+- HTML attribute: `<html data-magi-theme="light">` (any subtree: `<div data-magi-theme="light">`)
+
+Color mode does **not** apply to the accent family or to semantic colors (success / warning / error) — those are theme-independent.
+
+| Token | Value (Dark) | Purpose |
+|-------|--------------|---------|
 | `--magi-bg-base` | `#000000` | Page background |
 | `--magi-bg-raised` | `#1d1d1f` | Top of fixed gradient backdrop |
 | `--magi-bg-card` | `rgba(255, 255, 255, 0.04)` | Card surface |
@@ -25,7 +32,8 @@ For component contracts (semantic structure / accessibility / visual states / to
 | `--magi-text-inverse` | `#050505` | Text on light/accent backgrounds |
 | `--magi-border` | `rgba(255, 255, 255, 0.08)` | Default 1px border |
 | `--magi-border-strong` | `rgba(255, 255, 255, 0.14)` | Hover / focus border |
-| `--magi-accent` | `#00c853` | **MAGI green. Override in product themes.** |
+| `--magi-logo-color` | `var(--magi-text-primary)` | **Since 0.6.0.** Brand logo color, bound to the current theme's primary text. Drives the Logo Contrast Rule (see [`brand.md`](./brand.md#logo-contrast-rule)). |
+| `--magi-accent` | `#00c853` | **MAGI green. Override in product themes.** Theme-independent. |
 | `--magi-accent-hover` | `#00e676` | Accent hover state |
 | `--magi-accent-soft` | `rgba(0, 200, 83, 0.08)` | Accent fill (badges, focused nav) |
 | `--magi-accent-contrast` | `#050505` | Text on accent background |

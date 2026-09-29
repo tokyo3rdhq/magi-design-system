@@ -2,7 +2,7 @@
 
 > **Purpose**: this is a copy-paste prompt for an AI coding agent that needs to integrate `@tokyo3rdhq/magi-design-system` into a new or existing `xxx.magi.website` product. Replace the `{...}` placeholders, paste the whole document (or the body after "Prompt") into the agent's input, and let it execute.
 >
-> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.5.1`. Re-check if you upgrade.
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.6.0`. Re-check if you upgrade.
 
 ---
 
@@ -41,7 +41,7 @@ These are **hard constraints**. Violating any of them breaks the family contract
 2. **Do not introduce another UI library** — no MUI / Chakra / Radix-based full UI framework unless one is already a peer dependency. Spec §4.
 3. **Do not reintroduce CRT / terminal / neon styling.** Spec §36.
 4. **Do not fork the package** — consume via `npm install @tokyo3rdhq/magi-design-system`. Spec §2.
-5. **`<body>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. Per ADR-0002, this will move to `<html>` at a post-0.5.x release; until then, `<body>` is the contract. See [`architecture-v2.md`](./architecture-v2.md).
+5. **`<html>` must carry `data-magi-app`** — foundation styles only scope themselves against this attribute. Canonical placement since 0.6.0 (was `<body>` through 0.5.x; the deferred rename was executed in 0.6.0 per ADR-0002). The CSS selector `[data-magi-app]` matches any element carrying the attribute, so `<body data-magi-app>` still works for backward compatibility. See [`architecture-v2.md`](./architecture-v2.md).
 6. **Accent overrides go through `<AppTheme>` (app-level) or `data-magi-accent` (subtree-level)** — never write raw CSS to override `--magi-accent`. Spec §10. Both mechanisms are documented in [`usage-guide.md`](./usage-guide.md) §Theming patterns.
 7. **All user-visible text must be styled through design-system utilities or components** — `.magi-h1`, `<ProductHeader>`, etc. Avoid hand-rolled typographic CSS unless a new pattern is justified.
 

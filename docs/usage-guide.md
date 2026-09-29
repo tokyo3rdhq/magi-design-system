@@ -19,6 +19,7 @@ This guide covers **patterns** — how to compose the primitives into real UI su
 8. [Accessibility patterns](#accessibility-patterns)
 9. [Composition with non-design-system code](#composition-with-non-design-system-code)
 10. [Anti-patterns](#anti-patterns)
+11. [Experience patterns](#experience-patterns) — iconography, language selector, external links, footer zones
 
 ---
 
@@ -808,11 +809,90 @@ CSS variables are global (set on `<html>`); `<AppTheme>` cannot create CSS subtr
 
 ---
 
+## Experience patterns
+
+Patterns for common product surfaces (Header, Footer, language selector, external links, iconography). These are **not** shipped as a `<Header>` / `<Footer>` primitive in the package — they're patterns documented in [`docs/guidelines.md`](./guidelines.md) (Layer 3.5). Each product composes them from the existing primitives + its own information architecture.
+
+### Iconography: when to use what
+
+Per the [`guidelines.md` decision matrix](./guidelines.md#links--external-destinations):
+
+| Context | Default |
+| --- | --- |
+| Main nav destination | Text |
+| Primary CTA | Text |
+| Menu toggle / Close / Back / Search / Theme toggle / Expand / Collapse / More | Icon-only with `aria-label` |
+| GitHub / Discord / Docs / Status / Models / API / About / Settings / Account | Text (or Icon + Text where space allows) |
+| External destination | Text + `↗` indicator |
+
+Never use icon-only for destinations the user hasn't memorized. Text is the semantic source; the icon is a recognition aid.
+
+### Language selector
+
+Use language names in native script (endonym), **never** country flags. The endonym is the language the native speaker recognizes:
+
+```tsx
+// ❌ Country flags
+🇺🇸 English  🇨🇳 中文  🇯🇵 日本語
+
+// ✅ Language names
+English  中文  日本語  Español
+```
+
+Two acceptable forms:
+
+- **Compact** (utility area / top-nav): button with a chevron `▾` indicator
+- **List** (Footer / settings): inline list with `aria-pressed` on the active item
+
+### External destinations
+
+Recognizable destinations default to **recognition + external indicator**:
+
+```tsx
+<a
+  href="https://github.com/tokyo3rdhq"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  GitHub
+  <span aria-hidden="true">↗</span>
+  <span className="sr-only">(opens in new tab)</span>
+</a>
+```
+
+Three rules:
+
+- **Text is the source of truth.** The accessible name is the visible text (plus " (opens in new tab)" if `target="_blank"`).
+- **One external indicator, never two.** `↗` glyph or external-link icon — pick one. Don't stack.
+- **Never `target="_blank"` for internal navigation.** External destinations MAY open in a new tab when leaving would interrupt the user's flow. Internal navigation never opens in a new tab.
+
+### Footer zones
+
+Every Footer must include (per `guidelines.md` §13 brand-vs-system boundary):
+
+| Zone | Required? |
+| --- | --- |
+| Brand (logo + name) | MAGI-owned — yes |
+| Copyright | MAGI-owned — yes |
+| Privacy link | MAGI-owned — yes |
+| Terms link | MAGI-owned — yes |
+| Language selector | MAGI-owned — placement, not presence |
+| Community destinations (GitHub / Discord / etc.) | Product-owned |
+| Resources (Docs / API / Status / etc.) | Product-owned |
+| Footer column structure | Product-owned |
+
+Product-owned zones vary per product. The brand-required zones must exist in every Footer — they are non-negotiable. See the live showroom Footer pattern at `apps/showroom/src/pages/Guidelines.tsx`.
+
+---
+
 ## See also
 
 - [`packages/design-system/README.md`](../packages/design-system/README.md) — Full API reference
 - [`docs/tokens.md`](./tokens.md) — Every CSS custom property
-- [`docs/migration-guide.md`](./migration-guide.md) — Upgrading from 0.2.0 → 0.3.0 → 0.4.x
+- [`docs/brand.md`](./brand.md) — Brand Foundation guidelines (Color Modes, Logo Contrast Rule, misuse)
+- [`docs/component-contracts.md`](./component-contracts.md) — Per-component framework-agnostic contracts
+- [`docs/guidelines.md`](./guidelines.md) — Experience Guidelines (Layer 3.5): iconography decision matrix, i18n (no flags), external links, Header / Footer patterns, responsive, accessibility floor
+- [`docs/migration-guide.md`](./migration-guide.md) — Upgrading 0.2.0 → 0.3.0 → 0.4.x → 0.5.x → 0.6.x
 - [`docs/integration-prompt.md`](./integration-prompt.md) — AI agent prompt for new consumers
 - [`docs/architecture-review-0.3.md`](./architecture-review-0.3.md) — Known issues + roadmap
 - [`docs/adr/`](./adr/) — Architecture Decision Records

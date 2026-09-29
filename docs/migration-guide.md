@@ -2,6 +2,8 @@
 
 How to migrate a MAGI website to consume `@tokyo3rdhq/magi-design-system`. Covers three consumer profiles and four version-upgrade paths:
 
+> **Last verified against**: `@tokyo3rdhq/magi-design-system@0.6.0`.
+
 - **Phase 2 — [`magi.website`](https://github.com/tokyo3rdhq/magi-portal)** (Astro + Tailwind static site) — landed on `@tokyo3rdhq/magi-design-system@0.6.0` (current)
 - **Phase 3 — [`token-factory-initializr/web`](https://github.com/tokyo3rdhq/token-factory-initializr)** (Cloudflare Pages + React + Vite) — landed on `@tokyo3rdhq/magi-design-system@0.2.0`; uses 6 primitives
 - **Phase 5 — upgrade from 0.2.0 to 0.3.0** — see "Phase 5 — Upgrade to 0.3.0" section below

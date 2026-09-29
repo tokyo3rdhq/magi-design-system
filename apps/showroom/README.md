@@ -5,8 +5,8 @@ Local visual showcase for `@tokyo3rdhq/magi-design-system`. Used during package 
 ## What it is
 
 - Vite + React 18 + TypeScript app
-- Eight pages: **Tokens**, **Typography**, **Buttons**, **Cards**, **Badges**, **Layout**, **Phase 4** (form primitives), **Brand**
-- Sticky top nav with live accent picker (`green` / `cyan` / `violet` / `amber` / `white`)
+- Nine pages: **Tokens**, **Typography**, **Buttons**, **Cards**, **Badges**, **Layout**, **Phase 4** (form primitives), **Brand**, **Guidelines** (Experience Guidelines visual contract)
+- Sticky top nav with live accent picker (`green` / `cyan` / `violet` / `amber` / `white`) and **theme picker** (`dark` canonical / `light` alternative) — wired through `<AppTheme accent={...} theme={...}>`
 - file: linked to `../../packages/design-system` (symlink-installed by npm)
 - Picks up accent changes live via `data-magi-accent` subtree overrides on the Phase 4 page
 
@@ -37,12 +37,15 @@ The showroom has its own top-level CSS modules (`App.module.css`, `pages.module.
 | **Layout** | Container sizes, Section spacing × surface, Stack (vertical + horizontal) |
 | **Phase 4** | All 6 primitives from 0.2.0 (Checkbox / FormField / Input / Segmented / Banner / EmptyState) with live state, including the providers-as-checkbox-group pattern |
 | **Brand** (since 0.5.0) | The MAGI mark / wordmark / lockup rendered at all 3 semantic sizes on dark and light surfaces; `currentColor` propagation verified across the 5 accent presets. Acts as the visual regression surface for the brand foundation. |
+| **Guidelines** (since 0.6.0) | The MAGI Experience Guidelines rendered as live examples: icon-only controls (Search, Menu, Close, Back, More, theme), Icon + Text for destinations (GitHub, Discord, Docs, Status, Blog), language selectors (compact utility-area + list footer — no flags, endonym in native script), external destinations with `↗` + new-tab SR announcement, active nav indicator, header utility area, footer with brand+legal+copyright+language zones. Acts as the visual regression surface for the Experience Guidelines doc. |
 
 ## When to update the showroom
 
 - A new primitive ships → add a page or section
 - A new token is added → add it to the Tokens swatch grid
 - A new brand asset ships → add it to the Brand page
+- A new Experience Guidelines pattern ships → add it to the Guidelines page
+- A new color mode ships (or an existing theme changes) → verify Brand + Guidelines + Typography + all primitives render correctly in both themes
 - A variant is renamed → update the page that demonstrates it
 - Visual regressions appear → use the showroom to bisect
 - A primitive's API changes (e.g. prop rename) → update the consuming page

@@ -61,6 +61,13 @@ import { AppTheme } from '@tokyo3rdhq/magi-design-system';
 import { MagiLockup } from '@tokyo3rdhq/magi-design-system';
 
 <MagiLockup size="md" />   // 32 px tall — default for navbars
+
+// 5. 0.6.0+: opt into Light mode (canonical Dark is the SSR-safe default).
+import { AppTheme } from '@tokyo3rdhq/magi-design-system';
+
+<AppTheme accent="green" theme="light">
+  <App />
+</AppTheme>
 ```
 
 ## API
