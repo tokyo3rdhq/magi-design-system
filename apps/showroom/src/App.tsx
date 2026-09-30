@@ -14,6 +14,7 @@ import { Layout } from './pages/Layout';
 import { Phase4 } from './pages/Phase4';
 import { Brand } from './pages/Brand';
 import { Guidelines } from './pages/Guidelines';
+import { Iconography } from './pages/Iconography';
 import { Matrix } from './pages/Matrix';
 import styles from './App.module.css';
 
@@ -27,6 +28,7 @@ type Page =
   | 'phase4'
   | 'brand'
   | 'guidelines'
+  | 'iconography'
   | 'matrix';
 
 const PAGES: { id: Page; label: string }[] = [
@@ -39,6 +41,7 @@ const PAGES: { id: Page; label: string }[] = [
   { id: 'phase4', label: 'Phase 4' },
   { id: 'brand', label: 'Brand' },
   { id: 'guidelines', label: 'Guidelines' },
+  { id: 'iconography', label: 'Iconography' },
   { id: 'matrix', label: 'Matrix' },
 ];
 
@@ -133,6 +136,7 @@ export function App() {
             {page === 'phase4' && <Phase4 />}
             {page === 'brand' && <Brand />}
             {page === 'guidelines' && <Guidelines />}
+            {page === 'iconography' && <Iconography />}
             {page === 'matrix' && <Matrix />}
           </Container>
         </main>

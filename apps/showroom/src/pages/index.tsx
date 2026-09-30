@@ -25,3 +25,8 @@ export function PageHeader({ eyebrow, title, description, children }: PageHeader
     </header>
   );
 }
+
+// Re-export page components so other modules can import from
+// `pages/index` instead of `pages/<PageName>` directly. The page
+// files are also exported individually by Vite's dynamic loader.
+export { Iconography } from './Iconography';

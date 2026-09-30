@@ -12,6 +12,7 @@ The package currently ships the **React implementation** of the MAGI Design Syst
 | **Design Tokens** | CSS variables for color, typography, spacing, radius, motion, breakpoints | ✅ Yes |
 | **CSS Foundation** | Reset, base typography, dark backdrop, scrollbar, focus ring, reduced-motion | ✅ Yes |
 | **Component Contracts** | Semantic structure, accessibility, states, token binding per component — see [`docs/component-contracts.md`](../../docs/component-contracts.md) | ✅ Yes (contract) |
+| **Iconography Contract** | Source-of-truth rules for icon usage: Lucide for generic UI, custom only for MAGI concepts — see [`docs/iconography.md`](../../docs/iconography.md) | ✅ Yes (contract) |
 | **Web/CSS Implementation** | Per-component `.css` files; CSS selectors, `@layer`, CSS variables | ✅ Yes (Web-specific) |
 | **Framework Implementation** | React 18 + TypeScript components, JSX, hooks, Context | React only |
 
@@ -27,6 +28,7 @@ This package currently provides the React implementation.
 - CSS `@layer` cascade — consumer unlayered styles always win
 - No Tailwind, no Next, no Vite, no Cloudflare coupling
 - ~25 kB stylesheet (gzip ~4 kB), ~13 kB JS (gzip ~4 kB)
+- `lucide-react` (peer) for generic UI icons — see [`docs/iconography.md`](../../docs/iconography.md)
 
 React 19 is supported as a peer when the consumer requires it (per ADR-0006).
 

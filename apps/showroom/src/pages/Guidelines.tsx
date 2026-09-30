@@ -1,70 +1,24 @@
 import { useState } from 'react';
+import {
+  Search,
+  Menu,
+  X,
+  ExternalLink as ExternalLinkIcon,
+  ChevronDown,
+  Sun,
+  Moon,
+  ChevronLeft,
+  MoreHorizontal,
+} from 'lucide-react';
 import { PageHeader } from './index';
 import styles from './pages.module.css';
 
-// Minimal inline SVG icons — these are decorative on this page; the
-// visible text labels carry the accessible name.
-const IconSearch = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="11" cy="11" r="7" />
-    <path d="m20 20-3.5-3.5" />
-  </svg>
-);
-
-const IconMenu = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M4 7h16M4 12h16M4 17h16" />
-  </svg>
-);
-
-const IconClose = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M6 6l12 12M6 18L18 6" />
-  </svg>
-);
-
+/* Per docs/iconography.md: generic UI icons come from lucide-react.
+   The only hand-ported SVG on this page is the GitHub mark (brand,
+   not a generic UI icon). */
 const IconGitHub = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.55 0-.28-.01-1.01-.02-1.99-3.2.69-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.27-5.24-5.67 0-1.25.45-2.28 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.79 1.18 1.82 1.18 3.07 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.79.55 4.57-1.52 7.85-5.83 7.85-10.91C23.5 5.65 18.35.5 12 .5Z" />
-  </svg>
-);
-
-const IconExternal = () => (
-  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M7 17 17 7M9 7h8v8" />
-  </svg>
-);
-
-const IconChevron = () => (
-  <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="m6 9 6 6 6-6" />
-  </svg>
-);
-
-const IconSun = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4" />
-  </svg>
-);
-
-const IconMoon = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
-  </svg>
-);
-
-const IconBack = () => (
-  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="m15 6-6 6 6 6" />
-  </svg>
-);
-
-const IconMore = () => (
-  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
-    <circle cx="6" cy="12" r="1.6" />
-    <circle cx="12" cy="12" r="1.6" />
-    <circle cx="18" cy="12" r="1.6" />
   </svg>
 );
 
@@ -119,7 +73,7 @@ function LanguageSelector({ compact = false }: { compact?: boolean }) {
           }}
         >
           {lang}
-          <span aria-hidden="true"><IconChevron /></span>
+          <span aria-hidden="true"><ChevronDown size={12} aria-hidden="true" /></span>
         </button>
         {open ? (
           <ul
@@ -211,25 +165,25 @@ export function Guidelines() {
         </p>
         <div className={styles.inlineDemo} aria-label="Icon-only buttons">
           <button type="button" aria-label="Search" className="iconButton">
-            <IconSearch />
+            <Search size={16} aria-hidden="true" />
           </button>
           <button type="button" aria-label="Open menu" className="iconButton">
-            <IconMenu />
+            <Menu size={20} aria-hidden="true" />
           </button>
           <button type="button" aria-label="Close" className="iconButton">
-            <IconClose />
+            <X size={16} aria-hidden="true" />
           </button>
           <button type="button" aria-label="Back" className="iconButton">
-            <IconBack />
+            <ChevronLeft size={18} aria-hidden="true" />
           </button>
           <button type="button" aria-label="More" className="iconButton">
-            <IconMore />
+            <MoreHorizontal size={18} aria-hidden="true" />
           </button>
           <button type="button" aria-label="Switch to light theme" className="iconButton">
-            <IconSun />
+            <Sun size={16} aria-hidden="true" />
           </button>
           <button type="button" aria-label="Switch to dark theme" className="iconButton">
-            <IconMoon />
+            <Moon size={16} aria-hidden="true" />
           </button>
         </div>
       </section>
@@ -299,7 +253,7 @@ export function Guidelines() {
             <IconGitHub />
             GitHub
             <span aria-hidden="true" style={{ opacity: 0.6, marginLeft: 'var(--magi-space-1)' }}>
-              <IconExternal />
+              <ExternalLinkIcon size={12} aria-hidden="true" />
             </span>
             <span style={{ position: 'absolute', left: -9999 }}>
               {' '}
@@ -349,7 +303,7 @@ export function Guidelines() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--magi-space-4)' }}>
             <LanguageSelector compact />
             <button type="button" aria-label="Switch theme" className="iconButton">
-              <IconSun />
+              <Sun size={16} aria-hidden="true" />
             </button>
           </div>
         </div>
