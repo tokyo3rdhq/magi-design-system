@@ -2,19 +2,23 @@
 /**
  * Accent single source of truth check.
  *
- * Enforces that the 5 accent presets defined in `theme.tsx` (the JS-side
- * ACCENT_PRESETS object) match the corresponding `data-magi-accent="<name>"`
- * rules in `foundation/globals.css` (the CSS-side fallback for `<div
- * data-magi-accent>` subtree accent overrides).
+ * Enforces that the 5 accent presets defined in `tokens/accent-presets.ts`
+ * (the framework-agnostic source of truth) match the corresponding
+ * `data-magi-accent="<name>"` rules in `foundation/globals.css` (the CSS-side
+ * fallback for `<div data-magi-accent>` subtree accent overrides).
  *
- * Today both sides duplicate the hex values for `--magi-accent` and
- * `--magi-accent-hover`. If they drift, an `<AppTheme accent="cyan">`
- * would set a different `--magi-accent` value than a `<div
- * data-magi-accent="cyan">` subtree — confusing for consumers.
+ * The four accent tokens are checked:
+ *   --magi-accent            (hex)
+ *   --magi-accent-hover      (hex)
+ *   --magi-accent-soft       (rgba)
+ *   --magi-accent-contrast   (hex)
  *
- * This script parses both files and asserts equality of `--magi-accent` and
- * `--magi-accent-hover` for each preset that exists in BOTH places.
- * Presets in ACCENT_PRESETS but missing from CSS, or vice versa, fail.
+ * If any drift, an `<AppTheme accent="cyan">` would set different CSS vars
+ * than a `<div data-magi-accent="cyan">` subtree — confusing for consumers.
+ * The 0.6.0 release shipped without `-soft` / `-contrast` in the CSS rules,
+ * which the verify-theme-accent-matrix.mjs script caught (40/90 cells fail
+ * with `--magi-accent-soft` resolving to the parent's value). This script
+ * catches the same drift at the unit-test step so it never reaches CI.
  *
  * Allowed asymmetry: globals.css may have semantic presets (danger /
  * warning / success) that aren't in ACCENT_PRESETS — they reference
@@ -39,7 +43,9 @@ const GLOBALS = join(ROOT, 'foundation/globals.css');
  * Parse `ACCENT_PRESETS` from tokens/accent-presets.ts without compiling
  * TypeScript.
  *
- * Captures: <name>: { '--magi-accent': '#hex', '--magi-accent-hover': '#hex', ... }
+ * Captures: <name>: { '--magi-accent': '#hex', '--magi-accent-hover': '#hex',
+ *                       '--magi-accent-soft': 'rgba(...)',
+ *                       '--magi-accent-contrast': '#hex', ... }
  */
 function parseThemeAccents(src) {
   const out = {};
@@ -50,9 +56,16 @@ function parseThemeAccents(src) {
     const [, name, body] = m;
     if (!['green', 'cyan', 'violet', 'amber', 'white'].includes(name)) continue;
     const entry = {};
-    const varRe = /'--(magi-accent(?:-hover)?)':\s*'(#[0-9a-fA-F]{3,8})'/g;
+    // Match hex values for --magi-accent, --magi-accent-hover, --magi-accent-contrast.
+    const hexRe = /'--(magi-accent(?:-hover|-contrast)?)':\s*'(#[0-9a-fA-F]{3,8})'/g;
     let v;
-    while ((v = varRe.exec(body)) !== null) {
+    while ((v = hexRe.exec(body)) !== null) {
+      const [, key, value] = v;
+      entry[key] = value;
+    }
+    // Match rgba values for --magi-accent-soft.
+    const rgbaRe = /'--(magi-accent-soft)':\s*'(rgba\([^)]+\))'/g;
+    while ((v = rgbaRe.exec(body)) !== null) {
       const [, key, value] = v;
       entry[key] = value;
     }
@@ -64,7 +77,11 @@ function parseThemeAccents(src) {
 /**
  * Parse `data-magi-accent="<name>"` blocks from globals.css.
  *
- * Captures: [data-magi-app] [data-magi-accent="<name>"] { --magi-accent: #hex; --magi-accent-hover: #hex; ... }
+ * Captures: [data-magi-app] [data-magi-accent="<name>"] {
+ *             --magi-accent: #hex;
+ *             --magi-accent-hover: #hex;
+ *             --magi-accent-soft: rgba(...);
+ *             --magi-accent-contrast: #hex; ... }
  *
  * Only counts the 5 accent presets (green/cyan/violet/amber/white). The
  * semantic presets (danger/warning/success) use var(--magi-*) tokens, not
@@ -80,9 +97,16 @@ function parseGlobalsAccents(src) {
     const [, name, body] = m;
     if (!['green', 'cyan', 'violet', 'amber', 'white'].includes(name)) continue;
     const entry = {};
-    const varRe = /--(magi-accent(?:-hover)?):\s*(#[0-9a-fA-F]{3,8})/g;
+    // Match hex values for --magi-accent, --magi-accent-hover, --magi-accent-contrast.
+    const hexRe = /--(magi-accent(?:-hover|-contrast)?):\s*(#[0-9a-fA-F]{3,8})/g;
     let v;
-    while ((v = varRe.exec(body)) !== null) {
+    while ((v = hexRe.exec(body)) !== null) {
+      const [, key, value] = v;
+      entry[key] = value;
+    }
+    // Match rgba values for --magi-accent-soft.
+    const rgbaRe = /--(magi-accent-soft):\s*(rgba\([^)]+\))/g;
+    while ((v = rgbaRe.exec(body)) !== null) {
       const [, key, value] = v;
       entry[key] = value;
     }
@@ -113,12 +137,12 @@ for (const name of new Set([...Object.keys(themeAccents), ...Object.keys(globals
     continue;
   }
 
-  for (const key of ['magi-accent', 'magi-accent-hover']) {
+  for (const key of ['magi-accent', 'magi-accent-hover', 'magi-accent-soft', 'magi-accent-contrast']) {
     if (t[key] !== g[key]) {
       errors.push(
-        `"${name}" ${key} mismatch:\n` +
-        `    theme.tsx (ACCENT_PRESETS):  ${t[key]}\n` +
-        `    globals.css (data-magi-accent):  ${g[key]}\n` +
+        `"${name}" --${key} mismatch:\n` +
+        `    tokens/accent-presets.ts (source of truth):  ${t[key]}\n` +
+        `    foundation/globals.css (data-magi-accent):  ${g[key]}\n` +
         `    Update one to match the other — they must stay in sync.`,
       );
     }

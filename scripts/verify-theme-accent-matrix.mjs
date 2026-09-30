@@ -51,20 +51,18 @@ function parseAccentPresets(src) {
 
   const body = m[1];
   const result = {};
-  // Each preset is `<name>: { '--k': 'value', ... }`.
+  // Each preset is `<name>: { '--k': 'value', ... }`. Match each
+  // `'--key': 'value'` declaration individually. We MUST NOT split on
+  // commas — rgba(...) values contain commas.
   const re = /(\w+)\s*:\s*\{([^{}]*)\}/g;
   let match;
   while ((match = re.exec(body)) !== null) {
     const [, name, block] = match;
     const tokens = {};
-    for (const decl of block.split(',')) {
-      const trimmed = decl.trim();
-      if (!trimmed) continue;
-      const colon = trimmed.indexOf(':');
-      if (colon === -1) continue;
-      const prop = trimmed.slice(0, colon).trim().replace(/^['"]|['"]$/g, '');
-      const value = trimmed.slice(colon + 1).trim().replace(/^['"]|['"]$/g, '');
-      tokens[prop] = value;
+    const declRe = /'(--[a-z0-9-]+)'\s*:\s*'([^']*)'/g;
+    let d;
+    while ((d = declRe.exec(block)) !== null) {
+      tokens[d[1]] = d[2];
     }
     result[name] = tokens;
   }
@@ -195,9 +193,9 @@ function buildScope({ theme, appAccent = 'green', subtreeAccent = null }) {
   }
 
   // 4. Subtree accent: matches the `[data-magi-app] [data-magi-accent="<name>"]`
-  //    rule. Note: the CSS rules in globals.css ONLY set --magi-accent and
-  //    --magi-accent-hover. The soft/contrast values fall back to whatever
-  //    the parent AppTheme wrote. Check 3 verifies this asymmetry.
+  //    rule. The CSS rules in globals.css set all four accent tokens
+  //    (--magi-accent, --magi-accent-hover, --magi-accent-soft,
+  //    --magi-accent-contrast) — check 3 verifies parity with AppTheme.
   if (subtreeAccent) {
     const selector = `[data-magi-accent="${subtreeAccent}"]`;
     for (const block of GLOBAL_BLOCKS) {
@@ -209,22 +207,7 @@ function buildScope({ theme, appAccent = 'green', subtreeAccent = null }) {
     }
   }
 
-  // 4. Subtree accent: matches the `[data-magi-app] [data-magi-accent="<name>"]`
-  //    rule. Note: the CSS rules in globals.css ONLY set --magi-accent and
-  //    --magi-accent-hover. The soft/contrast values fall back to whatever
-  //    the parent AppTheme wrote. This is a known asymmetry.
-  if (subtreeAccent) {
-    const selector = `[data-magi-accent="${subtreeAccent}"]`;
-    for (const block of GLOBAL_BLOCKS) {
-      // Compound selector ends with `[data-magi-accent="<name>"]`
-      const endsWithSubtreeAccent = block.selector.endsWith(selector);
-      if (endsWithSubtreeAccent) {
-        Object.assign(scope, block.declarations);
-      }
-    }
-  }
-
-  // 5. Resolve `var(--x)` references transitively. We copy first to avoid
+// 5. Resolve `var(--x)` references transitively. We copy first to avoid
   //    mutating the source values during iteration.
   for (const k of Object.keys(scope)) {
     if (k.startsWith('--magi-')) {
@@ -322,9 +305,11 @@ for (const c of cases) {
 
   // CHECK 3: Accent source-of-truth. data-magi-accent="<name>" must set
   // ALL FOUR accent tokens to the same value as AppTheme accent="<name>".
-  // (Real CSS rule asymmetry: globals.css [data-magi-accent="<name>"] rules
-  // only set --magi-accent and --magi-accent-hover. soft/contrast fall
-  // back to whatever the AppTheme wrote. This is a known bug.)
+  // As of 0.6.1, globals.css [data-magi-accent="<name>"] rules set all four
+  // tokens (--magi-accent, --magi-accent-hover, --magi-accent-soft,
+  // --magi-accent-contrast) to match tokens/accent-presets.ts. If they
+  // drift, the subtree accent would resolve to the parent's values and
+  // components using --magi-accent-soft would render the wrong color.
   if (
     c.subtreeAccent &&
     ['green', 'cyan', 'violet', 'amber', 'white'].includes(c.subtreeAccent)
