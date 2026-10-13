@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" aria-hidden="true">
-  <g fill="currentColor">
-    <!-- Mark: three dots forming an equilateral triangle -->
-    <circle cx="32" cy="14" r="6"/>
-    <circle cx="14" cy="48" r="6"/>
-    <circle cx="50" cy="48" r="6"/>
-    <!-- Wordmark: MAGI -->
-    <text x="80" y="50" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif" font-size="48" font-weight="700" letter-spacing="-2.16">MAGI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 64" fill="currentColor" aria-hidden="true">
+  <g>
+    <!-- Mark: three triangles -->
+    <path d="M 8 45 L 8 19 L 21 32 Z"/>
+    <path d="M 24 19 L 24 45 L 37 32 Z"/>
+    <path d="M 14 19 L 14 45 L 34 32 Z"/>
+    <!-- Wordmark: MAGI with triangle A -->
+    <path d="M 44 42 L 44 14 L 52 14 L 58 28 L 64 14 L 72 14 L 72 42 L 66 42 L 66 24 L 58 38 L 50 24 L 50 42 Z"/>
+    <path d="M 76 42 L 82 14 L 88 42 Z M 82 18 L 79 38 L 85 38 Z"/>
+    <path d="M 112 28 L 112 14 L 98 14 L 98 42 L 112 42 L 112 34 L 104 34 L 104 28 Z"/>
+    <path d="M 118 14 L 124 14 L 124 42 L 118 42 Z"/>
   </g>
 </svg>

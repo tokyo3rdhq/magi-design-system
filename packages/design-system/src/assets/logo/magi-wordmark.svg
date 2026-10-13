@@ -1,3 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="currentColor" aria-hidden="true">
-  <text x="0" y="44" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif" font-size="48" font-weight="700" letter-spacing="-2.16">MAGI</text>
+  <!-- M -->
+  <path d="M 4 42 L 4 14 L 12 14 L 18 28 L 24 14 L 32 14 L 32 42 L 26 42 L 26 24 L 18 38 L 10 24 L 10 42 Z"/>
+  <!-- A as triangle -->
+  <path d="M 36 42 L 42 14 L 48 42 Z M 42 18 L 39 38 L 45 38 Z"/>
+  <!-- G -->
+  <path d="M 72 28 L 72 14 L 58 14 L 58 42 L 72 42 L 72 34 L 64 34 L 64 28 Z"/>
+  <!-- I -->
+  <path d="M 78 14 L 84 14 L 84 42 L 78 42 Z"/>
 </svg>
