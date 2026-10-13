@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
-  <!-- Left triangle pointing up -->
-  <path d="M 19 45 L 19 19 L 32 32 Z"/>
-  <!-- Right triangle pointing up -->
-  <path d="M 45 19 L 45 45 L 58 32 Z"/>
-  <!-- Center triangle pointing down -->
-  <path d="M 32 19 L 32 45 L 52 32 Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="currentColor" aria-hidden="true">
+  <g>
+    <path d="M0 27 L53 108 H0 Z"/>
+    <path d="M22 19 H102 L62 82 Z"/>
+    <path d="M125 27 V108 H71 Z"/>
+  </g>
 </svg>

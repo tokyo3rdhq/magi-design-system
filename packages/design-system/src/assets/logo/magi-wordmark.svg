@@ -1,10 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="currentColor" aria-hidden="true">
-  <!-- M -->
-  <path d="M 4 42 L 4 14 L 12 14 L 18 28 L 24 14 L 32 14 L 32 42 L 26 42 L 26 24 L 18 38 L 10 24 L 10 42 Z"/>
-  <!-- A as triangle -->
-  <path d="M 36 42 L 42 14 L 48 42 Z M 42 18 L 39 38 L 45 38 Z"/>
-  <!-- G -->
-  <path d="M 72 28 L 72 14 L 58 14 L 58 42 L 72 42 L 72 34 L 64 34 L 64 28 Z"/>
-  <!-- I -->
-  <path d="M 78 14 L 84 14 L 84 42 L 78 42 Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="419 167 249 44" fill="currentColor" aria-hidden="true">
+  <g>
+    <!-- M -->
+    <path d="M420 168 H428 L447 191 L466 168 H474 V210 H466 V181 L449 202 H445 L428 182 V210 H420 Z"/>
+    <!-- A -->
+    <path d="M501 210 L522 168 H528 L554 210 H545 L527 181 L510 210 Z"/>
+    <!-- G -->
+    <path d="M587 172 L592 169 L598 167 H610 L619 170 L625 174 L620 179 L613 175 L607 174 L600 175 L594 177 L589 183 L587 189 L589 196 L595 202 L600 204 H609 L615 201 L618 197 L617 194 H604 V187 H625 V203 L617 208 L609 211 H599 L592 209 L586 205 L580 198 L578 192 L579 185 L582 178 Z"/>
+    <!-- I -->
+    <path d="M658 168 H666 V210 H658 Z"/>
+  </g>
 </svg>
