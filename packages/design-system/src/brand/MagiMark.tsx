@@ -25,7 +25,7 @@ interface MagiMarkProps extends Omit<SVGProps<SVGSVGElement>, 'ref'> {
 }
 
 /**
- * MagiMark — the MAGI mark glyph (three dots forming a triangle).
+ * MagiMark — the MAGI mark glyph (three triangular forms forming a negative-space M).
  *
  * Renders an inline `<svg>` using `<use>` to reference the canonical
  * SVG asset. This preserves `currentColor` propagation (unlike `<img>`).
@@ -52,7 +52,7 @@ export function MagiMark({
   return (
     <svg
       className={cx('magi-mark', `magi-mark--${size}`, className)}
-      viewBox="0 0 64 64"
+      viewBox="0 0 134 101"
       fill="currentColor"
       aria-hidden={ariaHidden || undefined}
       role={ariaHidden ? 'img' : 'img'}

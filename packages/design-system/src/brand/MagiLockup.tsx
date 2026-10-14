@@ -19,7 +19,7 @@ export function MagiLockup({ size = 'md', ariaHidden = true, alt = 'MAGI', class
   return (
     <svg
       className={cx('magi-lockup', `magi-lockup--${size}`, className)}
-      viewBox={vertical ? '0 0 180 160' : '0 0 400 128'}
+      viewBox={vertical ? '0 0 220 150' : '0 0 330 76'}
       fill="currentColor"
       aria-hidden={ariaHidden || undefined}
       role={ariaHidden ? 'img' : 'img'}
