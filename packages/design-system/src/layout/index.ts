@@ -6,3 +6,6 @@ export type { SectionProps, SectionSpacing, SectionSurface } from './Section';
 
 export { Stack } from './Stack';
 export type { StackProps, StackGap, StackAlign } from './Stack';
+
+export { Grid } from './Grid';
+export type { GridProps, Breakpoint } from './Grid';

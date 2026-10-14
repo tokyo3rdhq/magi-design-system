@@ -1,6 +1,6 @@
 {
   "name": "@tokyo3rdhq/magi-design-system",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Shared visual foundation for the MAGI product family — dark-first by default (canonical), with Light as a supported alternative. Near-monochrome, restrained, framework-agnostic.",
   "type": "module",
   "main": "./dist/index.js",
