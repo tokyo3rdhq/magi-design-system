@@ -6,7 +6,7 @@ Shared visual foundation for the [MAGI](https://magi.website) product family —
 
 This monorepo contains the package that every MAGI website consumes:
 
-- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, brand foundation, and a product theme mechanism. **Latest: 0.6.0**
+- [`@tokyo3rdhq/magi-design-system`](./packages/design-system) — the npm package: tokens, layout primitives, UI components, brand foundation, and a product theme mechanism. **Latest: 0.8.3**
 - [`@tokyo3rdhq/showroom`](./apps/showroom) — the Vite + React + TypeScript visual showcase used during development
 
 ## What is MAGI?
@@ -15,7 +15,7 @@ This monorepo contains the package that every MAGI website consumes:
 
 ## Status
 
-**0.6.0 published.** 13 UI primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme) + 3 brand primitives (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`) + 5 canonical brand SVG assets + Component Contracts document + framework-agnostic architecture review + Experience Guidelines document + Light/Dark color mode support + Logo Contrast Rule enforced. CSS `@layer` cascade + token literal CI + accent source-of-truth CI + 8 ADRs.
+\*\*0.8.3 published.\*\* 14 layout/UI primitives including new \*\*Grid\*\*; Button adds responsive prop; brand assets updated to geometric three-triangle mark with triangle A wordmark; docs audits added. 13 UI primitives (Container / Section / Stack / Button / Card / Badge / Checkbox / FormField / Input / Segmented / Banner / EmptyState / AppTheme) + 3 brand primitives (`<MagiMark>` / `<MagiWordmark>` / `<MagiLockup>`) + 5 canonical brand SVG assets + Component Contracts document + framework-agnostic architecture review + Experience Guidelines document + Light/Dark color mode support + Logo Contrast Rule enforced. CSS `@layer` cascade + token literal CI + accent source-of-truth CI + 8 ADRs.
 
 Release history (chronological):
 

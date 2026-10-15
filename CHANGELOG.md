@@ -430,4 +430,79 @@ Showroom: new **Phase 4** page demonstrating all 6 primitives with live state.
 - Out of scope for 0.1.0: Navbar, Footer, Tabs, Input, CodeBlock, ProductHeader (Phase 4).
 - Out of scope for 0.1.0: Phase 2 (magi-portal migration) and Phase 3 (token-factory-initializr migration).
 
-[0.1.0]: https://github.com/tokyo3rdhq/magi-design-system/releases/tag/v0.1.0
+[0.1.0]: https://github.com/tokyo3rdhq/magi-design-system/releases/tag/v0.1.0## [0.7.0] — 2026-10-13
+
+### Added
+
+- Updated brand logos to geometric three-triangle mark with triangle A wordmark.
+- Brand component  now uses updated assets.
+- Minor documentation corrections.
+
+## [0.8.0] — 2026-10-14
+
+### Added
+
+- Updated brand logo assets from ~/Downloads/magi_logo_svg with geometric three-triangle mark.
+-  layout primitive: responsive CSS‑grid helper using Tailwind breakpoints.
+-  responsive prop: , mapping breakpoint → class name.
+- Updated favicon SVG with new geometric mark.
+
+## [0.8.1] — 2026-10-14
+
+### Added
+
+- Boundary cleanup:  moved from  to  (framework‑agnostic).
+- Responsive documentation for new  and  primitives.
+- Updated brand component  /  viewBox.
+
+## [0.8.2] — 2026-10-14
+
+### Changed
+
+- Version bumped from 0.8.1 to 0.8.2.
+- Showroom  updated for new Grid page.
+
+## [0.8.3] — 2026-10-14
+
+### Changed
+
+- Version bumped from 0.8.2 to 0.8.3.
+- Showroom preview PID/port updated; showroom to contract surface refactored.
+## [0.7.0] — 2026-10-13
+
+### Added
+
+- Updated brand logos to geometric three-triangle mark with triangle A wordmark.
+- Brand component `MagiLockup` now uses updated assets.
+- Minor documentation corrections.
+
+## [0.8.0] — 2026-10-14
+
+### Added
+
+- Updated brand logo assets from ~/Downloads/magi_logo_svg with geometric three-triangle mark.
+- `Grid` layout primitive: responsive CSS-grid helper using Tailwind breakpoints.
+- `Button` responsive prop: `responsive?: ResponsiveRecord<ButtonSize | ButtonVariant>`, mapping breakpoint → class name.
+- Updated favicon SVG with new geometric mark.
+
+## [0.8.1] — 2026-10-14
+
+### Added
+
+- Boundary cleanup: `ACCENT_PRESETS` moved from `src/theme.tsx` to `src/tokens/accent-presets.ts` (framework-agnostic).
+- Responsive documentation for new `Grid` and `Button` primitives.
+- Updated brand component `MagiMark` / `MagiWordmark` viewBox.
+
+## [0.8.2] — 2026-10-14
+
+### Changed
+
+- Version bumped from 0.8.1 to 0.8.2.
+- Showroom `tsconfig.tsbuildinfo` updated for new Grid page.
+
+## [0.8.3] — 2026-10-14
+
+### Changed
+
+- Version bumped from 0.8.2 to 0.8.3.
+- Showroom preview PID/port updated; showroom to contract surface refactored.
